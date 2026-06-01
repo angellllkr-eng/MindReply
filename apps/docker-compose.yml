@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: agencycomm-db
+    environment:
+      POSTGRES_DB: agencycomm
+      POSTGRES_USER: agencycomm
+      POSTGRES_PASSWORD: dev_password
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: agencycomm-redis
+    ports:
+      - '6379:6379'
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agencycomm-backend
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://agencycomm:dev_password@postgres:5432/agencycomm
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: dev_secret_key_min_32_chars_long_here
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      GMAIL_CLIENT_ID: ${GMAIL_CLIENT_ID}
+      GMAIL_CLIENT_SECRET: ${GMAIL_CLIENT_SECRET}
+    ports:
+      - '3001:3001'
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./apps/backend/src:/app/apps/backend/src
+
+volumes:
+  postgres_data:

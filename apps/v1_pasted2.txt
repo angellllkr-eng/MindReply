@@ -1,0 +1,30 @@
+This will be built as a human-supervised, agent-operated system with proper security (environment-based secrets) and clear approval checkpoints.
+
+Initial build focus (MVP):
+
+Core service:
+- Client communication and follow-up management for agencies.
+
+First version should do:
+1) Ingest incoming client emails.
+2) Generate:
+   - a concise summary of each email,
+   - a suggested reply draft,
+   - a follow-up schedule/flow (e.g. reminders, nudges).
+3) Provide a minimal dashboard showing:
+   - messages handled,
+   - follow-ups scheduled/completed,
+   - estimated time saved.
+
+Human layer:
+- All outgoing replies are review-and-approve by a human before sending.
+- Escalation path for unclear/critical messages.
+- Humans can override, edit, or disable any automation.
+
+Constraints:
+- Use environment variables for all secrets and API keys.
+- No regulated domains (no medical, legal, or financial advice).
+- Focus on agencies (marketing, creative, service-based).
+- Keep it as a lean MVP that can be sold immediately, then expanded after validation.
+
+Now: propose the architecture and implementation structure (frontend, backend, data model, workflows, and integrations), then generate the initial code scaffolding.
