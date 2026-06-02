@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MindReply</title>
+    <meta name="description" content="MindReply — deeply niched wellbeing and professional services. Book a session worldwide." />
+    <script type="importmap"></script>
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid px-3">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <strong>Mind</strong>Reply
+                </a>
+                <button class="navbar-toggler border-0" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#navMain"
+                        aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navMain">
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="MRAgent" asp-action="Index">MRagent</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Booking" asp-action="Index">Specialists</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="MRHub" asp-action="Index">MRhub</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">Modules</a>
+                            <ul class="dropdown-menu mr-dropdown">
+                                <li><a class="dropdown-item" href="/Booking?category=Mental+Health">MRhealth</a></li>
+                                <li><a class="dropdown-item" href="mailto:angelllkr@gmail.com?subject=MReply">MReply</a></li>
+                                <li><a class="dropdown-item" href="mailto:angelllkr@gmail.com?subject=MRtools">MRtools</a></li>
+                                <li><a class="dropdown-item" href="mailto:angelllkr@gmail.com?subject=MRcommunity">MRcommunity</a></li>
+                                <li><a class="dropdown-item" href="mailto:angelllkr@gmail.com?subject=MRgrowth">MRgrowth</a></li>
+                                <li><hr class="dropdown-divider" style="border-color:rgba(201,168,76,0.2)"></li>
+                                <li><a class="dropdown-item mr-dropdown__premium" href="mailto:angelllkr@gmail.com?subject=MRbehaviour">MRbehaviour ✦ Premium</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link mr-nav-book" asp-controller="Booking" asp-action="Index">Book Now</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="footer border-top">
+        <div class="container-fluid px-4 py-4">
+            <div class="mr-footer-grid">
+                <div>
+                    <div class="navbar-brand mb-2 d-inline-block" style="font-size:1.2rem;padding:0"><strong>Mind</strong>Reply</div>
+                    <p style="font-size:0.78rem;color:rgba(245,240,232,0.45);max-width:220px;line-height:1.6;">Deeply niched wellbeing and professional services. Worldwide.</p>
+                </div>
+                <div>
+                    <p class="mr-footer-heading">Platform</p>
+                    <a href="/MRAgent">MRagent</a>
+                    <a href="/Booking">Specialists</a>
+                    <a href="/MRHub">Pricing</a>
+                </div>
+                <div>
+                    <p class="mr-footer-heading">Modules</p>
+                    <a href="/Booking?category=Mental+Health">MRhealth</a>
+                    <a href="mailto:angelllkr@gmail.com?subject=MRtools">MRtools</a>
+                    <a href="mailto:angelllkr@gmail.com?subject=MRcommunity">MRcommunity</a>
+                    <a href="mailto:angelllkr@gmail.com?subject=MRbehaviour">MRbehaviour</a>
+                </div>
+                <div>
+                    <p class="mr-footer-heading">Legal</p>
+                    <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    <a href="mailto:angelllkr@gmail.com">Contact</a>
+                </div>
+            </div>
+            <div class="mr-footer-bottom">
+                <span>&copy; @DateTime.Now.Year MindReply &mdash; Worldwide Wellbeing</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

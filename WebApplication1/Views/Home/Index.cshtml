@@ -1,0 +1,93 @@
+@{
+    ViewData["Title"] = "MindReply — Worldwide Wellbeing";
+}
+
+<div class="mr-home-hero">
+    <div>
+        <span class="mr-eyebrow">Private &middot; Vetted &middot; Global</span>
+        <h1>Human expertise.<br>Precisely matched.</h1>
+        <p>From elite performance coaching to niche child psychology — find the right specialist, anywhere in the world.</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a class="mr-btn-book" style="font-size:1rem;padding:0.8rem 2.2rem;" asp-controller="Booking" asp-action="Index">
+                Explore Specialists
+            </a>
+            <a class="mr-btn-ghost" style="font-size:1rem;padding:0.8rem 2.2rem;border-color:rgba(245,240,232,0.4);color:var(--mr-cream);" asp-controller="MRAgent" asp-action="Index">
+                Try MRagent
+            </a>
+        </div>
+    </div>
+</div>
+
+<section class="mr-modules container-fluid">
+    <div class="mr-modules__header">
+        <span class="mr-eyebrow" style="color:var(--mr-text-mid);border-color:rgba(0,0,0,0.15);">The Ecosystem</span>
+        <h2>Everything you need. All in one place.</h2>
+    </div>
+    <div class="mr-modules__grid">
+        <a href="/MRAgent" class="mr-module-card mr-module-card--featured">
+            <div class="mr-module-card__icon">✦</div>
+            <div class="mr-module-card__name">MRagent</div>
+            <div class="mr-module-card__desc">Executive communication intelligence. Draft, refine, and land high-stakes messages with precision.</div>
+            <span class="mr-module-card__cta">Open MRagent →</span>
+        </a>
+        <a href="/Booking" class="mr-module-card">
+            <div class="mr-module-card__icon">◈</div>
+            <div class="mr-module-card__name">MRprofessionals</div>
+            <div class="mr-module-card__desc">20+ deeply niched specialists. Book in minutes.</div>
+        </a>
+        <a href="/MRHub" class="mr-module-card">
+            <div class="mr-module-card__icon">◉</div>
+            <div class="mr-module-card__name">MRhub</div>
+            <div class="mr-module-card__desc">Plans, packs, and memberships. Unlock the full ecosystem.</div>
+        </a>
+        <a href="/Booking?category=Mental+Health" class="mr-module-card">
+            <div class="mr-module-card__icon">♡</div>
+            <div class="mr-module-card__name">MRhealth</div>
+            <div class="mr-module-card__desc">Mental health specialists, therapists, and clinical psychologists.</div>
+        </a>
+        <a href="mailto:angelllkr@gmail.com?subject=MReply%20Enquiry" class="mr-module-card">
+            <div class="mr-module-card__icon">✉</div>
+            <div class="mr-module-card__name">MReply</div>
+            <div class="mr-module-card__desc">AI-powered email intelligence. Craft every message with intent.</div>
+        </a>
+        <a href="mailto:angelllkr@gmail.com?subject=MRtools%20Enquiry" class="mr-module-card">
+            <div class="mr-module-card__icon">⚙</div>
+            <div class="mr-module-card__name">MRtools</div>
+            <div class="mr-module-card__desc">Productivity and automation tools for high-performance individuals.</div>
+        </a>
+        <a href="mailto:angelllkr@gmail.com?subject=MRcommunity%20Enquiry" class="mr-module-card">
+            <div class="mr-module-card__icon">◌</div>
+            <div class="mr-module-card__name">MRcommunity</div>
+            <div class="mr-module-card__desc">A private community of peers who understand the pressure you're under.</div>
+        </a>
+        <a href="mailto:angelllkr@gmail.com?subject=MRbehaviour%20Enquiry" class="mr-module-card mr-module-card--premium">
+            <div class="mr-module-card__icon">◆</div>
+            <div class="mr-module-card__name">MRbehaviour <span class="mr-module-premium-tag">Premium</span></div>
+            <div class="mr-module-card__desc">Deep behavioural insights and pattern intelligence for decision-makers.</div>
+        </a>
+    </div>
+</section>
+
+<section class="mr-trust container-fluid">
+    <div class="mr-trust__inner">
+        <div class="mr-trust__item">
+            <span class="mr-trust__num">2,400+</span>
+            <span class="mr-trust__label">Sessions completed</span>
+        </div>
+        <div class="mr-trust__divider"></div>
+        <div class="mr-trust__item">
+            <span class="mr-trust__num">98%</span>
+            <span class="mr-trust__label">Client satisfaction</span>
+        </div>
+        <div class="mr-trust__divider"></div>
+        <div class="mr-trust__item">
+            <span class="mr-trust__num">40+</span>
+            <span class="mr-trust__label">Countries served</span>
+        </div>
+        <div class="mr-trust__divider"></div>
+        <div class="mr-trust__item">
+            <span class="mr-trust__num">72hr</span>
+            <span class="mr-trust__label">Avg. first appointment</span>
+        </div>
+    </div>
+</section>

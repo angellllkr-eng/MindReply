@@ -1,0 +1,126 @@
+@model WebApplication1.Models.MRAgentViewModel
+@{
+    ViewData["Title"] = "MRagent — Executive Communication";
+}
+
+<section class="mra-hero">
+    <div class="mra-hero__inner">
+        <span class="mr-eyebrow">AI · Executive · Confidential</span>
+        <h1>MRagent</h1>
+        <p>Your executive communication intelligence partner.</p>
+    </div>
+</section>
+
+<div class="mra-layout container-fluid">
+    <div class="mra-sidebar">
+        <h3 class="mra-sidebar__title">Capabilities</h3>
+        <ul class="mra-cap-list">
+            <li>Restructuring &amp; sensitive announcements</li>
+            <li>Team feedback &amp; difficult conversations</li>
+            <li>Board &amp; investor correspondence</li>
+            <li>Crisis communication drafts</li>
+            <li>Tone calibration by audience</li>
+            <li>Memo &amp; policy language</li>
+        </ul>
+        <div class="mra-quota-block">
+            <span class="mra-quota__label">Free quota</span>
+            <div class="mra-quota-bar"><div class="mra-quota-fill" id="quotaFill" style="width:60%"></div></div>
+            <span class="mra-quota__text" id="quotaText">3 / 5 messages used</span>
+            <a href="/MRHub" class="mr-btn-ghost mt-2 d-block text-center" style="font-size:0.78rem;padding:0.4rem 1rem;">Upgrade for unlimited</a>
+        </div>
+    </div>
+
+    <div class="mra-chat">
+        <div class="mra-messages" id="chatMessages">
+            @foreach (var msg in Model.Messages)
+            {
+                <div class="mra-msg mra-msg--@msg.Role">
+                    <div class="mra-msg__bubble">@Html.Raw(msg.Content.Replace("\n", "<br>"))</div>
+                </div>
+            }
+        </div>
+
+        <form class="mra-input-row" id="chatForm">
+            @Html.AntiForgeryToken()
+            <textarea class="mra-input"
+                      name="userMessage"
+                      id="userMessage"
+                      rows="2"
+                      placeholder="@Model.InputPlaceholder"
+                      required
+                      maxlength="2000"></textarea>
+            <button type="submit" class="mra-send-btn" id="sendBtn" aria-label="Send">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+            </button>
+        </form>
+        <p class="mra-disclaimer">MRagent responses are AI-generated. For clinical matters, consult a qualified professional.</p>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    'use strict';
+    var form = document.getElementById('chatForm');
+    var input = document.getElementById('userMessage');
+    var messages = document.getElementById('chatMessages');
+    var sendBtn = document.getElementById('sendBtn');
+    var quotaFill = document.getElementById('quotaFill');
+    var quotaText = document.getElementById('quotaText');
+    var messageCount = 3;
+    var maxMessages = 5;
+
+    function addMessage(role, content) {
+        var div = document.createElement('div');
+        div.className = 'mra-msg mra-msg--' + role;
+        var bubble = document.createElement('div');
+        bubble.className = 'mra-msg__bubble';
+        bubble.innerHTML = content.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        div.appendChild(bubble);
+        messages.appendChild(div);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    function updateQuota() {
+        var pct = (messageCount / maxMessages) * 100;
+        quotaFill.style.width = pct + '%';
+        quotaText.textContent = messageCount + ' / ' + maxMessages + ' messages used';
+    }
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        var text = input.value.trim();
+        if (!text) return;
+
+        addMessage('user', text);
+        input.value = '';
+        sendBtn.disabled = true;
+
+        var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        var fd = new FormData();
+        fd.append('userMessage', text);
+        fd.append('__RequestVerificationToken', token);
+
+        try {
+            var res = await fetch('/MRAgent/Send', { method: 'POST', body: fd });
+            var data = await res.json();
+            if (data.reply) {
+                addMessage('assistant', data.reply);
+                messageCount++;
+                updateQuota();
+            } else if (data.error) {
+                addMessage('assistant', 'Error: ' + data.error);
+            }
+        } catch (err) {
+            addMessage('assistant', 'Connection error. Please try again.');
+        }
+
+        sendBtn.disabled = false;
+        input.focus();
+    });
+})();
+</script>
+}

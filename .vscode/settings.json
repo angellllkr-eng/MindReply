@@ -1,0 +1,62 @@
+{
+    "dotnetAcquisitionExtension.allowInvalidPaths": true,
+    "dotnetAcquisitionExtension.enablePreviewFeatures": true,
+    "dotnetAcquisitionExtension.highVerbosity": true,
+    "amazonQ.suppressPrompts": {
+        "createCredentialsProfile": true,
+        "codeWhispererNewWelcomeMessage": true,
+        "codeWhispererConnectionExpired": true,
+        "amazonQWelcomePage": true,
+        "amazonQSessionConfigurationMessage": true,
+        "minIdeVersion": true,
+        "ssoCacheError": true,
+        "amazonQLspManifestMessage": true,
+        "amazonQWorkspaceLspManifestMessage": true,
+        "amazonQChatDisclaimer": true,
+        "amazonQChatPairProgramming": true,
+        "amazonQSelectDeveloperProfile": true
+    },
+    "aws.cloudformation.diagnostics.cfnGuard.enabledRulePacks": [],
+    "aws.cloudformation.telemetry.enabled": true,
+    "aws.ecs.openTerminalCommand": "/",
+    "aws.experiments": {
+        "jsonResourceModification": true,
+        "amazonqLSP": true,
+        "amazonqLSPInline": true,
+        "amazonqChatLSP": true,
+        "amazonqLSPInlineChat": true,
+        "amazonqLSPNEP": true,
+        "cloudFormationService": true
+    },
+    "screencastMode.keyboardOptions": {
+        "showCommandGroups": true
+    },
+    "remote.downloadExtensionsLocally": true,
+    "remote.localPortHost": "allInterfaces",
+    "amazonQ.ignoredSecurityIssues": [
+        "allow on all"
+    ],
+    "better-comments.highlightPlainText": true,
+    "aws.accessAnalyzer.policyChecks.checkAccessNotGrantedFilePath": "",
+    "aws.iot.maxItemsPerPage": 250,
+    "aws.resources.enabledResources": [
+        "server agent amazon q"
+    ],
+    "aws.samcli.enableCodeLenses": true,
+    "aws.suppressPrompts": {
+        "apprunnerNotifyPricing": true,
+        "apprunnerNotifyPause": true,
+        "ecsRunCommand": true,
+        "ecsRunCommandEnable": true,
+        "ecsRunCommandDisable": true,
+        "regionAddAutomatically": true,
+        "yamlExtPrompt": true,
+        "fileViewerEdit": true,
+        "createCredentialsProfile": true,
+        "samcliConfirmDevStack": true,
+        "remoteConnected": true,
+        "codeCatalystConnectionExpired": true,
+        "minIdeVersion": true,
+        "ssoCacheError": true
+    }
+}

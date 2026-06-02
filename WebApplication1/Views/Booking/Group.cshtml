@@ -1,0 +1,75 @@
+@model WebApplication1.Models.GroupBookingViewModel
+@{
+    ViewData["Title"] = "Group Booking — " + Model.Professional?.Name;
+}
+
+<section class="mr-hero">
+    <div class="mr-hero__inner">
+        <span class="mr-eyebrow">Group · Discounts · Flexible</span>
+        <h1 class="mr-hero__title">Group Booking</h1>
+        <p class="mr-hero__sub">10 or more people? 10% off + 2 bonus days included automatically.</p>
+    </div>
+</section>
+
+<div class="mrg-layout container">
+    @if (Model.Professional != null)
+    {
+        <div class="mrg-specialist-card">
+            <img src="@Model.Professional.PhotoUrl" alt="@Model.Professional.Name" class="mrg-spec-photo"
+                 onerror="this.src='https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face'" />
+            <div>
+                <p class="mr-card__role">@Model.Professional.Role</p>
+                <h2 class="mrd-name" style="font-size:1.3rem">@Model.Professional.Name</h2>
+                <p class="mr-card__niche">@Model.Professional.Niche</p>
+            </div>
+        </div>
+    }
+
+    <form class="mrg-form" asp-controller="Booking" asp-action="Group" asp-route-id="@Model.Professional?.Id" method="post">
+        @Html.AntiForgeryToken()
+        <div class="mrg-field">
+            <label for="groupSize" class="mrg-label">Number of participants</label>
+            <input type="number" id="groupSize" name="groupSize"
+                   class="mrg-input" min="1" max="500"
+                   value="@Model.GroupSize" required />
+        </div>
+        <button type="submit" class="mr-btn-book" style="width:100%;margin-top:1rem;">Calculate &amp; Continue</button>
+    </form>
+
+    @if (Model.GroupSize > 1)
+    {
+        <div class="mrg-summary">
+            <div class="mrg-summary__row">
+                <span>Base price per person</span>
+                <span>£@Model.BasePrice</span>
+            </div>
+            <div class="mrg-summary__row">
+                <span>Participants</span>
+                <span>@Model.GroupSize</span>
+            </div>
+            @if (Model.DiscountPercent > 0)
+            {
+                <div class="mrg-summary__row mrg-summary__discount">
+                    <span>Group discount (@Model.DiscountPercent%)</span>
+                    <span>−£@((Model.BasePrice - Model.DiscountedPrice).ToString("0.00")) per person</span>
+                </div>
+                <div class="mrg-summary__row mrg-summary__bonus">
+                    <span>Bonus</span>
+                    <span>@Model.BonusText</span>
+                </div>
+            }
+            <div class="mrg-summary__row mrg-summary__total">
+                <span>Total</span>
+                <span>£@Model.TotalPrice.ToString("0.00")</span>
+            </div>
+            <a href="mailto:angelllkr@gmail.com?subject=Group%20Booking%20-%20@Model.Professional?.Name%20-%20@Model.GroupSize%20people"
+               class="mr-btn-book d-block text-center mt-3">
+                Confirm Group Booking
+            </a>
+        </div>
+    }
+
+    <div class="mt-4">
+        <a href="/Booking/Detail/@Model.Professional?.Id" class="mr-btn-ghost">← Back to specialist</a>
+    </div>
+</div>
