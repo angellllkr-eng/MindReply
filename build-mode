@@ -1,0 +1,17 @@
+# Initializes the CodeQL tools for scanning.
+name: Analyze
+strategy:
+  matrix:
+    include:
+      # Analyze C and C++ code
+      - language: c-cpp
+        build-mode: autobuild
+      # Analyze Go code
+      - language: go
+        build-mode: autobuild
+
+steps:
+  - uses: github/codeql-action/init@v4
+    with:
+      languages: ${{ matrix.language }}
+      build-mode: ${{ matrix.build-mode }}
