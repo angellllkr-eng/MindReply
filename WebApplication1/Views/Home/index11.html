@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindReply | Executive Communication Intelligence Ecosystem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Inter', 'sans-serif']
+                    },
+                    colors: {
+                        'mr-navy': '#0A1628',
+                        'mr-gold': '#C9A961',
+                        'mr-cream': '#F8F5F0',
+                        'mr-slate': '#2D3748',
+                        'mr-accent': '#1E3A5F',
+                        'mr-cream-light': '#FCFAF7'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fafafa; color: #1a202c; }
+        h1, h2, h3, h4, .serif { font-family: 'Playfair Display', serif; }
+        
+        .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; transform: translateY(20px); }
+        .fade-in-up.delay-1 { animation-delay: 0.1s; }
+        .fade-in-up.delay-2 { animation-delay: 0.2s; }
+        .fade-in-up.delay-3 { animation-delay: 0.3s; }
+        .fade-in-up.delay-4 { animation-delay: 0.4s; }
+        
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(201, 169, 97, 0.15);
+            box-shadow: 0 8px 32px rgba(10, 22, 40, 0.08);
+        }
+        
+        .gold-border {
+            position: relative;
+        }
+        .gold-border::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #C9A961, transparent);
+        }
+        
+        .professional-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(10, 22, 40, 0.12);
+            border-color: rgba(201, 169, 97, 0.4);
+        }
+        
+        .tool-icon {
+            background: linear-gradient(135deg, #0A1628 0%, #1E3A5F 100%);
+        }
+        
+        .membership-premium {
+            background: linear-gradient(135deg, #0A1628 0%, #1a2a4a 50%, #0A1628 100%);
+            border: 1px solid #C9A961;
+        }
+        
+        .nav-link {
+            position: relative;
+            padding-bottom: 4px;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #C9A961;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .expression-badge {
+            background: rgba(201, 169, 97, 0.12);
+            border-left: 3px solid #C9A961;
+        }
+        
+        .dictionary-term {
+            border-bottom: 1px dashed #CBD5E0;
+            cursor: help;
+            transition: all 0.2s;
+        }
+        .dictionary-term:hover {
+            border-bottom-color: #C9A961;
+            color: #0A1628;
+        }
+        
+        .email-preview {
+            font-family: 'Georgia', serif;
+            line-height: 1.7;
+            color: #2D3748;
+        }
+        
+        .behavior-metric {
+            background: linear-gradient(135deg, rgba(10,22,40,0.03) 0%, rgba(30,58,95,0.03) 100%);
+        }
+        
+        .growth-chart {
+            background: linear-gradient(180deg, rgba(201,169,97,0.08) 0%, transparent 100%);
+        }
+        
+        .agent-bubble {
+            background: linear-gradient(135deg, #0A1628 0%, #1E3A5F 100%);
+            border-radius: 24px 24px 8px 24px;
+            color: white;
+        }
+        
+        .user-bubble {
+            background: #F8F5F0;
+            border-radius: 24px 24px 24px 8px;
+            color: #1a202c;
+        }
+        
+        .micro-tool-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(201, 169, 97, 0.1);
+        }
+        .micro-tool-card:hover {
+            transform: translateY(-3px);
+            border-color: #C9A961;
+            box-shadow: 0 12px 24px rgba(10, 22, 40, 0.08);
+        }
+        
+        .credit-badge {
+            background: linear-gradient(135deg, #C9A961 0%, #B8964E 100%);
+            color: #0A1628;
+        }
+        
+        .subconscious-highlight {
+            position: relative;
+        }
+        .subconscious-highlight::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #C9A961;
+            border-radius: 2px;
+        }
+        
+        /* Hide scrollbar for clean UI */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Modal animations */
+        .modal-enter { opacity: 0; transform: scale(0.95); }
+        .modal-enter-active { opacity: 1; transform: scale(1); transition: all 0.3s ease-out; }
+        .modal-exit { opacity: 1; transform: scale(1); }
+        .modal-exit-active { opacity: 0; transform: scale(0.95); transition: all 0.2s ease-in; }
+    </style>
+</head>
+<body class="antialiased bg-mr-cream-light">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/95 backdrop-blur-md border-b border-gray-100 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-mr-navy rounded-lg flex items-center justify-center">
+                        <span class="text-mr-gold font-serif font-bold text-xl">M</span>
+                    </div>
+                    <div>
+                        <span class="font-serif font-bold text-xl text-mr-navy">MindReply</span>
+                        <p class="text-xs text-gray-500 -mt-1">Subconscious Communication Intelligence</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#agent" class="nav-link text-sm font-medium text-gray-700 hover:text-mr-navy transition-colors">MRagent</a>
+                    <a href="#subconscious" class="nav-link text-sm font-medium text-gray-700 hover:text-mr-navy transition-colors">Subconscious Behavior</a>
+                    <a href="#professionals" class="nav-link text-sm font-medium text-gray-700 hover:text-mr-navy transition-colors">Professional Lexicons</a>
+                    <a href="#tools" class="nav-link text-sm font-medium text-gray-700 hover:text-mr-navy transition-colors">Micro-Tools</a>
+                    <a href="#memberships" class="nav-link text-sm font-medium text-gray-700 hover:text-mr-navy transition-colors">Exclusive Access</a>
+                    <a href="#growth" class="nav-link text-sm font-medium text-gray-700 hover:text-mr-navy transition-colors">Business Growth</a>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <button onclick="openAuthModal('login')" class="hidden sm:flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-mr-navy transition-colors px-4 py-2 rounded-lg hover:bg-gray-50">
+                        <i class="far fa-user"></i> Login
+                    </button>
+                    <button onclick="openAuthModal('signup')" class="hidden sm:flex items-center gap-2 text-sm font-medium text-mr-navy border border-mr-navy px-4 py-2 rounded-lg hover:bg-mr-navy hover:text-white transition-colors">
+                        Sign Up
+                    </button>
+                    <button onclick="openConcierge()" class="bg-mr-navy hover:bg-mr-accent text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm hover:shadow-md">
+                        Request Premium
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MR Agent Hero Section -->
+    <section id="agent" class="pt-32 pb-20 bg-gradient-to-b from-mr-cream to-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Left: Agent Introduction -->
+                <div class="fade-in-up">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-gray-200 mb-6 shadow-sm">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span class="text-xs font-medium text-gray-600">MRagent is online and ready to assist</span>
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-serif font-bold text-mr-navy mb-6 leading-tight">
+                        Your Subconscious Communication <span class="text-mr-gold italic">Intelligence Partner</span>
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-10 leading-relaxed">
+                        MindReply empowers professionals with behavioral intelligence for email composition, expression refinement, and strategic dialogue—curated for psychologists, legal counsel, financial advisors, and C-suite executives worldwide.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="startAgentChat()" class="bg-mr-navy hover:bg-mr-accent text-white px-8 py-4 rounded-xl font-medium text-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                            <i class="fas fa-comment-alt"></i> Begin Conversation
+                        </button>
+                        <button onclick="router('tools')" class="bg-white hover:bg-gray-50 text-mr-navy border-2 border-mr-navy px-8 py-4 rounded-xl font-medium text-lg transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2">
+                            <i class="fas fa-toolbox"></i> Explore Micro-Tools
+                        </button>
+                    </div>
+                    
+                    <!-- Trust Indicators -->
+                    <div class="mt-12 flex items-center gap-6 text-sm text-gray-500">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-shield-alt text-mr-gold"></i>
+                            <span>Enterprise-grade security</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-globe text-mr-gold"></i>
+                            <span>Global professional network</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right: Agent Chat Interface -->
+                <div class="glass-card rounded-2xl p-6 border border-gray-100 fade-in-up delay-1">
+                    <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-mr-navy rounded-full flex items-center justify-center text-white">
+                                <i class="fas fa-robot text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-mr-navy">MRagent</h3>
+                                <p class="text-xs text-green-500 flex items-center gap-1"><span class="w-2 h-2 bg-green-500 rounded-full"></span> Online • Subconscious Intelligence Active</p>
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-500 bg-mr-cream px-3 py-1 rounded-full border border-gray-200">
+                            Credits: <span class="font-bold text-mr-gold">5</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Chat Messages -->
+                    <div id="agent-chat" class="h-80 overflow-y-auto space-y-4 pr-2 no-scrollbar">
+                        <div class="flex justify-start">
+                            <div class="agent-bubble px-5 py-3 max-w-[85%] shadow-sm text-sm leading-relaxed">
+                                Good afternoon. I am MRagent, your executive communication intelligence partner. I observe you seek to refine professional correspondence with subconscious behavioral precision. How may I assist your communication objectives today?
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <div class="user-bubble px-5 py-3 max-w-[85%] shadow-sm text-sm leading-relaxed">
+                                I need to send a sensitive email to my team about restructuring. How should I phrase it?
+                            </div>
+                        </div>
+                        <div class="flex justify-start">
+                            <div class="agent-bubble px-5 py-3 max-w-[85%] shadow-sm text-sm leading-relaxed">
+                                An exquisite question. For restructuring communications, I recommend a framework of <span class="dictionary-term" title="Clarity reduces anxiety during organizational change">transparent intention</span>, <span class="dictionary-term" title="Acknowledging emotions builds trust">empathetic validation</span>, and <span class="dictionary-term" title="Forward focus reduces uncertainty">future-oriented reassurance</span>. Would you like me to refine a draft with these principles?
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Input Area -->
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <form onsubmit="handleAgentChat(event)" class="flex gap-3">
+                            <input type="text" id="agent-input" placeholder="Describe your communication need..." class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-mr-gold focus:border-transparent outline-none">
+                            <button type="submit" aria-label="Send message" class="bg-mr-navy hover:bg-mr-accent text-white w-12 h-12 rounded-xl flex items-center justify-center transition-colors shadow-md">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                        <p class="text-center text-xs text-gray-400 mt-2">MRagent learns from your preferences • Subconscious behavior analysis active</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subconscious Behavior Section -->
+    <section id="subconscious" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="text-4xl font-serif font-bold text-mr-navy mb-4">Subconscious Communication Intelligence</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Our proprietary framework decodes the subconscious behavioral patterns in professional correspondence, enabling intentional expression that aligns with your strategic objectives while resonating authentically with recipients.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                <!-- Intelligence Card 1 -->
+                <div class="glass-card rounded-2xl p-8 border border-gray-100 hover:border-mr-gold/30 transition-all fade-in-up subconscious-highlight">
+                    <div class="w-14 h-14 bg-mr-navy rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-brain text-mr-gold text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-mr-navy mb-3">Behavioral Intent Mapping</h3>
+                    <p class="text-gray-600 mb-4">
+                        Decodes underlying subconscious drivers in written communication—identifying opportunities for enhanced clarity, trust-building, and persuasive impact without conscious effort from the writer.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-mr-gold mt-1"></i> Emotional valence trajectory analysis</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-mr-gold mt-1"></i> Power-distance subconscious calibration</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-mr-gold mt-1"></i> Cultural register intuitive adaptation</li>
+                    </ul>
+                </div>
+                
+                <!-- Intelligence Card 2 -->
+                <div class="glass-card rounded-2xl p-8 border border-gray-100 hover:border-mr-gold/30 transition-all fade-in-up delay-1 subconscious-highlight">
+                    <div class="w-14 h-14 bg-mr-navy rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-feather-alt text-mr-gold text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-mr-navy mb-3">Lexical Precision Engine</h3>
+                    <p class="text-gray-600 mb-4">
+                        Curates discipline-specific vocabulary repositories that align with professional standards while enhancing rhetorical effectiveness—automatically selecting words that resonate subconsciously with your audience.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-mr-gold mt-1"></i> Context-aware synonym refinement</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-mr-gold mt-1"></i> Jargon appropriateness subconscious scoring</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-mr-gold mt-1"></i> Conciseness optimization for cognitive ease</li>
+                    </ul>
+                </div>
+                
+                <!-- Intelligence Card 3 -->
+                <div class="glass-card rounded-2xl p-8 border border-gray-100 hover:border-mr-gold/30 transition-all fade-in-up delay-2 subconscious-highlight">
+                    <div class="w-14 h-14 bg-mr-navy rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-network text-mr-gold text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-mr-navy mb-3">Strategic Dialogue Architecture</h3>
+                    <p class="text-gray-600 mb-4">
+                        Structures communication flows to achieve specific behavioral outcomes—negotiation leverage, stakeholder alignment, or conflict de-escalation—by aligning with the recipient's subconscious expectations.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-mr-gold mt-1"></i> Persuasion pathway subconscious modeling</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-mr-gold mt-1"></i> Objection anticipation intuitive frameworks</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-mr-gold mt-1"></i> Closure optimization for decision acceleration</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Behavior Metrics Dashboard -->
+            <div class="glass-card rounded-2xl p-8 border border-gray-100 fade-in-up delay-3">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-serif font-bold text-mr-navy">Subconscious Communication Metrics</h3>
+                    <button class="text-sm text-mr-gold font-medium hover:underline">View Full Analytics</button>
+                </div>
+                
+                <div class="grid md:grid-cols-4 gap-6 mb-8">
+                    <div class="behavior-metric p-5 rounded-xl">
+                        <p class="text-sm text-gray-500 mb-1">Subconscious Clarity</p>
+                        <p class="text-3xl font-bold text-mr-navy">96<span class="text-lg text-gray-400">/100</span></p>
+                        <div class="mt-2 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-mr-gold rounded-full" style="width: 96%"></div>
+                        </div>
+                    </div>
+                    <div class="behavior-metric p-5 rounded-xl">
+                        <p class="text-sm text-gray-500 mb-1">Trust Resonance</p>
+                        <p class="text-3xl font-bold text-mr-navy">92<span class="text-lg text-gray-400">/100</span></p>
+                        <div class="mt-2 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-mr-gold rounded-full" style="width: 92%"></div>
+                        </div>
+                    </div>
+                    <div class="behavior-metric p-5 rounded-xl">
+                        <p class="text-sm text-gray-500 mb-1">Persuasive Subtext</p>
+                        <p class="text-3xl font-bold text-mr-navy">89<span class="text-lg text-gray-400">/100</span></p>
+                        <div class="mt-2 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-mr-gold rounded-full" style="width: 89%"></div>
+                        </div>
+                    </div>
+                    <div class="behavior-metric p-5 rounded-xl">
+                        <p class="text-sm text-gray-500 mb-1">Professional Intuition</p>
+                        <p class="text-3xl font-bold text-mr-navy">98<span class="text-lg text-gray-400">/100</span></p>
+                        <div class="mt-2 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-mr-gold rounded-full" style="width: 98%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap gap-3">
+                    <span class="px-4 py-2 bg-gray-100 rounded-lg text-sm font-medium text-gray-700">Email Composition</span>
+                    <span class="px-4 py-2 bg-gray-100 rounded-lg text-sm font-medium text-gray-700">Client Correspondence</span>
+                    <span class="px-4 py-2 bg-gray-100 rounded-lg text-sm font-medium text-gray-700">Internal Memos</span>
+                    <span class="px-4 py-2 bg-gray-100 rounded-lg text-sm font-medium text-gray-700">Proposal Drafting</span>
+                    <span class="px-4 py-2 bg-gray-100 rounded-lg text-sm font-medium text-gray-700">Conflict Mediation</span>
+                    <span class="px-4 py-2 bg-gray-100 rounded-lg text-sm font-medium text-gray-700">Team Alignment</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   <!-- Specialised Professional Lexicons Section -->
+<section id="professionals" class="py-20 bg-mr-cream">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 fade-in-up">
+            <h2 class="text-4xl font-serif font-bold text-mr-navy mb-4">Specialised Professional Lexicons Toolkit</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                Subconscious communication frameworks for twenty+ professional categories—each with curated vocabulary, behavioral protocols, and expression standards that resonate intuitively with your audience.
+                <span class="block mt-2 text-mr-gold font-medium italic">(All modified by your desires)</span>
+            </p>
+        </div>
+        
+        <!-- Professional Categories Grid (20+ Categories) -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-12">
+            <!-- 1. Clinical Psychologist -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up">
+                <div class="w-10 h-10 bg-rose-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-user-md text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Clinical Psychologist</h4>
+            </div>
+            
+            <!-- 2. Legal Counsel -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up delay-1">
+                <div class="w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-gavel text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Legal Counsel</h4>
+            </div>
+            
+            <!-- 3. Financial Advisor -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up delay-2">
+                <div class="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-chart-line text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Financial Advisor</h4>
+            </div>
+            
+            <!-- 4. HR Director -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up">
+                <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-users text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">HR Director</h4>
+            </div>
+            
+            <!-- 5. Event Strategist -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up delay-1">
+                <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-calendar-star text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Event Strategist</h4>
+            </div>
+            
+            <!-- 6. Compliance Officer -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up delay-2">
+                <div class="w-10 h-10 bg-slate-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-shield-alt text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Compliance Officer</h4>
+            </div>
+            
+            <!-- 7. PR Specialist -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up">
+                <div class="w-10 h-10 bg-pink-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-bullhorn text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">PR Specialist</h4>
+            </div>
+            
+            <!-- 8. Executive Coach -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up delay-1">
+                <div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-chess-knight text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Executive Coach</h4>
+            </div>
+            
+            <!-- 9. Mediator -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up delay-2">
+                <div class="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-handshake text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Mediator</h4>
+            </div>
+            
+            <!-- 10. Recruitment Lead -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up">
+                <div class="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-user-plus text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Recruitment Lead</h4>
+            </div>
+            
+            <!-- 11. Training Facilitator -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up delay-1">
+                <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-chalkboard-teacher text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Training Facilitator</h4>
+            </div>
+            
+            <!-- 12. Risk Analyst -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up delay-2">
+                <div class="w-10 h-10 bg-gray-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-search-dollar text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Risk Analyst</h4>
+            </div>
+            
+            <!-- 13. Brand Strategist -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up">
+                <div class="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-lightbulb text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Brand Strategist</h4>
+            </div>
+            
+            <!-- 14. Negotiation Expert -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up delay-1">
+                <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-comments-dollar text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Negotiation Expert</h4>
+            </div>
+            
+            <!-- 15. Organisational Developer -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up delay-2">
+                <div class="w-10 h-10 bg-lime-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-sitemap text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Organisational Developer</h4>
+            </div>
+            
+            <!-- 16. Crisis Communicator -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up">
+                <div class="w-10 h-10 bg-fuchsia-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-exclamation-triangle text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Crisis Communicator</h4>
+            </div>
+            
+            <!-- 17. Stakeholder Manager -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up delay-1">
+                <div class="w-10 h-10 bg-sky-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-project-diagram text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Stakeholder Manager</h4>
+            </div>
+            
+            <!-- 18. Ethics Advisor -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up delay-2">
+                <div class="w-10 h-10 bg-violet-500 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-balance-scale text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Ethics Advisor</h4>
+            </div>
+            
+            <!-- 19. Innovation Lead -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up">
+                <div class="w-10 h-10 bg-indigo-400 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-rocket text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Innovation Lead</h4>
+            </div>
+            
+            <!-- 20. Executive Assistant -->
+            <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up delay-1">
+                <div class="w-10 h-10 bg-gray-600 rounded-lg flex items-center justify-center mb-3">
+                    <i class="fas fa-user-tie text-white text-sm"></i>
+                </div>
+                <h4 class="font-medium text-mr-navy text-sm">Executive Assistant</h4>
+            </div>
+        </div>
+        
+        <!-- Featured Lexicon Detail Example -->
+        <div class="glass-card rounded-2xl p-8 border border-gray-100 fade-in-up delay-3">
+            <div class="flex flex-col md:flex-row gap-8 items-center">
+                <div class="md:w-1/3">
+                    <div class="w-24 h-24 bg-mr-navy rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-user-md text-mr-gold text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-serif font-bold text-mr-navy mb-2">Clinical Psychologist Lexicon</h3>
+                    <p class="text-gray-600 mb-4">
+                        Specialised vocabulary for therapeutic correspondence, boundary-setting communications, and interdisciplinary collaboration that resonates subconsciously with clients and colleagues.
+                    </p>
+                    <button class="text-mr-gold font-medium text-sm hover:underline flex items-center gap-1">
+                        Explore Full Lexicon <i class="fas fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+                <div class="md:w-2/3">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-white rounded-xl border border-gray-100">
+                            <p class="text-xs font-medium text-gray-500 mb-2">Therapeutic Register</p>
+                            <ul class="space-y-1 text-sm text-gray-700">
+                                <li>• "I notice you're describing..."</li>
+                                <li>• "Would you be willing to explore..."</li>
+                                <li>• "That sounds like a significant..."</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 bg-white rounded-xl border border-gray-100">
+                            <p class="text-xs font-medium text-gray-500 mb-2">Boundary Language</p>
+                            <ul class="space-y-1 text-sm text-gray-700">
+                                <li>• "My professional scope includes..."</li>
+                                <li>• "I'm available for consultation during..."</li>
+                                <li>• "For matters outside our agreement..."</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 bg-white rounded-xl border border-gray-100">
+                            <p class="text-xs font-medium text-gray-500 mb-2">Collaborative Framing</p>
+                            <ul class="space-y-1 text-sm text-gray-700">
+                                <li>• "In partnership with your care team..."</li>
+                                <li>• "Building on our previous discussion..."</li>
+                                <li>• "Integrating your insights with..."</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 bg-white rounded-xl border border-gray-100">
+                            <p class="text-xs font-medium text-gray-500 mb-2">Crisis Communication</p>
+                            <ul class="space-y-1 text-sm text-gray-700">
+                                <li>• "I'm here to support you through..."</li>
+                                <li>• "Let's prioritise immediate safety by..."</li>
+                                <li>• "Would it help to connect you with..."</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+                   
+                    <div class="professional-card glass-card rounded-xl p-5 border border-gray-100 hover:border-mr-gold/40 transition-all cursor-pointer fade-in-up" style="animation-delay: ${i * 0.05}s">
+                        <div 
+    <!-- Micro-Tools Section (10+ One-Click Tools) -->
+    <section id="tools" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="text-4xl font-serif font-bold text-mr-navy mb-4">One-Click Micro-Tools</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Ten specialised instruments for instantaneous linguistic calibration—each designed for immediate application in professional contexts with subconscious behavioral intelligence.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                <!-- Tool 1: Text Refiner -->
+                <div class="micro-tool-card glass-card rounded-2xl p-6 border border-gray-100 hover:border-mr-gold/30 transition-all fade-in-up cursor-pointer" onclick="useMicroTool('text-refiner')">
+                    <div class="flex items-start gap-4">
+                        <div class="tool-icon w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-comment-alt text-mr-gold text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-serif font-bold text-mr-navy mb-1">Text Refiner</h4>
+                                <span class="credit-badge px-2 py-0.5 rounded-full text-xs font-bold">1 Credit</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Instantly refine casual messages for professional contexts with subconscious tone calibration.</p>
+                            <button class="text-xs font-medium text-mr-gold hover:underline flex items-center gap-1">
+                                Use Now <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 2: Email Polisher -->
+                <div class="micro-tool-card glass-card rounded-2xl p-6 border border-gray-100 hover:border-mr-gold/30 transition-all fade-in-up delay-1 cursor-pointer" onclick="useMicroTool('email-polisher')">
+                    <div class="flex items-start gap-4">
+                        <div class="tool-icon w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-envelope text-mr-gold text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-serif font-bold text-mr-navy mb-1">Email Polisher</h4>
+                                <span class="credit-badge px-2 py-0.5 rounded-full text-xs font-bold">2 Credits</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Transform draft emails into executive-grade correspondence with behavioral intent optimization.</p>
+                            <button class="text-xs font-medium text-mr-gold hover:underline flex items-center gap-1">
+                                Use Now <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 3: Call Scripter -->
+                <div class="micro-tool-card glass-card rounded-2xl p-6 border border-gray-100 hover:border-mr-gold/30 transition-all fade-in-up delay-2 cursor-pointer" onclick="useMicroTool('call-scripter')">
+                    <div class="flex items-start gap-4">
+                        <div class="tool-icon w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-phone-alt text-mr-gold text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-serif font-bold text-mr-navy mb-1">Call Scripter</h4>
+                                <span class="credit-badge px-2 py-0.5 rounded-full text-xs font-bold">2 Credits</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Generate persuasive call scripts with subconscious persuasion frameworks for sales, support, or negotiations.</p>
+                            <button class="text-xs font-medium text-mr-gold hover:underline flex items-center gap-1">
+                                Use Now <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 4: Planning Assistant -->
+                <div class="micro-tool-card glass-card rounded-2xl p-6 border border-gray-100 hover:border-mr-gold/30 transition-all fade-in-up cursor-pointer" onclick="useMicroTool('planning-assistant')">
+                    <div class="flex items-start gap-4">
+                        <div class="tool-icon w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-calendar-check text-mr-gold text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-serif font-bold text-mr-navy mb-1">Planning Assistant</h4>
+                                <span class="credit-badge px-2 py-0.5 rounded-full text-xs font-bold">1 Credit</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Structure project communications with subconscious clarity frameworks that align team expectations.</p>
+                            <button class="text-xs font-medium text-mr-gold hover:underline flex items-center gap-1">
+                                Use Now <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 5: Correction Engine -->
+                <div class="micro-tool-card glass-card rounded-2xl p-6 border border-gray-100 hover:border-mr-gold/30 transition-all fade-in-up delay-1 cursor-pointer" onclick="useMicroTool('correction-engine')">
+                    <div class="flex items-start gap-4">
+                        <div class="tool-icon w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-spell-check text-mr-gold text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-serif font-bold text-mr-navy mb-1">Correction Engine</h4>
+                                <span class="credit-badge px-2 py-0.5 rounded-full text-xs font-bold">1 Credit</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Identify and correct subconscious linguistic patterns that undermine authority or clarity in professional contexts.</p>
+                            <button class="text-xs font-medium text-mr-gold hover:underline flex items-center gap-1">
+                                Use Now <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 6: Teaching Optimizer -->
+                <div class="micro-tool-card glass-card rounded-2xl p-6 border border-gray-100 hover:border-mr-gold/30 transition-all fade-in-up delay-2 cursor-pointer" onclick="useMicroTool('teaching-optimizer')">
+                    <div class="flex items-start gap-4">
+                        <div class="tool-icon w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-chalkboard-teacher text-mr-gold text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-serif font-bold text-mr-navy mb-1">Teaching Optimizer</h4>
+                                <span class="credit-badge px-2 py-0.5 rounded-full text-xs font-bold">2 Credits</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Refine instructional content with subconscious learning frameworks that enhance comprehension and retention.</p>
+                            <button class="text-xs font-medium text-mr-gold hover:underline flex items-center gap-1">
+                                Use Now <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 7: Lexicon Refiner -->
+                <div class="micro-tool-card glass-card rounded-2xl p-6 border border-gray-100 hover:border-mr-gold/30 transition-all fade-in-up cursor-pointer" onclick="useMicroTool('lexicon-refiner')">
+                    <div class="flex items-start gap-4">
+                        <div class="tool-icon w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-book-open text-mr-gold text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-serif font-bold text-mr-navy mb-1">Lexicon Refiner</h4>
+                                <span class="credit-badge px-2 py-0.5 rounded-full text-xs font-bold">3 Credits</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Discipline-specific vocabulary optimization with contextual appropriateness scoring for subconscious resonance.</p>
+                            <button class="text-xs font-medium text-mr-gold hover:underline flex items-center gap-1">
+                                Use Now <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 8: Tone Calibrator -->
+                <div class="micro-tool-card glass-card rounded-2xl p-6 border border-gray-100 hover:border-mr-gold/30 transition-all fade-in-up delay-1 cursor-pointer" onclick="useMicroTool('tone-calibrator')">
+                    <div class="flex items-start gap-4">
+                        <div class="tool-icon w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-sliders-h text-mr-gold text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-serif font-bold text-mr-navy mb-1">Tone Calibrator</h4>
+                                <span class="credit-badge px-2 py-0.5 rounded-full text-xs font-bold">2 Credits</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Adjust emotional valence, formality register, and persuasive intensity with subconscious precision sliders.</p>
+                            <button class="text-xs font-medium text-mr-gold hover:underline flex items-center gap-1">
+                                Use Now <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 9: Structure Architect -->
+                <div class="micro-tool-card glass-card rounded-2xl p-6 border border-gray-100 hover:border-mr-gold/30 transition-all fade-in-up delay-2 cursor-pointer" onclick="useMicroTool('structure-architect')">
+                    <div class="flex items-start gap-4">
+                        <div class="tool-icon w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-project-diagram text-mr-gold text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-serif font-bold text-mr-navy mb-1">Structure Architect</h4>
+                                <span class="credit-badge px-2 py-0.5 rounded-full text-xs font-bold">3 Credits</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Optimise message flow for specific outcomes: decision acceleration, consensus building, or conflict resolution.</p>
+                            <button class="text-xs font-medium text-mr-gold hover:underline flex items-center gap-1">
+                                Use Now <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 10: Cultural Adapter -->
+                <div class="micro-tool-card glass-card rounded-2xl p-6 border border-gray-100 hover:border-mr-gold/30 transition-all fade-in-up cursor-pointer" onclick="useMicroTool('cultural-adapter')">
+                    <div class="flex items-start gap-4">
+                        <div class="tool-icon w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-globe-americas text-mr-gold text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-serif font-bold text-mr-navy mb-1">Cultural Adapter</h4>
+                                <span class="credit-badge px-2 py-0.5 rounded-full text-xs font-bold">2 Credits</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Automatically adjust phrasing, formality, and indirectness for cross-cultural professional communication with subconscious cultural intelligence.</p>
+                            <button class="text-xs font-medium text-mr-gold hover:underline flex items-center gap-1">
+                                Use Now <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Credit System Banner -->
+            <div class="glass-card rounded-2xl p-6 border border-gray-100 fade-in-up delay-3 bg-gradient-to-r from-mr-navy to-mr-accent text-white">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-xl font-serif font-bold mb-1">Expand Your Communication Intelligence</h3>
+                        <p class="text-mr-cream-light/90">Purchase credit packs for unlimited access to micro-tools and premium features.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="buyCredits(5)" class="bg-white text-mr-navy px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+                            5 Credits • $9
+                        </button>
+                        <button onclick="buyCredits(20)" class="bg-mr-gold text-mr-navy px-4 py-2 rounded-lg font-bold hover:bg-yellow-600 transition-colors shadow-md">
+                            20 Credits • $29 <span class="text-xs block font-normal">Best Value</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Exclusive Memberships Section -->
+    <section id="memberships" class="py-20 bg-gradient-to-b from-white to-mr-cream">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="text-4xl font-serif font-bold text-mr-navy mb-4">Exclusive Membership Tiers</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Invitation-only access to premium communication intelligence, curated professional networks, and behavioral analytics unavailable elsewhere.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                <!-- Tier 1: Curator -->
+                <div class="glass-card rounded-2xl p-8 border border-gray-100 fade-in-up">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-serif font-bold text-mr-navy mb-2">Curator</h3>
+                        <p class="text-gray-600">For emerging professionals refining their communicative presence</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold text-mr-navy">$49</span><span class="text-gray-500">/month</span>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-8 text-sm text-gray-600">
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Access to 5 professional lexicons</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> 3 micro-tools (Text Refiner, Email Polisher, Planning Assistant)</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Monthly subconscious behavioral insights report</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Community forum access</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> 50 micro-tool credits monthly</li>
+                    </ul>
+                    
+                    <button onclick="openAuthModal('signup')" class="w-full py-3 border-2 border-mr-navy text-mr-navy rounded-xl font-medium hover:bg-mr-navy hover:text-white transition-colors">
+                        Apply for Curator Access
+                    </button>
+                </div>
+                
+                <!-- Tier 2: Strategist (Featured) -->
+                <div class="membership-premium rounded-2xl p-8 border border-mr-gold relative fade-in-up delay-1">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <span class="px-4 py-1 bg-mr-gold text-mr-navy text-xs font-bold rounded-full">MOST SELECTED</span>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-serif font-bold text-white mb-2">Strategist</h3>
+                        <p class="text-gray-300">For established professionals leading teams and client relationships</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold text-white">$149</span><span class="text-gray-400">/month</span>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-8 text-sm text-gray-200">
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> All 20+ professional lexicons</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Full micro-tool suite access (10 instruments)</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Advanced subconscious behavioral analytics dashboard</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Priority concierge support</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Unlimited micro-tool credits</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Quarterly strategy consultation</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Exclusive webinar series access</li>
+                    </ul>
+                    
+                    <button onclick="openConcierge()" class="w-full py-3 bg-mr-gold hover:bg-yellow-600 text-mr-navy rounded-xl font-bold transition-colors shadow-lg">
+                        Request Strategist Invitation
+                    </button>
+                </div>
+                
+                <!-- Tier 3: Sovereign -->
+                <div class="glass-card rounded-2xl p-8 border border-gray-100 fade-in-up delay-2">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-serif font-bold text-mr-navy mb-2">Sovereign</h3>
+                        <p class="text-gray-600">For executive leadership and organisational transformation</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold text-mr-navy">Custom</span>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-8 text-sm text-gray-600">
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Everything in Strategist, plus:</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Dedicated communication architect</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Organisation-wide lexicon customisation</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Predictive subconscious behavioral modelling</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Crisis communication protocol development</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Executive coaching integration</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-mr-gold mt-1"></i> Board-level reporting suite</li>
+                    </ul>
+                    
+                    <button onclick="openConcierge()" class="w-full py-3 bg-mr-navy hover:bg-mr-accent text-white rounded-xl font-medium transition-colors">
+                        Schedule Sovereign Consultation
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Membership Differentiators -->
+            <div class="glass-card rounded-2xl p-8 border border-gray-100 fade-in-up delay-3">
+                <h3 class="text-xl font-serif font-bold text-mr-navy mb-6 text-center">What Makes MindReply Memberships Exclusively Valuable</h3>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-mr-navy rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-fingerprint text-mr-gold"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-mr-navy mb-1">Proprietary Subconscious Frameworks</h4>
+                                <p class="text-sm text-gray-600">Our communication intelligence models are developed through longitudinal research with executive professionals—unavailable in any other platform.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-mr-navy rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-user-secret text-mr-gold"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-mr-navy mb-1">Curated Professional Networks</h4>
+                                <p class="text-sm text-gray-600">Members gain access to vetted communities of practice where communication excellence is the shared standard.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-mr-navy rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-chart-pie text-mr-gold"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-mr-navy mb-1">Predictive Impact Analytics</h4>
+                                <p class="text-sm text-gray-600">Anticipate how your communications will be received and adjust proactively—based on behavioral science, not guesswork.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-mr-navy rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-lock text-mr-gold"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-mr-navy mb-1">Enterprise-Grade Confidentiality</h4>
+                                <p class="text-sm text-gray-600">All communications are processed with end-to-end encryption and zero data retention policies—critical for legal, financial, and clinical professionals.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Growth Section -->
+    <section id="growth" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="text-4xl font-serif font-bold text-mr-navy mb-4">Accelerate Professional Growth</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Transform subconscious communication excellence into tangible business outcomes: client retention, deal velocity, team cohesion, and reputational capital.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+                <div class="fade-in-up">
+                    <h3 class="text-2xl font-serif font-bold text-mr-navy mb-4">The Subconscious Communication Growth Multiplier</h3>
+                    <p class="text-gray-600 mb-6">
+                        Organisations leveraging MindReply's behavioral intelligence report measurable improvements across key performance indicators:
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-arrow-up text-green-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-mr-navy">Client Retention</p>
+                                <p class="text-sm text-gray-600">+34% average increase through enhanced relationship communication</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-clock text-blue-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-mr-navy">Deal Velocity</p>
+                                <p class="text-sm text-gray-600">22% faster negotiation cycles with precision persuasion frameworks</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-users text-purple-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-mr-navy">Team Alignment</p>
+                                <p class="text-sm text-gray-600">41% reduction in miscommunication-related project delays</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-shield-alt text-amber-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-mr-navy">Risk Mitigation</p>
+                                <p class="text-sm text-gray-600">67% fewer compliance incidents through proactive language screening</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="growth-chart rounded-2xl p-8 border border-gray-100 fade-in-up delay-1">
+                    <h4 class="font-serif font-bold text-mr-navy mb-6 text-center">Subconscious Communication Impact Trajectory</h4>
+                    
+                    <div class="h-64 flex items-end justify-around px-4 pb-4 border-b border-gray-200">
+                        <div class="text-center">
+                            <div class="w-16 h-24 bg-gray-200 rounded-t-lg mb-2"></div>
+                            <p class="text-xs text-gray-500">Month 1</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-36 bg-gray-300 rounded-t-lg mb-2"></div>
+                            <p class="text-xs text-gray-500">Month 3</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-48 bg-mr-gold/20 rounded-t-lg mb-2 border-t-2 border-mr-gold"></div>
+                            <p class="text-xs text-gray-500">Month 6</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-60 bg-mr-gold rounded-t-lg mb-2"></div>
+                            <p class="text-xs text-gray-500">Month 12</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-600">
+                            <span class="font-bold text-mr-navy">+187%</span> average growth in communication-derived business value within first year
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Growth Tools Preview -->
+            <div class="glass-card rounded-2xl p-8 border border-gray-100 fade-in-up delay-2">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="md:w-1/2">
+                        <h3 class="text-xl font-serif font-bold text-mr-navy mb-4">Growth Acceleration Toolkit</h3>
+                        <p class="text-gray-600 mb-6">
+                            Integrated instruments that connect subconscious communication excellence to business outcomes:
+                        </p>
+                        
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-bullseye text-mr-gold mt-1"></i>
+                                <span class="text-sm text-gray-700"><span class="font-medium">Client Journey Mapper:</span> Align communication touchpoints with conversion milestones</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-chart-network text-mr-gold mt-1"></i>
+                                <span class="text-sm text-gray-700"><span class="font-medium">Stakeholder Influence Matrix:</span> Optimise messaging for key decision-makers</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-sync-alt text-mr-gold mt-1"></i>
+                                <span class="text-sm text-gray-700"><span class="font-medium">Feedback Integration Loop:</span> Transform client responses into communication refinements</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-award text-mr-gold mt-1"></i>
+                                <span class="text-sm text-gray-700"><span class="font-medium">Reputational Capital Tracker:</span> Quantify how communication quality enhances professional standing</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="md:w-1/2">
+                        <div class="bg-mr-cream/50 rounded-xl p-6 border border-mr-gold/20">
+                            <h4 class="font-serif font-bold text-mr-navy mb-4">Success Snapshot: Legal Firm</h4>
+                            <div class="space-y-3 text-sm text-gray-700">
+                                <p><span class="font-medium">Challenge:</span> Client complaints about "cold" or "confusing" correspondence</p>
+                                <p><span class="font-medium">Solution:</span> Implemented Lexicon Refiner + Empathy Amplifier for client communications</p>
+                                <p><span class="font-medium">Result:</span> 92% client satisfaction score (+41 pts), 28% increase in referral business within 6 months</p>
+                            </div>
+                            
+                            <button class="mt-6 w-full py-3 bg-mr-navy hover:bg-mr-accent text-white rounded-xl font-medium transition-colors text-sm">
+                                View Case Study Library
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-mr-navy text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-mr-gold rounded-lg flex items-center justify-center">
+                            <span class="text-mr-navy font-serif font-bold text-xl">M</span>
+                        </div>
+                        <span class="font-serif font-bold text-xl">MindReply</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Executive communication intelligence for professionals who understand that subconscious expression shapes outcomes.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-gray-400 hover:text-mr-gold transition-colors"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-mr-gold transition-colors"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-mr-gold transition-colors"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-serif font-bold mb-4">Platform</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#agent" class="hover:text-white transition-colors">MRagent</a></li>
+                        <li><a href="#subconscious" class="hover:text-white transition-colors">Subconscious Intelligence</a></li>
+                        <li><a href="#professionals" class="hover:text-white transition-colors">Professional Lexicons</a></li>
+                        <li><a href="#tools" class="hover:text-white transition-colors">Micro-Tools</a></li>
+                        <li><a href="#memberships" class="hover:text-white transition-colors">Exclusive Access</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-serif font-bold mb-4">Professionals</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Psychologists & Therapists</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Legal & Compliance</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Financial Advisors</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">HR & Talent Leaders</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Executive Coaches</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-serif font-bold mb-4">Access</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><button onclick="openAuthModal('signup')" class="hover:text-white transition-colors">Create Account</button></li>
+                        <li><button onclick="openAuthModal('login')" class="hover:text-white transition-colors">Member Login</button></li>
+                        <li><button onclick="openConcierge()" class="hover:text-white transition-colors">Request Premium Access</button></li>
+                        <li><a href="mailto:info@mind-reply.com" class="hover:text-white transition-colors">Contact: info@mind-reply.com</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Enterprise Solutions</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-500">© 2026 MindReply. All rights reserved. Confidentiality assured.</p>
+                <div class="flex gap-6 text-sm text-gray-500">
+                    <a href="#" class="hover:text-gray-300 transition-colors">Privacy Protocol</a>
+                    <a href="#" class="hover:text-gray-300 transition-colors">Terms of Engagement</a>
+                    <a href="#" class="hover:text-gray-300 transition-colors">Ethical Framework</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8 relative">
+            <button onclick="closeAuthModal()" aria-label="Close login modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-mr-navy rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-cog text-mr-gold text-2xl"></i>
+                </div>
+                <h3 id="auth-title" class="text-2xl font-serif font-bold text-mr-navy mb-2">Sign In to MindReply</h3>
+                <p id="auth-desc" class="text-gray-600">Access your communication intelligence dashboard and micro-tools.</p>
+            </div>
+            
+            <form onsubmit="handleAuth(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input type="email" required placeholder="your@email.com" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-mr-gold focus:border-transparent outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" required placeholder="Enter your password" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-mr-gold focus:border-transparent outline-none">
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" class="rounded border-gray-300 text-mr-gold focus:ring-mr-gold">
+                        <span class="text-gray-600">Remember me</span>
+                    </label>
+                    <a href="#" class="text-mr-gold hover:underline">Forgot password?</a>
+                </div>
+                <button type="submit" class="w-full bg-mr-navy hover:bg-mr-accent text-white py-3 rounded-xl font-medium transition-colors mt-2">
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    Don't have an account? <button onclick="toggleAuthMode()" class="text-mr-gold font-medium hover:underline">Create one</button>
+                </p>
+                <p class="text-xs text-gray-500 mt-2">
+                    By signing in, you agree to our <a href="#" class="text-mr-gold hover:underline">Confidentiality Protocol</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Concierge Modal -->
+    <div id="concierge-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-8 relative">
+            <button onclick="closeConcierge()" aria-label="Close concierge modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-mr-navy rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-concierge-bell text-mr-gold text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-serif font-bold text-mr-navy mb-2">Premium Access Request</h3>
+                <p class="text-gray-600">Our membership team will contact you within 24 business hours to discuss your subconscious communication intelligence needs.</p>
+            </div>
+            
+            <form onsubmit="submitConcierge(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Professional Title</label>
+                    <input type="text" required placeholder="e.g. Senior Legal Counsel" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-mr-gold focus:border-transparent outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Organisation</label>
+                    <input type="text" required placeholder="Your organisation name" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-mr-gold focus:border-transparent outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Business Email</label>
+                    <input type="email" required placeholder="your@organisation.com" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-mr-gold focus:border-transparent outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Primary Communication Challenge</label>
+                    <select aria-label="Primary Communication Challenge" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-mr-gold focus:border-transparent outline-none">
+                        <option>Client relationship communication</option>
+                        <option>Team alignment & internal messaging</option>
+                        <option>Proposal & pitch refinement</option>
+                        <option>Crisis or sensitive correspondence</option>
+                        <option>Cross-cultural communication</option>
+                        <option>Executive presence development</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-mr-navy hover:bg-mr-accent text-white py-3 rounded-xl font-medium transition-colors mt-2">
+                    Submit Request
+                </button>
+            </form>
+            
+            <p class="text-xs text-gray-500 text-center mt-4">
+                By submitting, you agree to our <a href="#" class="text-mr-gold hover:underline">Confidentiality Protocol</a>. All inquiries are handled with discretion.
+            </p>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Router for single-page navigation
+        function router(sectionId) {
+            document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Auth Modal Functions
+        let authMode = 'login';
+        function openAuthModal(mode) {
+            authMode = mode;
+            document.getElementById('auth-title').textContent = mode === 'login' ? 'Sign In to MindReply' : 'Create Your Account';
+            document.getElementById('auth-desc').textContent = mode === 'login' ? 
+                'Access your communication intelligence dashboard and micro-tools.' : 
+                'Begin your journey to subconscious communication excellence.';
+            document.getElementById('auth-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        
+        function toggleAuthMode() {
+            authMode = authMode === 'login' ? 'signup' : 'login';
+            openAuthModal(authMode);
+        }
+        
+        function handleAuth(e) {
+            e.preventDefault();
+            alert(`${authMode === 'login' ? 'Welcome back' : 'Account created'}! Redirecting to your MindReply dashboard...`);
+            closeAuthModal();
+            e.target.reset();
+        }
+        
+        // Concierge Modal Functions
+        function openConcierge() {
+            document.getElementById('concierge-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeConcierge() {
+            document.getElementById('concierge-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        
+        function submitConcierge(e) {
+            e.preventDefault();
+            alert('Thank you for your inquiry. A MindReply concierge will contact you within 24 business hours.');
+            closeConcierge();
+            e.target.reset();
+        }
+        
+        // Agent Chat Functions
+        function startAgentChat() {
+            router('agent');
+            document.getElementById('agent-input').focus();
+        }
+        
+        function handleAgentChat(e) {
+            e.preventDefault();
+            const input = document.getElementById('agent-input');
+            const msg = input.value.trim();
+            if (!msg) return;
+            
+            // Add user message
+            const chat = document.getElementById('agent-chat');
+            const userMsg = document.createElement('div');
+            userMsg.className = 'flex justify-end';
+            userMsg.innerHTML = `<div class="user-bubble px-5 py-3 max-w-[85%] shadow-sm text-sm leading-relaxed">${msg}</div>`;
+            chat.appendChild(userMsg);
+            
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const responses = [
+                    "An exquisite inquiry. For this context, I recommend framing with <span class='dictionary-term' title='Clarity reduces cognitive load'>transparent intention</span> and <span class='dictionary-term' title='Empathy builds trust'>validating perspective</span>. Would you like me to refine a draft?",
+                    "I observe a need for <span class='dictionary-term' title='Strategic ambiguity can preserve options'>diplomatic precision</span> here. Consider this structure: acknowledgment → value proposition → clear next step. Shall I generate options?",
+                    "Your subconscious intent appears to seek <span class='dictionary-term' title='Authority without aggression'>respectful influence</span>. I suggest: collaborative framing + evidence-based rationale + open-ended invitation. Would you like me to draft this?"
+                ];
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'flex justify-start';
+                aiMsg.innerHTML = `<div class="agent-bubble px-5 py-3 max-w-[85%] shadow-sm text-sm leading-relaxed">${responses[Math.floor(Math.random() * responses.length)]}</div>`;
+                chat.appendChild(aiMsg);
+                chat.scrollTop = chat.scrollHeight;
+            }, 1000);
+        }
+        
+        // Micro-Tools Functions
+        function useMicroTool(toolName) {
+            const credits = parseInt(document.querySelector('.credit-badge').textContent);
+            if (credits <= 0) {
+                alert('Insufficient credits. Purchase a credit pack to continue.');
+                router('tools');
+                return;
+            }
+            
+            const tools = {
+                'text-refiner': 'Text Refiner activated. Paste your message for subconscious tone calibration.',
+                'email-polisher': 'Email Polisher ready. Input your draft for executive-grade refinement.',
+                'call-scripter': 'Call Scripter initialized. Describe your objective for persuasive framework generation.',
+                'planning-assistant': 'Planning Assistant engaged. Outline your project for clarity optimization.',
+                'correction-engine': 'Correction Engine scanning. Paste text to identify subconscious linguistic patterns.',
+                'teaching-optimizer': 'Teaching Optimizer prepared. Share your content for learning enhancement.',
+                'lexicon-refiner': 'Lexicon Refiner active. Select your professional context for vocabulary optimization.',
+                'tone-calibrator': 'Tone Calibrator ready. Adjust sliders for emotional valence and formality.',
+                'structure-architect': 'Structure Architect engaged. Define your desired outcome for message flow optimization.',
+                'cultural-adapter': 'Cultural Adapter initialized. Specify target culture for communication adaptation.'
+            };
+            
+            alert(tools[toolName] || 'Tool activated. Begin refinement process.');
+        }
+        
+        function buyCredits(amount) {
+            alert(`Credit pack purchase initiated: ${amount} credits. Redirecting to secure checkout...`);
+        }
+        
+        // Close modals on outside click
+        document.getElementById('auth-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeAuthModal();
+        });
+        
+        document.getElementById('concierge-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeConcierge();
+        });
+        
+        // Initialize animations on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.fade-in-up').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+                observer.observe(el);
+            });
+            
+            // Initialize agent chat with welcome message
+            setTimeout(() => {
+                const chat = document.getElementById('agent-chat');
+                if (chat && !chat.querySelector('.user-bubble')) {
+                    const welcome = document.createElement('div');
+                    welcome.className = 'flex justify-start';
+                    welcome.innerHTML = `<div class="agent-bubble px-5 py-3 max-w-[85%] shadow-sm text-sm leading-relaxed">Good day. I am MRagent, your subconscious communication intelligence partner. How may I assist your professional expression today?</div>`;
+                    chat.appendChild(welcome);
+                    chat.scrollTop = chat.scrollHeight;
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
