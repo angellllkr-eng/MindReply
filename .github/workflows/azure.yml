@@ -1,0 +1,4 @@
+git remote add github https://github.com/Mind-Reply/MindReply.git
+git add -A
+git commit -m "feat: Next.js 15 App Router build + Azure deployment pipeline"
+git push github main
