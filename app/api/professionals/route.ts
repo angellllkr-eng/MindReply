@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db, professionalsTable } from "@/lib/db";
 import { fallbackProfessionals, type ProfessionalDto } from "@/lib/fallback-data";
+import { isRoleInProfessionalCategory } from "@/lib/professional-categories";
 import { eq, and, lte } from "drizzle-orm";
 
 function mapProfessional(p: typeof professionalsTable.$inferSelect) {
@@ -19,12 +20,14 @@ function mapProfessional(p: typeof professionalsTable.$inferSelect) {
 function filterProfessionals(data: ProfessionalDto[], req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const role = searchParams.get("role");
+  const category = searchParams.get("category");
   const language = searchParams.get("language");
   const available = searchParams.get("available");
   const maxPrice = searchParams.get("maxPrice");
 
   return data.filter((p) => {
     if (role && p.role !== role) return false;
+    if (!role && category && !isRoleInProfessionalCategory(p.role, category)) return false;
     if (available === "true" && p.availabilityStatus !== "available") return false;
     if (maxPrice && p.priceVideo > parseFloat(maxPrice)) return false;
     if (language && !p.languages.some((l) => l.toLowerCase().includes(language.toLowerCase()))) return false;
@@ -36,6 +39,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl;
     const role = searchParams.get("role");
+    const category = searchParams.get("category");
     const language = searchParams.get("language");
     const available = searchParams.get("available");
     const maxPrice = searchParams.get("maxPrice");
@@ -51,6 +55,7 @@ export async function GET(req: NextRequest) {
 
     const professionals = rows
       .filter((p) => !language || p.languages.toLowerCase().includes(language.toLowerCase()))
+      .filter((p) => role || !category || isRoleInProfessionalCategory(p.role, category))
       .map(mapProfessional);
 
     return NextResponse.json(professionals);
