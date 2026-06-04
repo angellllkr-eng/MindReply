@@ -1,4 +1,4 @@
-name: MindReply – CI/CD (GHCR + VPS + Vercel)
+name: MindReply – Full CI/CD (Vercel Primary + GHCR + VPS + Azure + IONOS + QA)
 
 on:
   push:
@@ -6,190 +6,225 @@ on:
       - main
 
 jobs:
+
+  # ---------------------------------------------------------
+  # 1) BUILD JOB
+  # ---------------------------------------------------------
   build:
     name: Build app
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        run: npm install
+      - run: npm install
+      - run: npm run build
 
-      - name: Build app
-        run: npm run build
-
+  # ---------------------------------------------------------
+  # 2) DOCKER → GHCR
+  # ---------------------------------------------------------
   docker_ghcr:
     name: Docker build & push to GHCR
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Log in to GHCR
-        uses: docker/login-action@v2
+      - uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker image
-        run: |
-          docker build -t ghcr.io/mind-reply/mindreply:latest .
+      - run: docker build -t ghcr.io/mind-reply/mindreply:latest .
+      - run: docker push ghcr.io/mind-reply/mindreply:latest
 
-      - name: Push Docker image
-        run: |
-          docker push ghcr.io/mind-reply/mindreply:latest
-
+  # ---------------------------------------------------------
+  # 3) VPS DEPLOY (ZERO-DOWNTIME)
+  # ---------------------------------------------------------
   deploy_vps:
-    name: Deploy to VPS (Docker from GHCR)
+    name: Deploy to VPS
     runs-on: ubuntu-latest
     needs: docker_ghcr
 
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             docker pull ghcr.io/mind-reply/mindreply:latest
+            docker run -d --name mindreply_new -p 3001:3000 ghcr.io/mind-reply/mindreply:latest
+            sleep 5
             docker stop mindreply || true
             docker rm mindreply || true
-            docker run -d --name mindreply -p 3000:3000 ghcr.io/mind-reply/mindreply:latest
+            docker rename mindreply_new mindreply
 
+  # ---------------------------------------------------------
+  # 4) VERCEL DEPLOY (PRIMARY)
+  # ---------------------------------------------------------
   deploy_vercel:
-    name: Deploy to Vercel (mindreply)
+    name: Deploy to Vercel
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Deploy to Vercel
-        run: |
+      - run: |
           npm i -g vercel
           vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
           vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
           vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
 
+  # ---------------------------------------------------------
+  # 5) DOMAIN HEALTH CHECK
+  # ---------------------------------------------------------
   ping_pro_domain:
     name: Check pro.mind-reply.com
     runs-on: ubuntu-latest
     needs: deploy_vercel
 
     steps:
-      - name: Curl pro.mind-reply.com
-        run: |
-          curl -I https://pro.mind-reply.com
-            - name: Setup .NET Core SDK
-  uses: actions/setup-dotnet@v5.3.0
+      - run: curl -I https://pro.mind-reply.com || exit 1
+
+  # ---------------------------------------------------------
+  # 6) AZURE DEPLOY
+  # ---------------------------------------------------------
+  deploy_azure:
+    name: Deploy to Azure App Service
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE != '' }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_APP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: .
+
+  # ---------------------------------------------------------
+  # 7) IONOS DEPLOY NOW SYNC
+  # ---------------------------------------------------------
+  ionos_sync:
+    name: Sync to IONOS Deploy Now
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ secrets.IONOS_TOKEN != '' }}
+
+    steps:
+      - run: echo "Triggering IONOS Deploy Now webhook"
+      - run: curl -X POST ${{ secrets.IONOS_WEBHOOK }}
+
+  # ---------------------------------------------------------
+  # 8) LIGHTHOUSE PERFORMANCE TEST
+  # ---------------------------------------------------------
+  lighthouse:
+    name: Lighthouse Performance Audit
+    runs-on: ubuntu-latest
+    needs: deploy_vercel
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: https://pro.mind-reply.com
+
+  # ---------------------------------------------------------
+  # 9) SEO ANALYSIS
+  # ---------------------------------------------------------
+  seo_audit:
+    name: SEO Audit
+    runs-on: ubuntu-latest
+    needs: deploy_vercel
+
+    steps:
+      - run: npx @stefanjudis/seo-audit https://pro.mind-reply.com
+
+  # ---------------------------------------------------------
+  # 10) SCREENSHOT CAPTURE
+  # ---------------------------------------------------------
+  screenshot:
+    name: Screenshot of Production
+    runs-on: ubuntu-latest
+    needs: deploy_vercel
+
+    steps:
+      - uses: swinton/screenshot-website@v1.x
+        with:
+          source: https://pro.mind-reply.com
+          destination: screenshot.png
+
+  # ---------------------------------------------------------
+  # 11) VPS BACKUP
+  # ---------------------------------------------------------
+  backup_vps:
+    name: Backup VPS
+    runs-on: ubuntu-latest
+    needs: deploy_vps
+
+    steps:
+      - uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            tar -czf backup_$(date +%F).tar.gz /var/www || true
+
+  # ---------------------------------------------------------
+  # 12) VERSION BUMP
+  # ---------------------------------------------------------
+  version_bump:
+    name: Auto Version Bump
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          npm version patch
+          git push --follow-tags
+
+  # ---------------------------------------------------------
+  # 13) NOTIFICATIONS
+  # ---------------------------------------------------------
+  notify:
+    name: Notify Slack/Discord
+    runs-on: ubuntu-latest
+    needs: [deploy_vercel, deploy_vps]
+
+    steps:
+      - run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"text":"MindReply deployed successfully 🚀"}' \
+          ${{ secrets.DISCORD_WEBHOOK }}
+            - name: Cache
+  uses: actions/cache@v5.0.5
   with:
-    # Optional SDK version(s) to use. If not provided, will install global.json version when available. Examples: 2.2.104, 3.1, 3.1.x, 3.x, 6.0.2xx, latest
-    dotnet-version: # optional
-    # Optional quality of the build. The possible values are: daily, preview, ga.
-    dotnet-quality: # optional
-    # Optional channel for the installation. The possible values are: STS, LTS, A.B (e.g. 8.0), A.B.Cxx (e.g. 8.0.1xx, available since 5.0). To be used with "dotnet-version: latest".
-    dotnet-channel: # optional
-    # Optional global.json location, if your global.json isn't located in the root of the repo.
-    global-json-file: # optional
-    # Optional package source for which to set up authentication. Will consult any existing NuGet.config in the root of the repo and provide a temporary NuGet.config using the NUGET_AUTH_TOKEN environment variable as a ClearTextPassword
-    source-url: # optional
-    # Optional OWNER for using packages from GitHub Package Registry organizations/users other than the current repository's owner. Only used if a GPR URL is also provided in source-url
-    owner: # optional
-    # Optional NuGet.config location, if your NuGet.config isn't located in the root of the repo.
-    config-file: # optional
-    # Optional input to enable caching of the NuGet global-packages folder
-    cache: # optional
-    # Used to specify the path to a dependency file: packages.lock.json. Supports wildcards or a list of file names for caching multiple dependencies.
-    cache-dependency-path: # optional
-    # Optional SDK workloads to install for additional platform support. Examples: wasm-tools, maui, aspire.
-    workloads: # optional
-    # Optional architecture for the .NET install. Supported values: x64, x86, arm64, amd64, arm, s390x, ppc64le, riscv64. If not set, the installer auto-detects the current system architecture.
-    architecture: # optional
-                      - name: Setup .NET Core SDK
-  uses: actions/setup-dotnet@v5.3.0
-  with:
-    # Optional SDK version(s) to use. If not provided, will install global.json version when available. Examples: 2.2.104, 3.1, 3.1.x, 3.x, 6.0.2xx, latest
-    dotnet-version: # optional
-    # Optional quality of the build. The possible values are: daily, preview, ga.
-    dotnet-quality: # optional
-    # Optional channel for the installation. The possible values are: STS, LTS, A.B (e.g. 8.0), A.B.Cxx (e.g. 8.0.1xx, available since 5.0). To be used with "dotnet-version: latest".
-    dotnet-channel: # optional
-    # Optional global.json location, if your global.json isn't located in the root of the repo.
-    global-json-file: # optional
-    # Optional package source for which to set up authentication. Will consult any existing NuGet.config in the root of the repo and provide a temporary NuGet.config using the NUGET_AUTH_TOKEN environment variable as a ClearTextPassword
-    source-url: # optional
-    # Optional OWNER for using packages from GitHub Package Registry organizations/users other than the current repository's owner. Only used if a GPR URL is also provided in source-url
-    owner: # optional
-    # Optional NuGet.config location, if your NuGet.config isn't located in the root of the repo.
-    config-file: # optional
-    # Optional input to enable caching of the NuGet global-packages folder
-    cache: # optional
-    # Used to specify the path to a dependency file: packages.lock.json. Supports wildcards or a list of file names for caching multiple dependencies.
-    cache-dependency-path: # optional
-    # Optional SDK workloads to install for additional platform support. Examples: wasm-tools, maui, aspire.
-    workloads: # optional
-    # Optional architecture for the .NET install. Supported values: x64, x86, arm64, amd64, arm, s390x, ppc64le, riscv64. If not set, the installer auto-detects the current system architecture.
-    architecture: # optional
-                      - name: YepCode Copy Team GitHub Action
-  # You may pin to the exact commit or the version.
-  # uses: yepcode/gha-copy-team@a602fe71a8a71511c5027d2d17d1bef7eaefee7e
-  uses: yepcode/gha-copy-team@v1
-  with:
-    # Remote team slug to push contents. It may be a single string (for https://cloud.yepcode.io teams), or a full URL (for on-premise teams)
-
-    teamSlug: 
-    # Team auth Client ID (for oauth, to be used with Client Secret)
-
-    clientId: # optional
-    # Team auth Client ID Client Secret (for oauth, to be used with Client ID)
-
-    clientSecret: # optional
-    # Team auth Email (to be used wi th password)
-
-    email: # optional
-    # Team auth Password (to be used with email)
-
-    password: # optional
-    # YepCode Auth endpoint (including realm, ie: https://cloud.yepcode.io/auth/realms/yepcode). Only needed if auth domain is different than used cloud endpoint
-
-    authUrl: # optional
-    # It 'true', the action will perform a commit in the current repo with the changes in the .'yepcode.json' metadata file. This will allow then to check sync status agains this remote.
-
-    updateMetadataWithNewRemote: # optional, default is false
-                      - name: Setup xk6
-  # You may pin to the exact commit or the version.
-  # uses: grafana/setup-xk6@97b842b765bd3fea56db7195e98c5f61cab8fe46
-  uses: grafana/setup-xk6@v1.1.1
-  with:
-    # The target directory for the installation.
-    dir: # optional, default is ~/.local/bin
-    # The semantic version of xk6 to install, or `latest`.
-    xk6-version: # optional, default is latest
-    # A value of `true` enables caching of the xk6 binary.
-    cache: # optional, default is true
-                      - name: OpenInfraQuote
-  # You may pin to the exact commit or the version.
-  # uses: terrateamio/openinfraquote-action@6ce7f258c71e3104b75ca438a731c4f6d45d4593
-  uses: terrateamio/openinfraquote-action@v1
-  with:
-    # Path to the Terraform JSON plan file
-    plan-path: # optional, default is tfplan.json
-    # Whether to comment the result on the pull request
-    comment-on-pr: # optional, default is true
-    # GitHub token for commenting on pull requests
-    github-token: # optional, default is ${{ github.token }}
-    # Optional region for oiq price
-    region: # optional, default is 
+    # A list of files, directories, and wildcard patterns to cache and restore
+    path: 
+    # An explicit key for restoring and saving the cache
+    key: 
+    # An ordered multiline string listing the prefix-matched keys, that are used for restoring stale cache if no cache hit occurred for key. Note `cache-hit` returns false in this case.
+    restore-keys: # optional
+    # The chunk size used to split up large files during upload, in bytes
+    upload-chunk-size: # optional
+    # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
+    enableCrossOsArchive: # optional, default is false
+    # Fail the workflow if cache entry is not found
+    fail-on-cache-miss: # optional, default is false
+    # Check if a cache entry exists for the given input(s) (key, restore-keys) without downloading the cache
+    lookup-only: # optional, default is false
+    # Run the post step to save the cache even if another step before fails
+    save-always: # optional, default is false
           
