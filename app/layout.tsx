@@ -1,20 +1,20 @@
-import type { Metadata } from 'next';
-import { Inter, Playfair_Display } from 'next/font/google';
-import './globals.css';
-
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
-const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-serif' });
+import type { Metadata } from "next";
+import "../styles/globals.css";
+import Nav from "@/components/Nav";
+import MRAgent from "@/components/MRAgent";
 
 export const metadata: Metadata = {
-  title: 'MindReply | Executive Communication Intelligence Ecosystem',
-  description: 'The #1 worldwide ecosystem for behavioral communication intelligence.',
+  title: "MindReply — Behavioral Communication Intelligence",
+  description: "The N1 worldwide ecosystem connecting professionals with elite advisors and AI-powered communication tools.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="antialiased bg-mr-cream-light text-gray-900 font-sans scroll-smooth">
-        {children}
+    <html lang="en">
+      <body>
+        <Nav />
+        <main>{children}</main>
+        <MRAgent />
       </body>
     </html>
   );

@@ -1,35 +1,28 @@
-# Build stage
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS base
 
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
-
-COPY package*.json ./
-COPY apps/backend/package*.json ./apps/backend/
-COPY apps/backend/prisma ./apps/backend/prisma/
-
+COPY package.json package-lock.json* ./
 RUN npm ci
-RUN cd apps/backend && npm ci
-RUN cd apps/backend && npx prisma generate
 
-COPY apps/backend/src ./apps/backend/src
-COPY apps/backend/tsconfig.json ./apps/backend/
-
-RUN cd apps/backend && npm run build
-
-# Runtime stage
-FROM node:18-alpine
-
+FROM base AS builder
 WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN npm run build
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/backend/node_modules ./apps/backend/node_modules
-COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
-COPY --from=builder /app/apps/backend/prisma ./apps/backend/prisma
-
-COPY apps/backend/package.json ./apps/backend/
-
-EXPOSE 3001
-
-WORKDIR /app/apps/backend
-
-CMD ["npm", "run", "start"]
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+USER nextjs
+EXPOSE 3000
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+CMD ["node", "server.js"]

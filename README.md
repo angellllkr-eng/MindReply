@@ -1,114 +1,83 @@
-# MindReply: Executive Communication Intelligence Ecosystem
+# MindReply
 
-> The #1 worldwide platform for behavioral communication intelligence.
+> The N1 worldwide behavioral communication intelligence ecosystem — connecting professionals with elite advisors and AI-powered tools that sharpen how people communicate.
 
-## 🚀 Quick Start
+## Tech Stack
 
-```bash
-cd MindReply
-npm install
-npm run dev
-```
+- **Next.js 15** — App Router, Server Components, Route Handlers
+- **TypeScript** — strict mode
+- **TailwindCSS v4** — navy/gold/cream design system (Playfair Display + Inter)
+- **Drizzle ORM** — PostgreSQL with type-safe queries
+- **Docker** — standalone output for Azure deployment
 
-Open [http://localhost:3000](http://localhost:3000) to see the application.
-
-## ✨ Features
-
-- 🧠 **MRAgent**: AI-powered behavioral communication analysis
-- 📚 **20+ Professional Lexicons**: Industry-specific vocabularies
-- 🛠️ **10 Micro-Tools**: One-click communication refinement
-- 👥 **Professional Booking**: Connect with vetted experts
-- 💎 **3 Membership Tiers**: Curator, Strategist, Sovereign
-- 🌍 **8+ Languages**: Global accessibility (including Bulgarian)
-- ☁️ **Azure Integration**: Enterprise automation ready
-- 📊 **Datadog Monitoring**: Real-time observability
-
-## 📂 Project Structure
-
-```
-mindreply-ecosystem/
-├── app/                    # Next.js 15 App Router
-├── components/             # React components
-├── lib/                    # Utilities & helpers
-├── types/                  # TypeScript definitions
-├── public/                 # Static assets
-├── messages/               # i18n translations
-├── azure/                  # Azure blueprints
-├── datadog/                # Monitoring config
-└── .cursor/rules/          # Development standards
-```
-
-## 🔧 Development
-
-### Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-
-### Environment Variables
-
-Copy `.env.example` to `.env.local` and fill in your values:
+## Quick Start
 
 ```bash
 cp .env.example .env.local
+# Set DATABASE_URL in .env.local
+
+npm install
+npm run dev
+# → http://localhost:3000
 ```
 
-## 🏗️ Architecture
+## Environment Variables
 
-### Frontend
-- Next.js 15 with App Router
-- React 18.3 with hooks
-- Tailwind CSS for styling
-- next-intl for internationalization
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | PostgreSQL connection string |
 
-### Backend
-- Next.js API routes
-- Axios for HTTP client
-- React Query for data fetching
-- Zustand for state management
+## Pages
 
-### Integrations
-- **Stripe**: Payment processing
-- **Azure**: Cloud infrastructure
-- **Datadog**: Monitoring & observability
+| Route | Description |
+|---|---|
+| `/` | Home — hero, featured professionals, AI tools, membership |
+| `/professionals` | Filterable marketplace of elite advisors |
+| `/professionals/[id]` | Professional profile + availability |
+| `/book/[id]` | 3-step booking flow |
+| `/tools` | AI tools — Email Refiner, Tone Adjuster, Note Clarifier, Planner |
+| `/memberships` | Tier comparison — Curator / Strategist / Sovereign |
+| `/lexicons` | Professional vocabulary library |
+| `/bookings` | Session history |
+| `/analytics` | Platform intelligence dashboard |
 
-## 🌐 Multilingual Support
+## API Routes
 
-Supported languages:
-- English (en)
-- Bulgarian (bg)
-- German (de)
-- French (fr)
-- Spanish (es)
-- Italian (it)
-- Portuguese (pt)
-- Japanese (ja)
+| Endpoint | Method | Description |
+|---|---|---|
+| `/api/professionals` | GET | Filterable list (role, language, available, maxPrice) |
+| `/api/professionals/featured` | GET | Top 6 available professionals |
+| `/api/professionals/[id]` | GET | Single professional |
+| `/api/professionals/slots` | GET | 7-day availability slots |
+| `/api/bookings` | GET, POST | List / create bookings |
+| `/api/bookings/[id]` | GET, PATCH | Get / update status |
+| `/api/tools/refine-email` | POST | Email Refiner |
+| `/api/tools/adjust-tone` | POST | Tone Adjuster (6 modes) |
+| `/api/tools/clarify-note` | POST | Note Clarifier |
+| `/api/tools/plan` | POST | Mini-Planner |
+| `/api/memberships` | GET | All membership tiers |
+| `/api/lexicons` | GET | All lexicons |
+| `/api/lexicons/[id]` | GET | Single lexicon |
+| `/api/analytics/summary` | GET | Platform metrics |
 
-## 📱 Responsive Design
+## Azure Deployment
 
-- Mobile-first approach
-- Desktop-optimized layouts
-- Touch-friendly interactions
-- Optimized typography
+Automated via `.github/workflows/azure.yml` — push to `main` triggers:
+1. Docker build → push to GitHub Container Registry
+2. Deploy to Azure App Service
 
-## 🔐 Security
+**Required GitHub Secrets:**
 
-- Environment variables for secrets
-- API authentication ready
-- CORS configuration
-- Rate limiting prepared
+| Secret | Source |
+|---|---|
+| `DATABASE_URL` | Your PostgreSQL connection string |
+| `AZURE_WEBAPP_PUBLISH_PROFILE` | Azure Portal → App Service → Get Publish Profile |
 
-## 📚 Documentation
+## Database Schema
 
-- [ARCHITECTURE.md](./ARCHITECTURE.md) - System design
-- [.cursor/rules/mindreply.rules](./.cursor/rules/mindreply.rules) - Development standards
+Four tables: `professionals`, `bookings`, `memberships`, `lexicons`
 
-## 👥 Team
-
-Built by the MindReply team for professionals worldwide.
-
-## 📄 License
-
-MIT License - See LICENSE file for details.
+Run migrations with [Drizzle Kit](https://orm.drizzle.team/docs/migrations):
+```bash
+npx drizzle-kit push
+```
