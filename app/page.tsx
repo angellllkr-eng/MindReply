@@ -349,10 +349,10 @@ export default function Home() {
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color: "hsl(43 80% 60%)" }}>Professionals</h4>
             <ul className="space-y-2 text-sm" style={{ color: "rgba(248,245,240,0.7)" }}>
-              <li><Link href="#" className="hover:text-[hsl(43_80%_60%)]">Psychologists & Therapists</Link></li>
-              <li><Link href="#" className="hover:text-[hsl(43_80%_60%)]">Legal & Compliance</Link></li>
-              <li><Link href="#" className="hover:text-[hsl(43_80%_60%)]">Financial Advisors</Link></li>
-              <li><Link href="#" className="hover:text-[hsl(43_80%_60%)]">HR & Talent Leaders</Link></li>
+              <li><Link href="/professionals?category=psychology" className="hover:text-[hsl(43_80%_60%)]">Psychologists & Therapists</Link></li>
+              <li><Link href="/professionals?category=legal" className="hover:text-[hsl(43_80%_60%)]">Legal & Compliance</Link></li>
+              <li><Link href="/professionals?category=finance" className="hover:text-[hsl(43_80%_60%)]">Financial Advisors</Link></li>
+              <li><Link href="/professionals?category=hr" className="hover:text-[hsl(43_80%_60%)]">HR & Talent Leaders</Link></li>
             </ul>
           </div>
           <div>
