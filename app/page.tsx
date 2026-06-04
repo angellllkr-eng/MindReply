@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Shield, Globe, Users, Zap, BookOpen, BarChart3, Brain, MessageSquare, Target, CheckCircle2, Bot, Clock, TrendingUp, Award } from "lucide-react";
 import { useEffect, useState } from "react";
 import ProfessionalCard from "@/components/ProfessionalCard";
+import OperationsHeroVisual from "@/components/OperationsHeroVisual";
 
 type Professional = { id: number; name: string; role: string; niche: string; rating: number; reviewCount: number; priceVideo: number; availabilityStatus: string; languages: string[]; photoUrl: string };
 
@@ -38,7 +39,8 @@ export default function Home() {
       {/* 1. Hero Section */}
       <section className="pt-32 pb-28 px-4 relative overflow-hidden" style={{ background: "hsl(220 55% 20%)" }}>
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 50%, white 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
-        <div className="max-w-5xl mx-auto text-center relative z-10">
+        <div className="max-w-7xl mx-auto relative z-10 grid gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+          <div className="text-center lg:text-left">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 border rounded-full text-xs font-medium mb-8" style={{ borderColor: "rgba(201,169,97,0.3)", color: "hsl(43 80% 60%)" }}>
             <span className="w-1.5 h-1.5 rounded-full animate-pulse bg-emerald-400" />
             MRagent is online and ready to assist
@@ -46,21 +48,23 @@ export default function Home() {
           <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6" style={{ color: "hsl(43 70% 88%)" }}>
             Subconscious Communication <span className="italic" style={{ color: "hsl(43 80% 60%)" }}>Intelligence</span>
           </h1>
-          <p className="text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed" style={{ color: "rgba(248,245,240,0.75)" }}>
+          <p className="text-lg md:text-xl max-w-3xl mx-auto lg:mx-0 mb-10 leading-relaxed" style={{ color: "rgba(248,245,240,0.75)" }}>
             MindReply empowers professionals with behavioral intelligence for email composition, expression refinement, and strategic dialogue—curated for psychologists, legal counsel, financial advisors, and C-suite executives worldwide.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/agent" className="inline-flex items-center gap-2 font-semibold px-8 py-4 rounded-lg hover:opacity-90 transition-all shadow-lg" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <Link href="/agent" className="inline-flex items-center justify-center gap-2 font-semibold px-8 py-4 rounded-lg hover:opacity-90 transition-all shadow-lg" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}>
               Begin Conversation <ArrowRight size={16} />
             </Link>
-            <Link href="/tools" className="inline-flex items-center gap-2 font-medium px-8 py-4 rounded-lg border hover:text-[hsl(43_80%_60%)] transition-all" style={{ borderColor: "rgba(248,245,240,0.3)", color: "hsl(43 70% 88%)" }}>
+            <Link href="/tools" className="inline-flex items-center justify-center gap-2 font-medium px-8 py-4 rounded-lg border hover:text-[hsl(43_80%_60%)] transition-all" style={{ borderColor: "rgba(248,245,240,0.3)", color: "hsl(43 70% 88%)" }}>
               Explore Micro-Tools
             </Link>
           </div>
-          <div className="mt-12 flex items-center justify-center gap-6 text-xs font-medium" style={{ color: "rgba(248,245,240,0.6)" }}>
+          <div className="mt-12 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs font-medium" style={{ color: "rgba(248,245,240,0.6)" }}>
             <span className="flex items-center gap-1.5"><Shield size={14} /> Enterprise-grade security</span>
             <span className="flex items-center gap-1.5"><Globe size={14} /> Global professional network</span>
           </div>
+          </div>
+          <OperationsHeroVisual />
         </div>
       </section>
 

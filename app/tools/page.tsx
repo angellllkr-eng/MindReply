@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { BookOpen, CheckCircle2, Copy, FileText, Globe2, GraduationCap, Mail, Maximize2, MessageSquare, Minimize2, PhoneCall, RotateCcw, SlidersHorizontal, Sparkles, Target, Wand2 } from "lucide-react";
+import DiagnosticTools from "@/components/DiagnosticTools";
 
 type ToolSlug =
   | "text-refiner"
@@ -94,6 +95,8 @@ export default function Tools() {
           <p className="text-sm max-w-2xl" style={{ color: "rgba(248,245,240,0.7)" }}>Fifteen focused tools for refining, compressing, expanding, planning, and clarifying professional communication.</p>
         </div>
       </section>
+
+      <DiagnosticTools />
 
       <section className="max-w-6xl mx-auto px-4 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
