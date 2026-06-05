@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { headers } from "next/headers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import AuthProvider from "@/components/AuthProvider";
-import { LanguageProvider } from "@/components/LanguageProvider";
+import { LanguageProvider, type LanguageCode } from "@/components/LanguageProvider";
 import Nav from "@/components/Nav";
 import MRAgent from "@/components/MRAgent";
 import MarketingPixels from "@/components/MarketingPixels";
@@ -53,12 +54,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+const supportedLanguages = new Set(["EN", "FR", "DE", "ES", "BG", "IT", "PT"]);
+
+function normalizeLanguage(value: string | null): LanguageCode {
+  const language = value?.toUpperCase() ?? "";
+  return supportedLanguages.has(language) ? language as LanguageCode : "EN";
+}
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const requestHeaders = await headers();
+  const initialLanguage = normalizeLanguage(requestHeaders.get("x-mr-language"));
+  const initialLanguageMode = requestHeaders.get("x-mr-language-mode") === "manual" ? "manual" : "auto";
+
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} scroll-smooth`}>
+    <html lang={initialLanguage.toLowerCase()} className={`${inter.variable} ${playfair.variable} scroll-smooth`}>
       <body className="antialiased bg-mr-cream-light text-gray-900" style={{ fontFamily: "var(--font-inter)" }}>
         <AuthProvider>
-          <LanguageProvider>
+          <LanguageProvider initialLanguage={initialLanguage} initialLanguageMode={initialLanguageMode}>
             <Nav />
             {children}
             <MRAgent />

@@ -184,11 +184,27 @@ function detectBrowserLanguage(): LanguageCode {
   return "EN";
 }
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<LanguageCode>("EN");
-  const [languageMode, setLanguageMode] = useState<"auto" | "manual">("auto");
+type LanguageProviderProps = {
+  children: React.ReactNode;
+  initialLanguage?: LanguageCode;
+  initialLanguageMode?: "auto" | "manual";
+};
+
+export function LanguageProvider({ children, initialLanguage = "EN", initialLanguageMode = "auto" }: LanguageProviderProps) {
+  const [language, setLanguageState] = useState<LanguageCode>(initialLanguage);
+  const [languageMode, setLanguageMode] = useState<"auto" | "manual">(initialLanguageMode);
 
   useEffect(() => {
+    const urlLanguage = new URLSearchParams(window.location.search).get("lang")?.toUpperCase() ?? null;
+    if (isLanguageCode(urlLanguage)) {
+      setLanguageState(urlLanguage);
+      setLanguageMode("auto");
+      applyDocumentLanguage(urlLanguage);
+      window.localStorage.setItem("mindreply.language", urlLanguage);
+      window.localStorage.setItem("mindreply.languageMode", "auto");
+      return;
+    }
+
     const mode = window.localStorage.getItem("mindreply.languageMode");
     const saved = window.localStorage.getItem("mindreply.language");
     if (mode === "manual" && isLanguageCode(saved)) {
