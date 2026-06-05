@@ -22,6 +22,7 @@ const requiredConfiguredChecks = [
   "bookingPayments",
   "analytics",
   "monitoring",
+  "opsReports",
   "siteUrl",
 ] as const;
 

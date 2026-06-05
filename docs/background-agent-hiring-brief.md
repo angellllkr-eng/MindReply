@@ -83,3 +83,5 @@ First 12 assignments for Day 0:
 - First Search Console sitemap/indexing status report.
 - List of top five conversion or reliability risks.
 - Six-hour status reports for the first 48 hours if the rapid surge plan is active.
+- Twice-daily executive reports sent to `angelllkr@gmail.com`.
+- 10-sales/day observer status and gap report every shift.

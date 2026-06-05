@@ -38,6 +38,16 @@ Payments:
 Monitoring:
 - `SENTRY_DSN`
 
+Permanent ops reports:
+- `RESEND_API_KEY`
+- `OPS_REPORT_TO=angelllkr@gmail.com`
+- `OPS_REPORT_FROM`
+- `OPS_REPORT_SALES_TARGET=10`
+- `OPS_REVENUE_WEEK_START`
+- `CRON_SECRET`
+- `AZURE_OPS_REPORT_WEBHOOK_URL` optional
+- `AZURE_OPS_REPORT_WEBHOOK_KEY` optional
+
 ## Vercel Setup
 
 1. Open Vercel project `mindreply` in the active MindReply scope.
@@ -47,7 +57,7 @@ Monitoring:
 5. Add production env vars above in Settings -> Environment Variables.
 6. Redeploy the latest production deployment.
 7. Open `https://www.mind-reply.com/health` and `https://www.mind-reply.com/api/health`.
-8. Confirm these checks are `configured`: database, auth, stripe, stripeWebhook, analytics, monitoring, siteUrl.
+8. Confirm these checks are `configured`: database, auth, stripe, stripeWebhook, analytics, monitoring, opsReports, siteUrl.
 
 CLI alternative for operators with Vercel access:
 
@@ -68,6 +78,12 @@ vercel env add NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL production
 vercel env add NEXT_PUBLIC_GOOGLE_ADS_CHECKOUT_CONVERSION_LABEL production
 vercel env add NEXT_PUBLIC_META_PIXEL_ID production
 vercel env add SENTRY_DSN production
+vercel env add RESEND_API_KEY production
+vercel env add OPS_REPORT_TO production
+vercel env add OPS_REPORT_FROM production
+vercel env add OPS_REPORT_SALES_TARGET production
+vercel env add OPS_REVENUE_WEEK_START production
+vercel env add CRON_SECRET production
 vercel env add AZURE_OPENAI_ENDPOINT production
 vercel env add AZURE_OPENAI_API_KEY production
 vercel env add AZURE_OPENAI_DEPLOYMENT production
@@ -87,7 +103,7 @@ Route availability:
 
 Production env readiness:
 - Command: `PRODUCTION_BASE_URL=https://www.mind-reply.com npm run audit:production`
-- Expected: `database`, `auth`, `stripe`, `stripeWebhook`, `analytics`, `monitoring`, and `siteUrl` are `configured`.
+- Expected: `database`, `auth`, `stripe`, `stripeWebhook`, `analytics`, `monitoring`, `opsReports`, and `siteUrl` are `configured`.
 - Until encrypted provider env vars are added, this command is expected to fail and list the fallback checks.
 - Current production status on June 5, 2026: route health is online, but `database`, `auth`, `stripe`, `stripeWebhook`, `bookingPayments`, `analytics`, `monitoring`, and `siteUrl` are still reporting `fallback` until production env vars are set in the active hosting project.
 - Requirements API: `https://www.mind-reply.com/api/config/requirements`
@@ -95,6 +111,8 @@ Production env readiness:
 - Entitlement API: `https://www.mind-reply.com/api/entitlements` returns the tier delivery catalog that checkout verification and Stripe webhooks use for product access.
 - Intelligence API: `https://www.mind-reply.com/api/intelligence/analyze` reports readiness for MR intent, emotional-valence, power-distance, clarity, and persuasion-frame analysis. POST `{ "text": "..." }` to receive the full analysis payload.
 - Ops Status API: `https://www.mind-reply.com/api/ops/status` maps each configured/fallback provider service to the active owner, required env var names, and next production action.
+- Ops Report API: `https://www.mind-reply.com/api/ops/report` previews the twice-daily report sent to `angelllkr@gmail.com`.
+- Revenue Observer API: `https://www.mind-reply.com/api/revenue/observer` tracks the 10-sales/day target and first-week sales gap.
 - Booking checkout API: `https://www.mind-reply.com/api/checkout/booking-session` verifies paid professional-session checkout returns. Run `npm run db:migrate` after deploy so `bookings.payment_status`, `bookings.stripe_session_id`, and `bookings.stripe_payment_intent_id` exist before enabling live booking checkout.
 
 ## Analytics Verification

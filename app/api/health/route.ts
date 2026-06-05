@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { agentRosterSummary } from "@/lib/agent-roster";
+import { isOpsReportingConfigured } from "@/lib/ops-report-config";
 import { isProductionRequirementConfigured, summarizeProductionRequirements } from "@/lib/production-requirements";
 
 export async function GET() {
@@ -11,6 +12,7 @@ export async function GET() {
   const bookingPaymentsConfigured = isProductionRequirementConfigured("bookingPayments");
   const analyticsConfigured = isProductionRequirementConfigured("analytics");
   const monitoringConfigured = isProductionRequirementConfigured("monitoring");
+  const opsReportsConfigured = isOpsReportingConfigured();
   const azureOpenAIConfigured = isProductionRequirementConfigured("azureOpenAI");
   const agentSummary = agentRosterSummary();
 
@@ -30,6 +32,8 @@ export async function GET() {
     analyticsConfigured,
     monitoring: monitoringConfigured ? "configured" : "fallback",
     monitoringConfigured,
+    opsReports: opsReportsConfigured ? "configured" : "fallback",
+    opsReportsConfigured,
     siteUrl: siteUrlConfigured ? "configured" : "fallback",
     siteUrlConfigured,
     azureOpenAI: azureOpenAIConfigured ? "configured" : "fallback",

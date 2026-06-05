@@ -38,6 +38,12 @@ Run these checks at shift start, mid-shift, and shift close.
    - Sign in as an authorized operator and trigger `POST /api/monitoring/test`.
    - Confirm the event appears in Sentry.
    - Confirm alert rules cover high error rate and deploy failure notifications.
+7. Confirm twice-daily reports.
+   - Open `/api/ops/report` and verify report status.
+   - Open `/api/revenue/observer` and confirm sales are measured from the database.
+   - Confirm `OPS_REPORT_TO` points to `angelllkr@gmail.com`.
+   - Manually trigger `POST /api/ops/report` with `Bearer CRON_SECRET` after env setup.
+   - Confirm the email arrives and the report includes the 10-sales/day gap.
 
 ## First 48-Hour Remediation Sprint
 
@@ -45,6 +51,7 @@ Hour 0-1:
 - Add production env vars in Vercel.
 - Redeploy production.
 - Attach `curl -I https://www.mind-reply.com/health` and `curl https://www.mind-reply.com/api/health` output.
+- Attach `curl https://www.mind-reply.com/api/revenue/observer` output.
 
 Hour 1-2:
 - Confirm Clerk production origins and redirect URLs.
@@ -64,6 +71,7 @@ Hour 6-12:
 - Confirm Sentry test event and alert rules.
 - Submit `https://www.mind-reply.com/sitemap.xml` in Search Console.
 - Confirm `robots.txt` references the sitemap.
+- Confirm twice-daily Vercel Cron jobs are visible for `/api/cron/ops-report`.
 
 Hour 12-24:
 - Run Lighthouse on `/`, `/memberships`, and `/solutions/*`.
@@ -111,6 +119,7 @@ Week 2:
 
 Every status update during the first 48 hours must include:
 - Health: `/health` and `/api/health` status plus fallback checks.
+- Revenue: `/api/revenue/observer` sales today, first-week gap, and next action.
 - Deployment: latest production deployment URL or commit.
 - Auth: Clerk login/logout/session result.
 - Payments: Stripe checkout and webhook result.

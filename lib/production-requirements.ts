@@ -64,6 +64,13 @@ export const productionRequirements: ProductionRequirement[] = [
     unlocks: "Production monitoring test events, alert routing, and Sentry issue verification.",
   },
   {
+    service: "Twice-Daily Ops Reports",
+    keys: ["RESEND_API_KEY", "OPS_REPORT_TO", "OPS_REPORT_FROM", "CRON_SECRET"],
+    healthCheck: "opsReports",
+    publicValue: false,
+    unlocks: "Permanent-agent reporting, 10-sales/day observer emails, recruiter handoffs, and twice-daily executive updates.",
+  },
+  {
     service: "Azure OpenAI",
     keys: ["AZURE_OPENAI_ENDPOINT", "AZURE_OPENAI_API_KEY", "AZURE_OPENAI_DEPLOYMENT", "AZURE_OPENAI_API_VERSION"],
     healthCheck: "azureOpenAI",
