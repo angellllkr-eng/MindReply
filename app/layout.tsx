@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import AuthProvider from "@/components/AuthProvider";
+import { LanguageProvider } from "@/components/LanguageProvider";
 import Nav from "@/components/Nav";
 import MRAgent from "@/components/MRAgent";
 import MarketingPixels from "@/components/MarketingPixels";
-import { absoluteUrl, SITE_URL } from "@/lib/seo";
+import { absoluteUrl, seoMarketKeywords, SITE_URL, targetMarkets } from "@/lib/seo";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -28,7 +29,15 @@ export const metadata: Metadata = {
     "legal communication AI",
     "psychologist communication tools",
     "financial advisor client communication",
+    ...seoMarketKeywords,
   ],
+  category: "AI communication intelligence",
+  other: {
+    "geo.region": targetMarkets.map((market) => market.code).join(","),
+    "market:primary": targetMarkets.filter((market) => market.priority === "primary").map((market) => market.country).join(", "),
+    "market:growth": targetMarkets.filter((market) => market.priority === "growth").map((market) => market.country).join(", "),
+    "language:auto": "browser-detected with manual override",
+  },
   openGraph: {
     title: "MindReply | Executive Communication Intelligence",
     description:
@@ -49,11 +58,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${playfair.variable} scroll-smooth`}>
       <body className="antialiased bg-mr-cream-light text-gray-900" style={{ fontFamily: "var(--font-inter)" }}>
         <AuthProvider>
-          <Nav />
-          {children}
-          <MRAgent />
-          <MarketingPixels />
-          <SpeedInsights />
+          <LanguageProvider>
+            <Nav />
+            {children}
+            <MRAgent />
+            <MarketingPixels />
+            <SpeedInsights />
+          </LanguageProvider>
         </AuthProvider>
       </body>
     </html>

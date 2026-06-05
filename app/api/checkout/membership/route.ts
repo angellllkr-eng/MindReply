@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
       allow_promotion_codes: true,
-      success_url: `${origin}/dashboard?checkout=success&tier=${requestedTier}`,
+      success_url: `${origin}/dashboard?checkout=success&session_id={CHECKOUT_SESSION_ID}&tier=${requestedTier}`,
       cancel_url: `${origin}/memberships?checkout=cancelled&tier=${requestedTier}`,
       metadata: { tier: requestedTier },
     });

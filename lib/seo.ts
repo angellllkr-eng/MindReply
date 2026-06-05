@@ -4,6 +4,32 @@ export function absoluteUrl(path = "/") {
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+export const targetMarkets = [
+  { country: "United Kingdom", code: "GB", priority: "primary" },
+  { country: "United States", code: "US", priority: "primary" },
+  { country: "Canada", code: "CA", priority: "primary" },
+  { country: "Australia", code: "AU", priority: "primary" },
+  { country: "Germany", code: "DE", priority: "growth" },
+  { country: "Singapore", code: "SG", priority: "growth" },
+  { country: "India", code: "IN", priority: "growth" },
+  { country: "Ireland", code: "IE", priority: "growth" },
+  { country: "Netherlands", code: "NL", priority: "growth" },
+  { country: "United Arab Emirates", code: "AE", priority: "growth" },
+] as const;
+
+export const seoMarketKeywords = [
+  "AI communication intelligence UK",
+  "executive communication AI United Kingdom",
+  "professional email polisher USA",
+  "legal communication AI Canada",
+  "financial advisor communication tool Australia",
+  "psychologist communication software Germany",
+  "AI executive coaching Singapore",
+  "professional rewrite tool India",
+  "high trust business communication worldwide",
+  "multilingual communication intelligence platform",
+];
+
 export const publicRoutes = [
   "/",
   "/agent",

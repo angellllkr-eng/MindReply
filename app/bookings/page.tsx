@@ -23,7 +23,32 @@ export default function Bookings() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/bookings").then((r) => r.json()).then((d) => { setBookings(d); setLoading(false); }).catch(() => setLoading(false));
+    fetch("/api/bookings").then((r) => r.json()).then((d) => {
+      const saved = window.localStorage.getItem("mindreply.bookings");
+      let localBookings: Booking[] = [];
+      if (saved) {
+        try {
+          localBookings = JSON.parse(saved) as Booking[];
+        } catch {
+          window.localStorage.removeItem("mindreply.bookings");
+        }
+      }
+
+      const remoteBookings = Array.isArray(d) ? d as Booking[] : [];
+      const merged = [...localBookings, ...remoteBookings.filter((remote) => !localBookings.some((local) => local.id === remote.id))];
+      setBookings(merged);
+      setLoading(false);
+    }).catch(() => {
+      const saved = window.localStorage.getItem("mindreply.bookings");
+      if (saved) {
+        try {
+          setBookings(JSON.parse(saved) as Booking[]);
+        } catch {
+          window.localStorage.removeItem("mindreply.bookings");
+        }
+      }
+      setLoading(false);
+    });
   }, []);
 
   return (
@@ -68,6 +93,9 @@ export default function Bookings() {
                       <span className="flex items-center gap-1.5"><Clock size={11} />{b.durationMinutes} min</span>
                     </div>
                     {b.notes && <p className="mt-2 text-xs px-2.5 py-1.5 rounded border border-[hsl(40_25%_88%)]" style={{ background: "hsl(40 20% 92%)", color: "hsl(220 25% 45%)" }}>{b.notes}</p>}
+                    <Link href={`/session/${b.id}`} className="mt-3 inline-flex rounded-lg px-3 py-2 text-xs font-semibold hover:opacity-90" style={{ background: "hsl(220 55% 20%)", color: "hsl(43 70% 88%)" }}>
+                      Open session room
+                    </Link>
                   </div>
                   <div className="text-right flex-shrink-0">
                     <p className="font-bold" style={{ color: "hsl(220 45% 13%)" }}>£{b.totalPrice.toFixed(2)}</p>

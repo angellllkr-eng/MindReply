@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { absoluteUrl, solutionPages } from "@/lib/seo";
+import { absoluteUrl, seoMarketKeywords, solutionPages, targetMarkets } from "@/lib/seo";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -23,7 +23,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: page.title,
     description: page.description,
+    keywords: [
+      page.audience,
+      page.title,
+      ...page.useCases,
+      ...seoMarketKeywords,
+    ],
     alternates: { canonical: absoluteUrl(`/solutions/${page.slug}`) },
+    other: {
+      "market:primary": targetMarkets.filter((market) => market.priority === "primary").map((market) => market.country).join(", "),
+      "market:growth": targetMarkets.filter((market) => market.priority === "growth").map((market) => market.country).join(", "),
+    },
     openGraph: {
       title: page.title,
       description: page.description,
@@ -49,7 +59,10 @@ export default async function SolutionLandingPage({ params }: PageProps) {
       name: "MindReply",
       url: absoluteUrl("/"),
     },
-    areaServed: "Worldwide",
+    areaServed: targetMarkets.map((market) => ({
+      "@type": "Country",
+      name: market.country,
+    })),
     audience: {
       "@type": "Audience",
       audienceType: page.audience,
@@ -71,6 +84,9 @@ export default async function SolutionLandingPage({ params }: PageProps) {
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed md:text-lg" style={{ color: "rgba(248,245,240,0.74)" }}>
             {page.description}
+          </p>
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed" style={{ color: "rgba(248,245,240,0.62)" }}>
+            Operating worldwide for UK, US, Canadian, Australian, German, Singaporean, Indian, and international professional teams.
           </p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <Link href={page.primaryHref} className="inline-flex justify-center rounded-lg px-6 py-3.5 text-sm font-semibold" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}>

@@ -20,6 +20,34 @@ type Professional = {
 type Slot = { date: string; time: string; available: boolean };
 type Mode = "text" | "voice" | "video";
 type Step = "mode" | "slot" | "details" | "confirm";
+type ConfirmedBooking = {
+  id: number;
+  professionalId: number;
+  professionalName: string;
+  mode: Mode;
+  scheduledAt: string;
+  durationMinutes: number;
+  totalPrice: number;
+  status: "pending" | "confirmed" | "completed" | "cancelled";
+  clientName: string;
+  clientEmail: string;
+  notes: string | null;
+};
+
+function saveLocalBooking(booking: ConfirmedBooking) {
+  const key = "mindreply.bookings";
+  const existing = window.localStorage.getItem(key);
+  let parsed: ConfirmedBooking[] = [];
+  if (existing) {
+    try {
+      parsed = JSON.parse(existing) as ConfirmedBooking[];
+    } catch {
+      parsed = [];
+    }
+  }
+  const next = [booking, ...parsed.filter((item) => item.id !== booking.id)].slice(0, 25);
+  window.localStorage.setItem(key, JSON.stringify(next));
+}
 
 export default function Book() {
   const { id } = useParams<{ id: string }>();
@@ -144,6 +172,7 @@ export default function Book() {
         return;
       }
 
+      saveLocalBooking(result.booking);
       setBookingId(result.booking.id);
       setStep("confirm");
     } finally {
@@ -171,7 +200,12 @@ export default function Book() {
               <span className="font-bold text-lg" style={{ color: "hsl(43 80% 60%)" }}>GBP {totalPrice.toFixed(2)}</span>
             </div>
           </div>
-          <Link href="/bookings" className="block font-medium py-3 rounded-lg hover:opacity-90 transition-opacity text-sm" style={{ background: "hsl(220 55% 20%)", color: "hsl(43 70% 88%)" }}>View My Bookings</Link>
+          <div className="grid gap-3">
+            {bookingId && (
+              <Link href={`/session/${bookingId}`} className="block font-medium py-3 rounded-lg hover:opacity-90 transition-opacity text-sm" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}>Open Session Room</Link>
+            )}
+            <Link href="/bookings" className="block font-medium py-3 rounded-lg hover:opacity-90 transition-opacity text-sm" style={{ background: "hsl(220 55% 20%)", color: "hsl(43 70% 88%)" }}>View My Bookings</Link>
+          </div>
         </section>
       </main>
     );

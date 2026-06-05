@@ -231,21 +231,7 @@ export const fallbackLexicons: LexiconDto[] = [
   },
 ];
 
-export const fallbackBookings: BookingDto[] = [
-  {
-    id: 1001,
-    professionalId: 1,
-    professionalName: "Dr. Sarah Jenkins",
-    mode: "video",
-    scheduledAt: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-    durationMinutes: 60,
-    totalPrice: 150,
-    status: "confirmed",
-    clientName: "Demo Member",
-    clientEmail: "member@mind-reply.com",
-    notes: "Demo booking shown while the database is not connected.",
-  },
-];
+export const fallbackBookings: BookingDto[] = [];
 
 export function fallbackSlots() {
   const days = [1, 2, 3, 4, 5].map((offset) => {
