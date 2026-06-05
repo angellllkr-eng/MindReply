@@ -37,19 +37,23 @@ async function checkRoute(route: string) {
   return { route, status: response.status, ok };
 }
 
-const results = await Promise.all(routes.map(checkRoute));
-const failures = results.filter((result) => !result.ok);
+async function main() {
+  const results = await Promise.all(routes.map(checkRoute));
+  const failures = results.filter((result) => !result.ok);
 
-for (const result of results) {
-  const marker = result.ok ? "OK" : "FAIL";
-  console.log(`${marker} ${String(result.status).padStart(3, " ")} ${result.route}`);
+  for (const result of results) {
+    const marker = result.ok ? "OK" : "FAIL";
+    console.log(`${marker} ${String(result.status).padStart(3, " ")} ${result.route}`);
+  }
+
+  if (failures.length > 0) {
+    console.error(`Smoke check failed for ${failures.length} route(s) against ${baseUrl}.`);
+    process.exitCode = 1;
+  } else {
+    console.log(`Smoke check passed for ${results.length} route(s) against ${baseUrl}.`);
+  }
 }
 
-if (failures.length > 0) {
-  console.error(`Smoke check failed for ${failures.length} route(s) against ${baseUrl}.`);
-  process.exitCode = 1;
-} else {
-  console.log(`Smoke check passed for ${results.length} route(s) against ${baseUrl}.`);
-}
+void main();
 
 export {};
