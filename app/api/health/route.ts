@@ -3,6 +3,7 @@ import { agentRosterSummary } from "@/lib/agent-roster";
 import { isOpsReportingConfigured } from "@/lib/ops-report-config";
 import { isProductionRequirementConfigured, summarizeProductionRequirements } from "@/lib/production-requirements";
 import { isSlackConfigured } from "@/lib/slack";
+import { areCoreIntegrationsConfigured } from "@/lib/integrations";
 
 export async function GET() {
   const siteUrlConfigured = isProductionRequirementConfigured("siteUrl");
@@ -14,6 +15,7 @@ export async function GET() {
   const analyticsConfigured = isProductionRequirementConfigured("analytics");
   const monitoringConfigured = isProductionRequirementConfigured("monitoring");
   const slackConfigured = isSlackConfigured();
+  const coreIntegrationsConfigured = areCoreIntegrationsConfigured();
   const opsReportsConfigured = isOpsReportingConfigured();
   const azureOpenAIConfigured = isProductionRequirementConfigured("azureOpenAI");
   const agentSummary = agentRosterSummary();
@@ -36,6 +38,8 @@ export async function GET() {
     monitoringConfigured,
     slack: slackConfigured ? "configured" : "fallback",
     slackConfigured,
+    coreIntegrations: coreIntegrationsConfigured ? "configured" : "fallback",
+    coreIntegrationsConfigured,
     opsReports: opsReportsConfigured ? "configured" : "fallback",
     opsReportsConfigured,
     siteUrl: siteUrlConfigured ? "configured" : "fallback",

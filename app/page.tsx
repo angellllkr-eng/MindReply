@@ -308,24 +308,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 8. Exclusive Membership Tiers */}
+      {/* 8. Signal Growth Pro Tiers */}
       <section className="py-24 px-4" style={{ background: "hsl(220 45% 13%)" }}>
         <div className="max-w-7xl mx-auto text-center mb-16">
-          <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "hsl(43 80% 60%)" }}>Exclusive Access</p>
-          <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4" style={{ color: "hsl(43 70% 88%)" }}>Membership Tiers</h2>
-          <p className="text-sm max-w-2xl mx-auto" style={{ color: "rgba(248,245,240,0.7)" }}>Invitation-only access to premium communication intelligence, curated professional networks, and behavioral analytics unavailable elsewhere.</p>
+          <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "hsl(43 80% 60%)" }}>Revenue Path</p>
+          <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4" style={{ color: "hsl(43 70% 88%)" }}>Signal to Growth to Pro</h2>
+          <p className="text-sm max-w-2xl mx-auto" style={{ color: "rgba(248,245,240,0.7)" }}>Start with Signal. Move to Growth when 30-day context memory becomes necessary. Upgrade to Pro when unlimited memory, Slack, Gmail, Notion, Character Profiles, and Momentum Clarity become operational dependency.</p>
         </div>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { name: "Curator", price: "$49", desc: "For emerging professionals refining their communicative presence", features: ["Access to 5 professional lexicons", "3 micro-tools", "Monthly subconscious behavioral insights report", "Community forum access", "50 micro-tool credits monthly"] },
-            { name: "Strategist", price: "$149", desc: "For established professionals leading teams and client relationships", features: ["All 20+ professional lexicons", "Full micro-tool suite access (10 instruments)", "Advanced subconscious behavioral analytics dashboard", "Priority concierge support", "Unlimited micro-tool credits", "Quarterly strategy consultation"], highlighted: true },
-            { name: "Sovereign", price: "Custom", desc: "For executive leadership and organisational transformation", features: ["Everything in Strategist, plus:", "Dedicated communication architect", "Organisation-wide lexicon customisation", "Predictive subconscious behavioral modelling", "Crisis communication protocol development", "Board-level reporting suite"] }
+            { name: "Signal", price: "Free", desc: "Temporary assistant layer for discovering operational bandwidth leaks.", features: ["Starter MRagent access", "Professional marketplace browsing", "Visible memory and integration limits", "Upgrade prompts at peak value moments"] },
+            { name: "Growth", price: "£49", desc: "The default paid operating layer for continuity and execution momentum.", features: ["30 days context memory", "Core micro-tool suite", "Growth dashboard", "Priority booking prompts", "Clear Pro upgrade path"], highlighted: true },
+            { name: "Pro", price: "£129", desc: "Permanent operational brain for teams, founders, agencies, and premium operators.", features: ["Unlimited context memory", "Slack, Gmail, and Notion", "Character Profiles", "Momentum Clarity", "Priority professional booking"] }
           ].map((tier) => (
             <div key={tier.name} className={`rounded-2xl p-8 border flex flex-col ${tier.highlighted ? 'border-[hsl(43_80%_60%)] shadow-2xl scale-105 bg-white' : 'border-white/10 bg-white/5'}`}>
               {tier.highlighted && <span className="text-xs font-bold px-3 py-1 rounded-full mb-4 self-start" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}>MOST SELECTED</span>}
               <h3 className="font-serif text-2xl font-bold mb-2" style={{ color: tier.highlighted ? "hsl(220 45% 13%)" : "hsl(43 70% 88%)" }}>{tier.name}</h3>
               <p className="text-sm mb-6" style={{ color: tier.highlighted ? "hsl(220 25% 45%)" : "rgba(248,245,240,0.7)" }}>{tier.desc}</p>
-              <p className="font-serif text-4xl font-bold mb-8" style={{ color: "hsl(43 80% 60%)" }}>{tier.price}<span className="text-base font-sans font-normal" style={{ color: tier.highlighted ? "hsl(220 25% 45%)" : "rgba(248,245,240,0.6)" }}>{tier.price !== 'Custom' ? '/month' : ''}</span></p>
+              <p className="font-serif text-4xl font-bold mb-8" style={{ color: "hsl(43 80% 60%)" }}>{tier.price}<span className="text-base font-sans font-normal" style={{ color: tier.highlighted ? "hsl(220 25% 45%)" : "rgba(248,245,240,0.6)" }}>{tier.price !== 'Free' ? '/month' : ''}</span></p>
               <ul className="space-y-3 mb-8 flex-1">
                 {tier.features.map((f, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm" style={{ color: tier.highlighted ? "hsl(220 45% 13%)" : "rgba(248,245,240,0.8)" }}>
@@ -333,9 +333,9 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <button className={`w-full py-3.5 rounded-lg font-semibold text-sm transition-opacity ${tier.highlighted ? '' : 'border border-white/20'}`} style={{ background: tier.highlighted ? "hsl(220 55% 20%)" : "transparent", color: tier.highlighted ? "hsl(43 70% 88%)" : "hsl(43 70% 88%)" }}>
-                {tier.name === 'Sovereign' ? 'Schedule Consultation' : tier.name === 'Strategist' ? 'Request Invitation' : 'Apply Now'}
-              </button>
+              <Link href={tier.name === "Signal" ? "/sign-up" : "/memberships"} className={`block text-center w-full py-3.5 rounded-lg font-semibold text-sm transition-opacity ${tier.highlighted ? '' : 'border border-white/20'}`} style={{ background: tier.highlighted ? "hsl(220 55% 20%)" : "transparent", color: tier.highlighted ? "hsl(43 70% 88%)" : "hsl(43 70% 88%)" }}>
+                {tier.name === 'Signal' ? 'Start Free' : tier.name === 'Growth' ? 'Upgrade to Growth' : 'Upgrade to Pro'}
+              </Link>
             </div>
           ))}
         </div>

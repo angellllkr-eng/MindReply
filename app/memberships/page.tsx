@@ -13,12 +13,18 @@ export default function Memberships() {
   useEffect(() => {
     fetch("/api/memberships").then((r) => r.json()).then((d) => {
       const order = ["curator", "strategist", "sovereign"];
-      setTiers([...d].sort((a: Membership, b: Membership) => order.indexOf(a.tier) - order.indexOf(b.tier)));
+      const tierOrder = ["signal", "growth", "pro", ...order];
+      setTiers([...d].sort((a: Membership, b: Membership) => tierOrder.indexOf(a.tier) - tierOrder.indexOf(b.tier)));
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
 
   async function startCheckout(tier: string) {
+    if (tier === "signal") {
+      window.location.href = "/sign-up";
+      return;
+    }
+
     setCheckoutTier(tier);
     setCheckoutError("");
 
@@ -46,20 +52,33 @@ export default function Memberships() {
   return (
     <div className="pt-20 min-h-screen" style={{ background: "hsl(40 33% 97%)" }}>
       <div className="py-16 px-4 text-center" style={{ background: "hsl(220 55% 20%)" }}>
-        <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "hsl(43 80% 60%)" }}>Exclusive Access</p>
-        <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4" style={{ color: "hsl(43 70% 88%)" }}>Membership Tiers</h1>
-        <p className="text-sm max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(248,245,240,0.7)" }}>
-          Three levels of access. One standard of excellence.
+        <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "hsl(43 80% 60%)" }}>Operational Composure System</p>
+        <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4" style={{ color: "hsl(43 70% 88%)" }}>Signal to Growth to Pro</h1>
+        <p className="text-sm max-w-2xl mx-auto leading-relaxed" style={{ color: "rgba(248,245,240,0.7)" }}>
+          MindReply is the invisible AI operating layer for founders, agencies, teams, and premium individuals who need complex work handled with precision, privacy, and calm.
         </p>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-16">
+        <div className="mb-10 grid grid-cols-1 gap-4 lg:grid-cols-3">
+          {[
+            { title: "Primary revenue lever", desc: "Convert free Signal users into Growth at £49/mo, then move Growth users to Pro at £129/mo when memory and integrations become essential." },
+            { title: "Why it works in 60 days", desc: "The fastest revenue is not a new product; it is upgrading users already feeling the workflow value, context pressure, and collaboration need." },
+            { title: "Trust proof", desc: "~4s operation resolution, 98% voice fidelity, and AES-256 privacy positioning make the upgrade feel operational, not decorative." },
+          ].map((item) => (
+            <div key={item.title} className="rounded-2xl border bg-white p-5" style={{ borderColor: "hsl(40 25% 88%)" }}>
+              <h2 className="font-serif text-xl font-bold" style={{ color: "hsl(220 45% 13%)" }}>{item.title}</h2>
+              <p className="mt-2 text-sm leading-relaxed" style={{ color: "hsl(220 25% 45%)" }}>{item.desc}</p>
+            </div>
+          ))}
+        </div>
+
         <div className="mb-10 rounded-2xl border bg-white p-5 shadow-sm" style={{ borderColor: "hsl(40 25% 88%)" }}>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {[
-              { title: "Stripe checkout", desc: "Membership payment opens securely from each tier once live Stripe env vars are set." },
-              { title: "Fast sign-in", desc: "Email plus Google, Apple, and Facebook access appear automatically through Clerk providers." },
-              { title: "Instant delivery", desc: "Successful payment returns to the dashboard with membership access and product entitlements confirmed." },
+              { title: "Growth trigger", desc: "30 days context memory gives Signal users a clear reason to upgrade before their working context disappears." },
+              { title: "Pro trigger", desc: "Unlimited memory plus Slack, Gmail, and Notion unlock the real productivity layer inside tools teams already use." },
+              { title: "Pro-only value", desc: "Character Profiles and Momentum Clarity justify £129/mo because they compound relationship context and decision movement." },
             ].map((item) => (
               <div key={item.title} className="flex gap-3 rounded-xl p-3" style={{ background: "hsl(40 33% 97%)" }}>
                 <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}>
@@ -94,8 +113,8 @@ export default function Memberships() {
                   <p className={`text-xs font-semibold uppercase tracking-widest mb-1 ${m.highlighted ? "text-[hsl(43_80%_60%)]" : "text-[hsl(220_25%_45%)]"}`}>{m.tier}</p>
                   <h3 className={`font-serif text-2xl font-bold ${m.highlighted ? "text-[hsl(43_70%_88%)]" : "text-[hsl(220_45%_13%)]"}`}>{m.name}</h3>
                   <div className="my-5">
-                    <span className={`font-serif text-5xl font-bold ${m.highlighted ? "text-[hsl(43_70%_88%)]" : "text-[hsl(220_45%_13%)]"}`}>&pound;{m.price}</span>
-                    <span className={`text-sm ml-1 ${m.highlighted ? "text-[rgba(248,245,240,0.6)]" : "text-[hsl(220_25%_45%)]"}`}>/month</span>
+                    <span className={`font-serif text-5xl font-bold ${m.highlighted ? "text-[hsl(43_70%_88%)]" : "text-[hsl(220_45%_13%)]"}`}>{m.price === 0 ? "Free" : `£${m.price}`}</span>
+                    {m.price > 0 && <span className={`text-sm ml-1 ${m.highlighted ? "text-[rgba(248,245,240,0.6)]" : "text-[hsl(220_25%_45%)]"}`}>/month</span>}
                   </div>
                   <p className={`text-sm leading-relaxed mb-6 ${m.highlighted ? "text-[rgba(248,245,240,0.7)]" : "text-[hsl(220_25%_45%)]"}`}>{m.description}</p>
                   <ul className="space-y-3 mb-8">
@@ -108,7 +127,7 @@ export default function Memberships() {
                   </ul>
                   <button onClick={() => startCheckout(m.tier)} disabled={checkoutTier === m.tier} className={`w-full font-semibold py-3.5 rounded-xl text-sm transition-all disabled:opacity-50 ${m.highlighted ? "hover:opacity-90" : "border-2 hover:text-[hsl(43_70%_88%)] transition-colors"}`}
                     style={m.highlighted ? { background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" } : { borderColor: "hsl(220 55% 20%)", color: "hsl(220 55% 20%)" }}>
-                    {checkoutTier === m.tier ? "Opening checkout..." : m.tier === "sovereign" ? "Apply for Sovereign" : `Join as ${m.name}`}
+                    {checkoutTier === m.tier ? "Opening checkout..." : m.tier === "signal" ? "Start Signal Free" : `Upgrade to ${m.name}`}
                   </button>
                 </div>
               </div>

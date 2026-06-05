@@ -2,6 +2,7 @@ import { activeAgentRoster, type ActiveAgentEntry } from "@/lib/agent-roster";
 import { isOpsReportingConfigured } from "@/lib/ops-report-config";
 import { isProductionRequirementConfigured, productionRequirements } from "@/lib/production-requirements";
 import { isSlackConfigured } from "@/lib/slack";
+import { areCoreIntegrationsConfigured } from "@/lib/integrations";
 
 type ServiceCheck = {
   service: string;
@@ -24,6 +25,7 @@ function configuredChecks() {
     analytics: isProductionRequirementConfigured("analytics"),
     monitoring: isProductionRequirementConfigured("monitoring"),
     slack: isSlackConfigured(),
+    coreIntegrations: areCoreIntegrationsConfigured(),
     opsReports: isOpsReportingConfigured(),
     azureOpenAI: isProductionRequirementConfigured("azureOpenAI"),
   } as Record<string, boolean>;
@@ -40,6 +42,7 @@ function ownerFor(requirement: string) {
   if (requirement === "analytics") return byRole(/Google Ads|Meta Pixel|Landing Page Conversion/i);
   if (requirement === "monitoring") return byRole(/Incident Commander|Vercel Deployment/i);
   if (requirement === "slack") return byRole(/Incident Commander|Vercel Deployment/i);
+  if (requirement === "coreIntegrations") return byRole(/Google Ads|Meta Pixel|Landing Page Conversion|Incident Commander/i);
   if (requirement === "opsReports") return byRole(/Daily Executive Reporter|Incident Commander/i);
   if (requirement === "azureOpenAI") return byRole(/MRagent Quality|Dashboard Metrics/i);
   if (requirement === "siteUrl") return byRole(/Vercel Deployment|Search Console/i);
@@ -57,6 +60,7 @@ function nextActionFor(status: ServiceCheck["status"], requirement: string) {
   if (requirement === "analytics") return "Set GTM, Google Ads, checkout conversion, and Meta Pixel IDs, then verify events.";
   if (requirement === "monitoring") return "Set SENTRY_DSN and trigger /api/monitoring/test.";
   if (requirement === "slack") return "Set SLACK_WEBHOOK_URL and trigger owner-authorized POST /api/slack/test.";
+  if (requirement === "coreIntegrations") return "Set Slack, Gmail, and Notion integration envs; then verify /api/integrations/status.";
   if (requirement === "opsReports") return "Set RESEND_API_KEY, OPS_REPORT_FROM, CRON_SECRET, and REVENUE_OWNER_SECRET; then verify /api/cron/ops-report sends twice-daily owner reports.";
   if (requirement === "azureOpenAI") return "Set Azure OpenAI endpoint, key, deployment, and API version.";
   return "Configure required provider environment and rerun production audit.";

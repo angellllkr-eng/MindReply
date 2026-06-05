@@ -83,9 +83,9 @@ async function main() {
 
   if ((await tableCount(usersTable)) === 0) {
     await db.insert(usersTable).values([
-      { name: "Director Strategist", email: "director@mind-reply.com", membershipTier: "strategist" },
-      { name: "Clinical Lead", email: "clinical@mind-reply.com", membershipTier: "curator" },
-      { name: "Founder Operator", email: "founder@mind-reply.com", membershipTier: "sovereign" },
+      { name: "Signal Operator", email: "signal@mind-reply.com", membershipTier: "signal" },
+      { name: "Growth Director", email: "growth@mind-reply.com", membershipTier: "growth" },
+      { name: "Pro Founder", email: "pro@mind-reply.com", membershipTier: "pro" },
     ]);
     console.log("Inserted 3 users.");
   } else {

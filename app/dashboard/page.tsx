@@ -33,6 +33,13 @@ export default function UserDashboard() {
     "Analytics for clarity, trust, and tone",
   ];
 
+  const proPreviews = [
+    { title: "Unlimited Context Memory", body: "Growth keeps 30 days. Pro keeps the operational brain permanently available." },
+    { title: "Character Profiles", body: "Preserve how investors, clients, team members, and partners respond under pressure." },
+    { title: "Momentum Clarity", body: "See what is stuck, what moved, and what next action creates visible progress." },
+    { title: "Slack, Gmail, Notion", body: "Move MindReply into the tools where the work already happens." },
+  ];
+
   return (
     <main className="min-h-screen pt-24 pb-20 px-4" style={{ background: "hsl(40 20% 96%)" }}>
       <div className="max-w-6xl mx-auto">
@@ -97,6 +104,30 @@ export default function UserDashboard() {
             </div>
           </section>
         </div>
+
+        <section className="mb-8 overflow-hidden rounded-2xl border bg-[hsl(220_45%_13%)] p-6 text-[hsl(40_33%_97%)]" style={{ borderColor: "rgba(248,245,240,0.14)" }}>
+          <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-[hsl(43_80%_60%)]">Pro outcome preview</p>
+              <h2 className="mt-2 font-serif text-3xl font-bold">You are leaking 70% of execution bandwidth.</h2>
+              <p className="mt-3 text-sm leading-6 text-[rgba(248,245,240,0.7)]">
+                Signal is temporary assistance. Growth gives 30 days of continuity. Pro turns MindReply into the permanent operational brain across memory, people, and tools.
+              </p>
+              <Link href="/memberships" className="mt-5 inline-flex rounded-lg px-5 py-3 text-sm font-semibold" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}>
+                Upgrade to Pro
+              </Link>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {proPreviews.map((item) => (
+                <article key={item.title} className="rounded-xl border border-[rgba(248,245,240,0.12)] bg-white/[0.045] p-4">
+                  <p className="text-sm font-semibold text-[hsl(43_70%_88%)]">{item.title}</p>
+                  <p className="mt-2 text-xs leading-5 text-[rgba(248,245,240,0.62)]">{item.body}</p>
+                  <span className="mt-3 inline-flex rounded-full border border-[rgba(201,169,97,0.28)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-[hsl(43_80%_60%)]">Locked Pro Preview</span>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
 
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-serif text-xl font-bold" style={{ color: "hsl(220 45% 13%)" }}>Quick Actions</h2>

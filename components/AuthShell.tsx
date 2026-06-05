@@ -94,6 +94,9 @@ export function AuthNotConfigured({ label }: { label: string }) {
         <Link href="/memberships" className="inline-flex justify-center rounded-lg px-5 py-3 text-sm font-semibold hover:opacity-90" style={{ background: "hsl(220 55% 20%)", color: "hsl(43 70% 88%)" }}>
           View Memberships
         </Link>
+        <Link href="/sign-up" className="inline-flex justify-center rounded-lg border px-5 py-3 text-sm font-semibold hover:opacity-90" style={{ borderColor: "hsl(40 25% 88%)", color: "hsl(220 55% 20%)" }}>
+          Sign Up
+        </Link>
         <Link href="/" className="inline-flex justify-center rounded-lg border px-5 py-3 text-sm font-semibold hover:opacity-90" style={{ borderColor: "hsl(40 25% 88%)", color: "hsl(220 55% 20%)" }}>
           Back to Home
       </Link>

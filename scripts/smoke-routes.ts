@@ -30,6 +30,7 @@ const routes = [
   "/api/agents/learning",
   "/api/growth/plan",
   "/api/slack/test",
+  "/api/integrations/status",
   "/api/config/requirements",
   "/api/entitlements",
   "/api/intelligence/analyze",

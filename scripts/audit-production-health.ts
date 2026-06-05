@@ -23,6 +23,7 @@ const requiredConfiguredChecks = [
   "analytics",
   "monitoring",
   "slack",
+  "coreIntegrations",
   "opsReports",
   "siteUrl",
 ] as const;

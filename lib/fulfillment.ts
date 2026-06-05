@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import { bookingsTable, db, hasDatabaseUrl, usersTable } from "@/lib/db";
 import { logMetric } from "@/lib/metrics";
 
-export type MembershipTier = "curator" | "strategist" | "sovereign";
+export type MembershipTier = "signal" | "growth" | "pro";
 
 export type MembershipEntitlement = {
   tier: MembershipTier;
@@ -41,63 +41,64 @@ export type BookingFulfillmentResult = {
 };
 
 const entitlements: Record<MembershipTier, MembershipEntitlement> = {
-  curator: {
-    tier: "curator",
-    name: "Curator",
-    creditsMonthly: 50,
+  signal: {
+    tier: "signal",
+    name: "Signal",
+    creditsMonthly: 0,
     toolAccess: "core",
     lexiconAccess: "starter",
     bookingPriority: "standard",
     dashboardAccess: "member",
-    supportLevel: "Standard member support",
+    supportLevel: "Self-serve Signal workspace",
     deliveredProducts: [
-      "Text Refiner",
-      "Email Polisher",
-      "Tone Adjuster",
-      "Starter professional lexicons",
-      "Member dashboard",
+      "Starter MRagent access",
+      "Signal clarity workspace",
+      "Professional marketplace browsing",
+      "Upgrade prompts for memory and integrations",
     ],
   },
-  strategist: {
-    tier: "strategist",
-    name: "Strategist",
-    creditsMonthly: "unlimited",
+  growth: {
+    tier: "growth",
+    name: "Growth",
+    creditsMonthly: 50,
     toolAccess: "full",
     lexiconAccess: "all",
     bookingPriority: "priority",
     dashboardAccess: "analytics",
-    supportLevel: "Priority support and specialist matching",
+    supportLevel: "Growth member support",
     deliveredProducts: [
-      "Full micro-tool suite",
-      "All professional lexicons",
-      "Behavioral analytics dashboard",
-      "Priority professional booking",
-      "MRagent intelligence workspace",
+      "30 days context memory",
+      "Core micro-tool suite",
+      "Growth dashboard",
+      "Professional booking priority",
+      "Signal-to-Growth upgrade workspace",
     ],
   },
-  sovereign: {
-    tier: "sovereign",
-    name: "Sovereign",
+  pro: {
+    tier: "pro",
+    name: "Pro",
     creditsMonthly: "unlimited",
     toolAccess: "full-plus",
     lexiconAccess: "custom",
     bookingPriority: "white-glove",
     dashboardAccess: "executive",
-    supportLevel: "Executive operator desk and custom language architecture",
+    supportLevel: "Pro operator support and integration priority",
     deliveredProducts: [
-      "Everything in Strategist",
-      "Custom professional lexicon path",
-      "Executive communication architecture",
-      "White-glove booking priority",
-      "Operator-led growth and intelligence review",
+      "Unlimited context memory",
+      "Slack, Gmail, and Notion integration path",
+      "Character Profiles",
+      "Momentum Clarity",
+      "Priority professional booking and operator review",
     ],
   },
 };
 
 export function normalizeMembershipTier(value: unknown): MembershipTier {
   const tier = String(value ?? "").toLowerCase();
-  if (tier === "curator" || tier === "strategist" || tier === "sovereign") return tier;
-  return "strategist";
+  if (tier === "signal") return "signal";
+  if (tier === "growth" || tier === "curator") return "growth";
+  if (tier === "pro" || tier === "strategist" || tier === "sovereign") return "pro";
+  return "growth";
 }
 
 export function getMembershipEntitlement(value: unknown): MembershipEntitlement {

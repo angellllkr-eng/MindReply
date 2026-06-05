@@ -30,15 +30,25 @@ Auth:
 
 Payments:
 - `STRIPE_SECRET_KEY`
+- `STRIPE_PRICE_GROWTH`
+- `STRIPE_PRICE_PRO`
 - `STRIPE_PRICE_CURATOR`
 - `STRIPE_PRICE_STRATEGIST`
 - `STRIPE_PRICE_SOVEREIGN`
 - `STRIPE_WEBHOOK_SECRET`
 - Credit-pack checkout uses `STRIPE_SECRET_KEY` with inline price data for 5-credit and 20-credit packs.
+- Preferred membership prices are `STRIPE_PRICE_GROWTH` and `STRIPE_PRICE_PRO`; legacy Curator/Strategist/Sovereign env names remain accepted as aliases.
 
 Monitoring:
 - `SENTRY_DSN`
 - `SLACK_WEBHOOK_URL`
+
+Core Pro integrations:
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `NOTION_CLIENT_ID`
+- `NOTION_CLIENT_SECRET`
+- Slack uses `SLACK_WEBHOOK_URL`; Gmail and Notion use OAuth app credentials.
 
 Permanent ops reports:
 - `RESEND_API_KEY`
@@ -70,6 +80,8 @@ vercel env add NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY production
 vercel env add CLERK_SECRET_KEY production
 vercel env add ADMIN_CLERK_IDS production
 vercel env add STRIPE_SECRET_KEY production
+vercel env add STRIPE_PRICE_GROWTH production
+vercel env add STRIPE_PRICE_PRO production
 vercel env add STRIPE_PRICE_CURATOR production
 vercel env add STRIPE_PRICE_STRATEGIST production
 vercel env add STRIPE_PRICE_SOVEREIGN production
@@ -81,6 +93,10 @@ vercel env add NEXT_PUBLIC_GOOGLE_ADS_CHECKOUT_CONVERSION_LABEL production
 vercel env add NEXT_PUBLIC_META_PIXEL_ID production
 vercel env add SENTRY_DSN production
 vercel env add SLACK_WEBHOOK_URL production
+vercel env add GOOGLE_CLIENT_ID production
+vercel env add GOOGLE_CLIENT_SECRET production
+vercel env add NOTION_CLIENT_ID production
+vercel env add NOTION_CLIENT_SECRET production
 vercel env add RESEND_API_KEY production
 vercel env add OPS_REPORT_FROM production
 vercel env add OPS_REPORT_SALES_TARGET production
@@ -106,7 +122,7 @@ Route availability:
 
 Production env readiness:
 - Command: `PRODUCTION_BASE_URL=https://www.mind-reply.com npm run audit:production`
-- Expected: `database`, `auth`, `stripe`, `stripeWebhook`, `analytics`, `monitoring`, `slack`, `opsReports`, and `siteUrl` are `configured`.
+- Expected: `database`, `auth`, `stripe`, `stripeWebhook`, `analytics`, `monitoring`, `slack`, `coreIntegrations`, `opsReports`, and `siteUrl` are `configured`.
 - Until encrypted provider env vars are added, this command is expected to fail and list the fallback checks.
 - Current production status on June 5, 2026: route health is online, but provider-backed checks such as `database`, `auth`, `stripe`, `stripeWebhook`, `bookingPayments`, `analytics`, `monitoring`, `slack`, and `siteUrl` report `fallback` until production env vars are set in the active hosting project.
 - Requirements API: `https://www.mind-reply.com/api/config/requirements`
@@ -114,6 +130,7 @@ Production env readiness:
 - Entitlement API: `https://www.mind-reply.com/api/entitlements` returns the tier delivery catalog that checkout verification and Stripe webhooks use for product access.
 - Intelligence API: `https://www.mind-reply.com/api/intelligence/analyze` reports readiness for MR intent, emotional-valence, power-distance, clarity, and persuasion-frame analysis. POST `{ "text": "..." }` to receive the full analysis payload.
 - Ops Status API: `https://www.mind-reply.com/api/ops/status` maps each configured/fallback provider service to the active owner, required env var names, and next production action.
+- Integration Status API: `https://www.mind-reply.com/api/integrations/status` maps Slack, Gmail, and Notion readiness for the Pro upgrade path.
 - Ops Report API: `https://www.mind-reply.com/api/ops/report` previews the owner-only twice-daily report sent to `angelllkr@gmail.com`; requires `Bearer REVENUE_OWNER_SECRET`.
 - Revenue Observer API: `https://www.mind-reply.com/api/revenue/observer` tracks the owner-only 10-sales/day target, first-week sales gap, and forecast; requires `Bearer REVENUE_OWNER_SECRET`.
 - Booking checkout API: `https://www.mind-reply.com/api/checkout/booking-session` verifies paid professional-session checkout returns. Run `npm run db:migrate` after deploy so `bookings.payment_status`, `bookings.stripe_session_id`, and `bookings.stripe_payment_intent_id` exist before enabling live booking checkout.
@@ -197,6 +214,14 @@ npx @sentry/wizard@latest -i nextjs --saas --org mind-reply --project mind-reply
 4. Redeploy.
 5. Send owner-authorized `POST https://www.mind-reply.com/api/slack/test`.
 6. Confirm the Slack channel receives the MindReply test notification.
+
+## Core Integration Verification
+
+1. Slack: verify `SLACK_WEBHOOK_URL` and owner-authorized `POST /api/slack/test`.
+2. Gmail: create OAuth app credentials and set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
+3. Notion: create OAuth integration credentials and set `NOTION_CLIENT_ID` and `NOTION_CLIENT_SECRET`.
+4. Open `https://www.mind-reply.com/api/integrations/status`.
+5. Confirm Slack, Gmail, and Notion each report `configured`.
 
 ## SEO Verification
 

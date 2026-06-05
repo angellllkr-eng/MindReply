@@ -1,6 +1,7 @@
 export type ProductionRequirement = {
   service: string;
   keys: string[];
+  alternativeKeyGroups?: string[][];
   healthCheck: string;
   publicValue: boolean;
   unlocks: string;
@@ -30,10 +31,14 @@ export const productionRequirements: ProductionRequirement[] = [
   },
   {
     service: "Stripe Checkout",
-    keys: ["STRIPE_SECRET_KEY", "STRIPE_PRICE_CURATOR", "STRIPE_PRICE_STRATEGIST", "STRIPE_PRICE_SOVEREIGN"],
+    keys: ["STRIPE_SECRET_KEY", "STRIPE_PRICE_GROWTH or STRIPE_PRICE_CURATOR", "STRIPE_PRICE_PRO or STRIPE_PRICE_STRATEGIST"],
+    alternativeKeyGroups: [
+      ["STRIPE_SECRET_KEY", "STRIPE_PRICE_GROWTH", "STRIPE_PRICE_PRO"],
+      ["STRIPE_SECRET_KEY", "STRIPE_PRICE_CURATOR", "STRIPE_PRICE_STRATEGIST"],
+    ],
     healthCheck: "stripe",
     publicValue: false,
-    unlocks: "Membership checkout, purchase confirmation, dashboard access activation, and paid workflow delivery.",
+    unlocks: "Growth and Pro membership checkout, purchase confirmation, dashboard access activation, and paid workflow delivery.",
   },
   {
     service: "Stripe Webhooks",
@@ -71,6 +76,13 @@ export const productionRequirements: ProductionRequirement[] = [
     unlocks: "Slack production notifications for MRagent, revenue, deployment, and operator incidents.",
   },
   {
+    service: "Core Pro Integrations",
+    keys: ["SLACK_WEBHOOK_URL", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "NOTION_CLIENT_ID", "NOTION_CLIENT_SECRET"],
+    healthCheck: "coreIntegrations",
+    publicValue: false,
+    unlocks: "Slack, Gmail, and Notion Pro adoption wedge: team workflow, inbox takeover, and operating memory.",
+  },
+  {
     service: "Twice-Daily Ops Reports",
     keys: ["RESEND_API_KEY", "OPS_REPORT_FROM", "CRON_SECRET", "REVENUE_OWNER_SECRET"],
     healthCheck: "opsReports",
@@ -92,7 +104,11 @@ function hasEnvValue(key: string) {
 
 export function isProductionRequirementConfigured(healthCheck: string) {
   const requirement = productionRequirements.find((item) => item.healthCheck === healthCheck);
-  return Boolean(requirement && requirement.keys.every(hasEnvValue));
+  if (!requirement) return false;
+  if (requirement.alternativeKeyGroups?.length) {
+    return requirement.alternativeKeyGroups.some((group) => group.every(hasEnvValue));
+  }
+  return requirement.keys.every(hasEnvValue);
 }
 
 export function summarizeProductionRequirements(checks: Record<string, unknown>) {

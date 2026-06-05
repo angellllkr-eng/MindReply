@@ -1,6 +1,6 @@
 import { pgTable, serial, text, real, boolean, pgEnum } from "drizzle-orm/pg-core";
 
-export const membershipTierEnum = pgEnum("membership_tier", ["curator", "strategist", "sovereign"]);
+export const membershipTierEnum = pgEnum("membership_tier", ["signal", "growth", "pro", "curator", "strategist", "sovereign"]);
 
 export const membershipsTable = pgTable("memberships", {
   id: serial("id").primaryKey(),

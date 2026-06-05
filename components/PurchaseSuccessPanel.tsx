@@ -39,6 +39,9 @@ type StoredCredits = {
 };
 
 const tierLabels: Record<string, string> = {
+  signal: "Signal",
+  growth: "Growth",
+  pro: "Pro",
   curator: "Curator",
   strategist: "Strategist",
   sovereign: "Sovereign",
@@ -57,7 +60,7 @@ const productAccess = [
 
 function normalizeTier(value: string | null) {
   const tier = String(value ?? "").toLowerCase();
-  return tierLabels[tier] ? tier : "strategist";
+  return tierLabels[tier] ? tier : "growth";
 }
 
 function emitConfirmedCheckoutConversion(data: SessionState) {

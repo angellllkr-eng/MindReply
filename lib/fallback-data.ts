@@ -18,7 +18,7 @@ export type ProfessionalDto = {
 
 export type MembershipDto = {
   id: number;
-  tier: "curator" | "strategist" | "sovereign";
+  tier: "signal" | "growth" | "pro" | "curator" | "strategist" | "sovereign";
   name: string;
   price: number;
   description: string;
@@ -175,29 +175,29 @@ export const fallbackProfessionals: ProfessionalDto[] = [
 export const fallbackMemberships: MembershipDto[] = [
   {
     id: 1,
-    tier: "curator",
-    name: "Curator",
-    price: 49,
-    description: "For emerging professionals refining their communicative presence.",
-    features: ["5 professional lexicons", "3 micro-tools", "Monthly insights report", "50 credits monthly"],
+    tier: "signal",
+    name: "Signal",
+    price: 0,
+    description: "Free entry layer for founders, agencies, teams, and premium individuals who need calm operational clarity.",
+    features: ["Operational composure primer", "Starter MRagent access", "Public professional marketplace", "Upgrade prompts when memory or integrations are needed"],
     highlighted: false,
   },
   {
     id: 2,
-    tier: "strategist",
-    name: "Strategist",
-    price: 149,
-    description: "For established professionals leading teams and client relationships.",
-    features: ["All 20+ lexicons", "Full micro-tool suite", "Advanced analytics", "Unlimited credits"],
+    tier: "growth",
+    name: "Growth",
+    price: 49,
+    description: "For users ready to convert free Signal work into a reliable operating layer.",
+    features: ["30 days context memory", "Core micro-tool suite", "Growth dashboard", "Upgrade path to Pro integrations"],
     highlighted: true,
   },
   {
     id: 3,
-    tier: "sovereign",
-    name: "Sovereign",
-    price: 499,
-    description: "For executive leadership and organizational transformation.",
-    features: ["Dedicated architect", "Organization-wide customization", "Predictive modeling", "Board-level reporting"],
+    tier: "pro",
+    name: "Pro",
+    price: 129,
+    description: "For operators who want unlimited memory, integrations, and premium clarity systems.",
+    features: ["Unlimited context memory", "Slack, Gmail, and Notion integrations", "Character Profiles", "Momentum Clarity", "Priority professional booking"],
     highlighted: false,
   },
 ];
