@@ -36,9 +36,9 @@ export default function UserDashboard() {
   return (
     <main className="min-h-screen pt-24 pb-20 px-4" style={{ background: "hsl(40 20% 96%)" }}>
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="mb-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="font-serif text-3xl font-bold" style={{ color: "hsl(220 45% 13%)" }}>Welcome back, Director</h1>
+            <h1 className="font-serif text-2xl font-bold sm:text-3xl" style={{ color: "hsl(220 45% 13%)" }}>Welcome back, Director</h1>
             <p className="text-sm mt-1" style={{ color: "hsl(220 25% 45%)" }}>Strategist Tier - Subconscious Intelligence Active</p>
           </div>
           <DashboardSignOut />

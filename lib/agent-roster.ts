@@ -7,6 +7,14 @@ export type AgentRosterEntry = {
   escalation: "P0" | "P1" | "P2";
 };
 
+export type ActiveAgentEntry = AgentRosterEntry & {
+  activation: "active";
+  lane: "revenue" | "platform" | "trust" | "intelligence";
+  shiftObjective: string;
+  evidenceRequired: string[];
+  handoffCadence: string;
+};
+
 const fields = [
   {
     field: "Clinical Communication",
@@ -137,9 +145,43 @@ export const agentRoster: AgentRosterEntry[] = fields.flatMap((group, groupIndex
 export function agentRosterSummary() {
   return {
     totalRoles: agentRoster.length,
+    activeRoles: activeAgentRoster.length,
     fields: fields.map((group) => ({
       field: group.field,
       roles: group.roles.length,
+      activeRoles: activeAgentRoster.filter((agent) => agent.field === group.field).length,
     })),
   };
 }
+
+function activeLane(field: string): ActiveAgentEntry["lane"] {
+  if (field === "Growth And Sales" || field === "Payments And Membership") return "revenue";
+  if (field === "Platform Operations" || field === "Auth And Security") return "platform";
+  if (field === "Clinical Communication" || field === "Legal Communication" || field === "Finance And Advisory") return "trust";
+  return "intelligence";
+}
+
+function activeObjective(agent: AgentRosterEntry) {
+  if (agent.field === "Growth And Sales") return "Increase qualified visitors, conversion evidence, referral motion, and paid-session demand.";
+  if (agent.field === "Payments And Membership") return "Keep checkout, webhook, entitlement, and failed-payment recovery loops observable.";
+  if (agent.field === "Platform Operations") return "Keep Vercel, GitHub, Azure, smoke checks, and incidents moving without silent failure.";
+  if (agent.field === "Auth And Security") return "Protect login, admin access, secret hygiene, headers, and abuse signals.";
+  if (agent.field === "Content And SEO") return "Grow search reach, metadata quality, lexicon copy, and country-specific solution relevance.";
+  if (agent.field === "Data And Intelligence") return "Monitor behavioral metrics, MRagent quality, tool usage, and executive reporting.";
+  return "Keep professional communication quality high and escalate regulated or high-risk advisory boundaries.";
+}
+
+export const activeAgentRoster: ActiveAgentEntry[] = agentRoster
+  .filter((agent) => Number(agent.id.slice(-2)) % 6 <= 3 && Number(agent.id.slice(-2)) % 6 !== 0)
+  .map((agent) => ({
+    ...agent,
+    activation: "active",
+    lane: activeLane(agent.field),
+    shiftObjective: activeObjective(agent),
+    evidenceRequired: [
+      "route or dashboard checked",
+      "risk level recorded",
+      "action or escalation logged",
+    ],
+    handoffCadence: agent.escalation === "P0" ? "hourly until green" : "twice daily",
+  }));

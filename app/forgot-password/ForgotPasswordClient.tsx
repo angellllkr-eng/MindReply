@@ -88,7 +88,7 @@ export default function ForgotPasswordClient() {
   }
 
   return (
-    <section className="w-full rounded-2xl bg-white p-8 shadow-2xl">
+    <section className="w-full rounded-2xl bg-white p-5 shadow-2xl sm:p-8">
       <Link href="/sign-in" className="mb-6 inline-flex items-center gap-2 text-xs font-semibold hover:opacity-70" style={{ color: "hsl(220 55% 20%)" }}>
         <ArrowLeft size={14} /> Back to sign in
       </Link>
@@ -105,14 +105,14 @@ export default function ForgotPasswordClient() {
         <>
           <div className="mb-8">
             <h1 className="font-serif text-2xl font-bold mb-2" style={{ color: "hsl(220 45% 13%)" }}>Recover Access</h1>
-            <p className="text-sm leading-relaxed" style={{ color: "hsl(220 25% 45%)" }}>
+            <p className="break-words text-sm leading-relaxed" style={{ color: "hsl(220 25% 45%)" }}>
               {step === "email" && "Enter your account email and MindReply will send a secure reset code."}
               {step === "code" && `Enter the reset code sent to ${email}.`}
               {step === "password" && "Set a new password for your MindReply account."}
             </p>
           </div>
 
-          {error && <p className="mb-4 rounded-lg border px-3 py-2 text-sm" style={{ color: "#991b1b", borderColor: "#fecaca", background: "#fef2f2" }}>{error}</p>}
+          {error && <p className="mb-4 break-words rounded-lg border px-3 py-2 text-sm" style={{ color: "#991b1b", borderColor: "#fecaca", background: "#fef2f2" }}>{error}</p>}
 
           {step === "email" && (
             <form className="space-y-4" onSubmit={sendCode}>

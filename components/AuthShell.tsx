@@ -11,8 +11,9 @@ const clerkAppearance = {
     borderRadius: "12px",
   },
   elements: {
-    cardBox: "shadow-2xl",
-    card: "border border-[rgba(201,169,97,0.22)]",
+    rootBox: "w-full max-w-full",
+    cardBox: "w-full max-w-full shadow-2xl",
+    card: "w-full max-w-full border border-[rgba(201,169,97,0.22)]",
     headerTitle: "font-serif",
     formButtonPrimary: "font-semibold",
   },
@@ -67,7 +68,7 @@ export function AuthShell({ children, subtitle }: { children: React.ReactNode; s
 
 export function AuthNotConfigured({ label }: { label: string }) {
   return (
-    <div className="w-full rounded-2xl border bg-white p-8 text-center shadow-2xl" style={{ borderColor: "rgba(201,169,97,0.22)" }}>
+    <div className="w-full rounded-2xl border bg-white p-5 text-center shadow-2xl sm:p-8" style={{ borderColor: "rgba(201,169,97,0.22)" }}>
       <h1 className="font-serif text-2xl font-bold mb-3" style={{ color: "hsl(220 45% 13%)" }}>{label}</h1>
       <p className="text-sm leading-relaxed mb-6" style={{ color: "hsl(220 25% 45%)" }}>
         Authentication is not configured yet. Add Clerk publishable and secret keys to enable secure MindReply account access.

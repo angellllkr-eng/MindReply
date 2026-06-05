@@ -101,9 +101,9 @@ export default function Tools() {
 
       <section className="max-w-6xl mx-auto px-4 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
-          <aside className="space-y-2">
+          <aside className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 lg:mx-0 lg:block lg:space-y-2 lg:overflow-visible lg:px-0 lg:pb-0">
             {TOOLS.map((tool) => (
-              <button key={tool.id} onClick={() => { setActive(tool.id); setResult(null); }} className={`w-full text-left p-4 rounded-xl border transition-all ${active === tool.id ? "border-[hsl(43_80%_60%)] bg-[hsl(43_80%_60%_/_0.08)] shadow-sm" : "border-[hsl(40_25%_88%)] bg-white hover:-translate-y-0.5"}`}>
+              <button key={tool.id} onClick={() => { setActive(tool.id); setResult(null); }} className={`min-w-[220px] text-left p-4 rounded-xl border transition-all lg:w-full lg:min-w-0 ${active === tool.id ? "border-[hsl(43_80%_60%)] bg-[hsl(43_80%_60%_/_0.08)] shadow-sm" : "border-[hsl(40_25%_88%)] bg-white hover:-translate-y-0.5"}`}>
                 <div className="flex items-start gap-3">
                   <span className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: active === tool.id ? "hsl(220 55% 20%)" : "hsl(40 20% 92%)", color: active === tool.id ? "hsl(43 70% 88%)" : "hsl(220 25% 45%)" }}>{tool.icon}</span>
                   <span>
