@@ -43,6 +43,8 @@ export type BookingDto = {
   durationMinutes: number;
   totalPrice: number;
   status: "pending" | "confirmed" | "completed" | "cancelled";
+  paymentStatus?: string;
+  stripeSessionId?: string | null;
   clientName: string;
   clientEmail: string;
   notes: string | null;

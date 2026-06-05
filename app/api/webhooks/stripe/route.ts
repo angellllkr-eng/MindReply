@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { db, metricsTable } from "@/lib/db";
-import { fulfillMembershipPurchase } from "@/lib/fulfillment";
+import { fulfillBookingCheckoutSession, fulfillMembershipPurchase, isBookingCheckoutSession } from "@/lib/fulfillment";
 
 const handledEvents = new Set([
   "checkout.session.completed",
@@ -40,6 +40,10 @@ async function fulfillStripeEvent(event: Stripe.Event) {
   const session = event.data.object as Stripe.Checkout.Session;
   const confirmed = session.status === "complete" || session.payment_status === "paid" || session.payment_status === "no_payment_required";
   if (!confirmed) return null;
+
+  if (isBookingCheckoutSession(session)) {
+    return fulfillBookingCheckoutSession(session);
+  }
 
   return fulfillMembershipPurchase({
     tier: session.metadata?.tier,
@@ -91,7 +95,9 @@ export async function POST(req: NextRequest) {
     fulfillment: fulfillment
       ? {
           persisted: fulfillment.persisted,
-          tier: fulfillment.entitlement.tier,
+          confirmed: "confirmed" in fulfillment ? fulfillment.confirmed : true,
+          tier: "entitlement" in fulfillment ? fulfillment.entitlement.tier : null,
+          bookingId: "bookingId" in fulfillment ? fulfillment.bookingId : null,
           reason: fulfillment.reason ?? null,
         }
       : null,

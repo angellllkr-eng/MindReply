@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db, hasDatabaseUrl, usersTable } from "@/lib/db";
+import Stripe from "stripe";
+import { bookingsTable, db, hasDatabaseUrl, usersTable } from "@/lib/db";
 import { logMetric } from "@/lib/metrics";
 
 export type MembershipTier = "curator" | "strategist" | "sovereign";
@@ -30,6 +31,13 @@ export type FulfillmentResult = {
   entitlement: MembershipEntitlement;
   persisted: boolean;
   reason?: "database_not_configured" | "missing_email" | "database_error";
+};
+
+export type BookingFulfillmentResult = {
+  bookingId: number | null;
+  confirmed: boolean;
+  persisted: boolean;
+  reason?: "database_not_configured" | "missing_booking_id" | "payment_not_confirmed" | "booking_not_found" | "database_error";
 };
 
 const entitlements: Record<MembershipTier, MembershipEntitlement> = {
@@ -109,6 +117,14 @@ function emailDomain(email: string) {
   return email.split("@")[1]?.toLowerCase() ?? "unknown";
 }
 
+function stripeId(value: string | { id?: string } | null) {
+  return typeof value === "string" ? value : value?.id ?? null;
+}
+
+export function isBookingCheckoutSession(session: Stripe.Checkout.Session) {
+  return session.metadata?.type === "booking" && Boolean(session.metadata?.bookingId);
+}
+
 export async function fulfillMembershipPurchase(input: FulfillmentInput): Promise<FulfillmentResult> {
   const entitlement = getMembershipEntitlement(input.tier);
   const email = input.email?.trim().toLowerCase();
@@ -153,5 +169,53 @@ export async function fulfillMembershipPurchase(input: FulfillmentInput): Promis
   } catch (error) {
     console.warn("Membership fulfillment skipped:", error);
     return { entitlement, persisted: false, reason: "database_error" };
+  }
+}
+
+export async function fulfillBookingCheckoutSession(session: Stripe.Checkout.Session): Promise<BookingFulfillmentResult> {
+  const bookingId = Number(session.metadata?.bookingId);
+  if (!Number.isFinite(bookingId) || bookingId <= 0) {
+    return { bookingId: null, confirmed: false, persisted: false, reason: "missing_booking_id" };
+  }
+
+  const confirmed = session.status === "complete" || session.payment_status === "paid" || session.payment_status === "no_payment_required";
+  if (!confirmed) {
+    return { bookingId, confirmed: false, persisted: false, reason: "payment_not_confirmed" };
+  }
+
+  if (!hasDatabaseUrl()) {
+    return { bookingId, confirmed: true, persisted: false, reason: "database_not_configured" };
+  }
+
+  try {
+    const [booking] = await db.update(bookingsTable)
+      .set({
+        status: "confirmed",
+        paymentStatus: session.payment_status ?? "paid",
+        stripeSessionId: session.id,
+        stripePaymentIntentId: stripeId(session.payment_intent),
+      })
+      .where(eq(bookingsTable.id, bookingId))
+      .returning();
+
+    if (!booking) {
+      return { bookingId, confirmed: true, persisted: false, reason: "booking_not_found" };
+    }
+
+    await logMetric({
+      eventName: "booking.fulfilled",
+      eventValue: {
+        bookingId,
+        sessionId: session.id,
+        paymentStatus: session.payment_status,
+        mode: booking.mode,
+        professionalId: booking.professionalId,
+      },
+    });
+
+    return { bookingId, confirmed: true, persisted: true };
+  } catch (error) {
+    console.warn("Booking fulfillment skipped:", error);
+    return { bookingId, confirmed: true, persisted: false, reason: "database_error" };
   }
 }

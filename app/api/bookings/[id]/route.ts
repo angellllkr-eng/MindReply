@@ -7,7 +7,7 @@ function mapBooking(b: typeof bookingsTable.$inferSelect) {
   return {
     id: b.id, professionalId: b.professionalId, professionalName: b.professionalName,
     mode: b.mode, scheduledAt: b.scheduledAt, durationMinutes: b.durationMinutes,
-    totalPrice: b.totalPrice, status: b.status,
+    totalPrice: b.totalPrice, status: b.status, paymentStatus: b.paymentStatus, stripeSessionId: b.stripeSessionId,
     clientName: b.clientName, clientEmail: b.clientEmail, notes: b.notes,
   };
 }

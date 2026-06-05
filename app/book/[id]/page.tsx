@@ -29,6 +29,8 @@ type ConfirmedBooking = {
   durationMinutes: number;
   totalPrice: number;
   status: "pending" | "confirmed" | "completed" | "cancelled";
+  paymentStatus?: string;
+  stripeSessionId?: string | null;
   clientName: string;
   clientEmail: string;
   notes: string | null;
@@ -165,6 +167,7 @@ export default function Book() {
         clientName,
         clientEmail,
         notes: notes || null,
+        origin: window.location.origin,
       });
 
       if (!result.ok) {
@@ -173,6 +176,11 @@ export default function Book() {
       }
 
       saveLocalBooking(result.booking);
+      if (result.checkoutUrl) {
+        window.location.assign(result.checkoutUrl);
+        return;
+      }
+
       setBookingId(result.booking.id);
       setStep("confirm");
     } finally {

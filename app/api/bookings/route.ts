@@ -7,7 +7,7 @@ function mapBooking(b: typeof bookingsTable.$inferSelect) {
   return {
     id: b.id, professionalId: b.professionalId, professionalName: b.professionalName,
     mode: b.mode, scheduledAt: b.scheduledAt, durationMinutes: b.durationMinutes,
-    totalPrice: b.totalPrice, status: b.status,
+    totalPrice: b.totalPrice, status: b.status, paymentStatus: b.paymentStatus, stripeSessionId: b.stripeSessionId,
     clientName: b.clientName, clientEmail: b.clientEmail, notes: b.notes,
   };
 }
@@ -47,6 +47,7 @@ export async function POST(req: NextRequest) {
     const [booking] = await db.insert(bookingsTable).values({
       professionalId, professionalName: professional.name, mode, scheduledAt,
       durationMinutes, totalPrice, status: "confirmed",
+      paymentStatus: "manual_confirmed",
       clientName, clientEmail, notes: notes ?? null,
     }).returning();
 
@@ -70,6 +71,8 @@ export async function POST(req: NextRequest) {
       durationMinutes,
       totalPrice: pricePerHour * (Number(durationMinutes) / 60),
       status: "confirmed",
+      paymentStatus: "local_fallback",
+      stripeSessionId: null,
       clientName,
       clientEmail,
       notes: notes ?? null,

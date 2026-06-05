@@ -66,6 +66,7 @@ Production env readiness:
 - Entitlement API: `https://www.mind-reply.com/api/entitlements` returns the tier delivery catalog that checkout verification and Stripe webhooks use for product access.
 - Intelligence API: `https://www.mind-reply.com/api/intelligence/analyze` reports readiness for MR intent, emotional-valence, power-distance, clarity, and persuasion-frame analysis. POST `{ "text": "..." }` to receive the full analysis payload.
 - Ops Status API: `https://www.mind-reply.com/api/ops/status` maps each configured/fallback provider service to the active owner, required env var names, and next production action.
+- Booking checkout API: `https://www.mind-reply.com/api/checkout/booking-session` verifies paid professional-session checkout returns. Run `npm run db:migrate` after deploy so `bookings.payment_status`, `bookings.stripe_session_id`, and `bookings.stripe_payment_intent_id` exist before enabling live booking checkout.
 
 ## Analytics Verification
 

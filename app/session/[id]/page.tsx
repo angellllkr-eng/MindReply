@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { Calendar, CheckCircle2, Copy, MessageSquare, Phone, Video } from "lucide-react";
 
 type Booking = {
@@ -14,6 +14,8 @@ type Booking = {
   durationMinutes: number;
   totalPrice: number;
   status: "pending" | "confirmed" | "completed" | "cancelled";
+  paymentStatus?: string;
+  stripeSessionId?: string | null;
   clientName: string;
   clientEmail: string;
   notes: string | null;
@@ -38,6 +40,7 @@ function getRoomUrl(booking: Booking) {
 
 export default function SessionDeliveryPage() {
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
   const bookingId = Number(id);
   const [booking, setBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
@@ -72,6 +75,32 @@ export default function SessionDeliveryPage() {
       active = false;
     };
   }, [bookingId]);
+
+  useEffect(() => {
+    const checkout = searchParams.get("checkout");
+    const sessionId = searchParams.get("session_id");
+    if (checkout !== "success" || !sessionId || !bookingId) return;
+
+    let active = true;
+    fetch(`/api/checkout/booking-session?session_id=${encodeURIComponent(sessionId)}`)
+      .then((response) => response.json())
+      .then((data: { confirmed?: boolean; bookingId?: number }) => {
+        if (!active || !data.confirmed) return;
+        setBooking((current) => current ? {
+          ...current,
+          status: "confirmed",
+          paymentStatus: "paid",
+          stripeSessionId: sessionId,
+        } : current);
+      })
+      .catch((error) => {
+        console.warn("Booking checkout verification skipped:", error);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [bookingId, searchParams]);
 
   const roomUrl = useMemo(() => booking ? getRoomUrl(booking) : "", [booking]);
 
