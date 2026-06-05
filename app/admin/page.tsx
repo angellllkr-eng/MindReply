@@ -169,6 +169,7 @@ export default async function AdminPage() {
             { title: "Execute Tasks", href: "/tasks", body: "Run bounded route, health, reasoning, and deployment readiness tasks." },
             { title: "Orchestration API", href: "/api/orchestrate", body: "Inspect the multi-agent orchestration service readiness contract." },
             { title: "Background API", href: "/api/background", body: "Inspect the bounded reasoning-loop execution service readiness contract." },
+            { title: "Ops Status", href: "/api/ops/status", body: "Inspect provider readiness, fallback services, and active-agent ownership." },
             { title: "30 Active Agents", href: "/api/agents/active", body: "Inspect active acceleration desks for production, growth, trust, and intelligence." },
             { title: "60-Role Roster", href: "/api/agents/roster", body: "Inspect the permanent operator and professional-desk staffing map." },
             { title: "Growth Engine", href: "/api/growth/plan", body: "Inspect market expansion, visitor growth, ads, and conversion actions." },

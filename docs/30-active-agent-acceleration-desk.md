@@ -29,7 +29,8 @@ This desk activates 30 of the 60 permanent operating roles for immediate product
 ## Daily Command Rhythm
 
 1. Check `/api/health`, `/api/config/requirements`, `/api/agents/active`, and `/api/entitlements`.
-2. Run production smoke or review the latest scheduled smoke result.
-3. Review payment and auth readiness before ad spend increases.
-4. Review top solution pages, sitemap, and tracking events.
-5. Write one concise handoff: status, evidence, action, risk, next owner.
+2. Check `/api/ops/status` for fallback services, active owner, and next action.
+3. Run production smoke or review the latest scheduled smoke result.
+4. Review payment and auth readiness before ad spend increases.
+5. Review top solution pages, sitemap, and tracking events.
+6. Write one concise handoff: status, evidence, action, risk, next owner.
