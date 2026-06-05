@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!page) return {};
 
   return {
-    title: `${page.title} | MindReply`,
+    title: page.title,
     description: page.description,
     alternates: { canonical: absoluteUrl(`/solutions/${page.slug}`) },
     openGraph: {
