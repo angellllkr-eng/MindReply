@@ -21,6 +21,7 @@ const routes = [
   "/solutions/legal-counsel",
   "/solutions/financial-advisors",
   "/api/health",
+  "/api/checkout/booking-session",
   "/api/agents/active",
   "/api/agents/roster",
   "/api/growth/plan",

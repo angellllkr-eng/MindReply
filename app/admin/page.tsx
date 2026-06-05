@@ -175,6 +175,7 @@ export default async function AdminPage() {
             { title: "Growth Engine", href: "/api/growth/plan", body: "Inspect market expansion, visitor growth, ads, and conversion actions." },
             { title: "Env Requirements", href: "/api/config/requirements", body: "Inspect required production provider variables and what each service unlocks." },
             { title: "Entitlements", href: "/api/entitlements", body: "Inspect membership tier delivery, credits, access level, and fulfillment products." },
+            { title: "Booking Checkout", href: "/api/checkout/booking-session", body: "Inspect professional booking checkout readiness and paid-session verification." },
             { title: "Intelligence API", href: "/api/intelligence/analyze", body: "Inspect MR intent, valence, power-distance, and persuasion-frame readiness." },
           ].map((item) => (
             <Link key={item.href} href={item.href} className="bg-white border rounded-xl p-5 hover:shadow-md transition-all" style={{ borderColor: "hsl(40 25% 88%)" }}>

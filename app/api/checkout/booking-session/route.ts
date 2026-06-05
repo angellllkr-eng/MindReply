@@ -19,9 +19,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       configured: true,
       confirmed: false,
-      status: "missing_session_id",
+      status: "ready",
       fulfillment: { persisted: false, reason: "missing_session_id" },
-    }, { status: 400 });
+    });
   }
 
   try {

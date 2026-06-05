@@ -22,6 +22,7 @@ function configuredChecks() {
     auth: isClerkConfigured(),
     stripe: Boolean(process.env.STRIPE_SECRET_KEY && (process.env.STRIPE_PRICE_CURATOR || process.env.STRIPE_PRICE_STRATEGIST)),
     stripeWebhook: Boolean(process.env.STRIPE_WEBHOOK_SECRET),
+    bookingPayments: Boolean(hasDatabaseUrl() && process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET),
     analytics: Boolean(process.env.NEXT_PUBLIC_GTM_ID || process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || process.env.NEXT_PUBLIC_META_PIXEL_ID),
     monitoring: isMonitoringConfigured(),
     azureOpenAI: isAzureOpenAIConfigured(),
@@ -35,6 +36,7 @@ function ownerFor(requirement: string) {
   if (requirement === "auth") return byRole(/Clerk Session|Admin Access/i);
   if (requirement === "stripe") return byRole(/Stripe Checkout|Membership Activation/i);
   if (requirement === "stripeWebhook") return byRole(/Webhook Delivery/i);
+  if (requirement === "bookingPayments") return byRole(/Stripe Checkout|Webhook Delivery|Membership Activation/i);
   if (requirement === "analytics") return byRole(/Google Ads|Meta Pixel|Landing Page Conversion/i);
   if (requirement === "monitoring") return byRole(/Incident Commander|Vercel Deployment/i);
   if (requirement === "azureOpenAI") return byRole(/MRagent Quality|Dashboard Metrics/i);
@@ -49,6 +51,7 @@ function nextActionFor(status: ServiceCheck["status"], requirement: string) {
   if (requirement === "auth") return "Set Clerk keys and ADMIN_CLERK_IDS, then verify login, signup, dashboard, and admin.";
   if (requirement === "stripe") return "Set Stripe secret and tier price IDs, then run a checkout test.";
   if (requirement === "stripeWebhook") return "Set Stripe webhook signing secret and verify signed checkout events.";
+  if (requirement === "bookingPayments") return "Set DATABASE_URL, STRIPE_SECRET_KEY, and STRIPE_WEBHOOK_SECRET; run db:migrate; then verify a paid booking checkout.";
   if (requirement === "analytics") return "Set GTM, Google Ads, checkout conversion, and Meta Pixel IDs, then verify events.";
   if (requirement === "monitoring") return "Set SENTRY_DSN and trigger /api/monitoring/test.";
   if (requirement === "azureOpenAI") return "Set Azure OpenAI endpoint, key, deployment, and API version.";

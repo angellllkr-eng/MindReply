@@ -19,6 +19,7 @@ const requiredConfiguredChecks = [
   "auth",
   "stripe",
   "stripeWebhook",
+  "bookingPayments",
   "analytics",
   "monitoring",
   "siteUrl",

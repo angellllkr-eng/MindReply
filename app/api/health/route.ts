@@ -11,6 +11,7 @@ export async function GET() {
   const authConfigured = isClerkConfigured();
   const stripeConfigured = Boolean(process.env.STRIPE_SECRET_KEY && (process.env.STRIPE_PRICE_CURATOR || process.env.STRIPE_PRICE_STRATEGIST));
   const stripeWebhookConfigured = Boolean(process.env.STRIPE_WEBHOOK_SECRET);
+  const bookingPaymentsConfigured = Boolean(databaseConfigured && process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET);
   const analyticsConfigured = Boolean(process.env.NEXT_PUBLIC_GTM_ID || process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || process.env.NEXT_PUBLIC_META_PIXEL_ID);
   const siteUrlConfigured = Boolean(process.env.NEXT_PUBLIC_SITE_URL);
   const agentSummary = agentRosterSummary();
@@ -25,6 +26,8 @@ export async function GET() {
     stripeConfigured,
     stripeWebhook: stripeWebhookConfigured ? "configured" : "fallback",
     stripeWebhookConfigured,
+    bookingPayments: bookingPaymentsConfigured ? "configured" : "fallback",
+    bookingPaymentsConfigured,
     analytics: analyticsConfigured ? "configured" : "fallback",
     analyticsConfigured,
     monitoring: isMonitoringConfigured() ? "configured" : "fallback",

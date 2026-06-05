@@ -43,6 +43,13 @@ export const productionRequirements: ProductionRequirement[] = [
     unlocks: "Signed checkout/subscription events, payment failure tracking, and membership event metrics.",
   },
   {
+    service: "Professional Booking Checkout",
+    keys: ["DATABASE_URL", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"],
+    healthCheck: "bookingPayments",
+    publicValue: false,
+    unlocks: "Paid professional bookings, pending-to-confirmed session delivery, Stripe return verification, and booking webhook fulfillment.",
+  },
+  {
     service: "Analytics",
     keys: ["NEXT_PUBLIC_GTM_ID", "NEXT_PUBLIC_GOOGLE_ADS_ID", "NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL", "NEXT_PUBLIC_GOOGLE_ADS_CHECKOUT_CONVERSION_LABEL", "NEXT_PUBLIC_META_PIXEL_ID"],
     healthCheck: "analytics",
