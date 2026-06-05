@@ -34,6 +34,7 @@ Payments:
 - `STRIPE_PRICE_STRATEGIST`
 - `STRIPE_PRICE_SOVEREIGN`
 - `STRIPE_WEBHOOK_SECRET`
+- Credit-pack checkout uses `STRIPE_SECRET_KEY` with inline price data for 5-credit and 20-credit packs.
 
 Monitoring:
 - `SENTRY_DSN`
@@ -116,6 +117,7 @@ Production env readiness:
 - Ops Report API: `https://www.mind-reply.com/api/ops/report` previews the owner-only twice-daily report sent to `angelllkr@gmail.com`; requires `Bearer REVENUE_OWNER_SECRET`.
 - Revenue Observer API: `https://www.mind-reply.com/api/revenue/observer` tracks the owner-only 10-sales/day target, first-week sales gap, and forecast; requires `Bearer REVENUE_OWNER_SECRET`.
 - Booking checkout API: `https://www.mind-reply.com/api/checkout/booking-session` verifies paid professional-session checkout returns. Run `npm run db:migrate` after deploy so `bookings.payment_status`, `bookings.stripe_session_id`, and `bookings.stripe_payment_intent_id` exist before enabling live booking checkout.
+- Credit checkout API: `https://www.mind-reply.com/api/checkout/credits` reports readiness for micro-tool credit packs and opens Stripe Checkout from the homepage credit buttons when `STRIPE_SECRET_KEY` is configured.
 
 ## Analytics Verification
 

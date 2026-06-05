@@ -38,6 +38,15 @@ function getRoomUrl(booking: Booking) {
   return `https://meet.jit.si/${room}`;
 }
 
+function getInitials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("") || "MR";
+}
+
 export default function SessionDeliveryPage() {
   const { id } = useParams<{ id: string }>();
   const searchParams = useSearchParams();
@@ -128,6 +137,12 @@ export default function SessionDeliveryPage() {
 
   const isLiveCall = booking.mode === "video" || booking.mode === "voice";
   const callIcon = booking.mode === "video" ? <Video size={18} /> : booking.mode === "voice" ? <Phone size={18} /> : <MessageSquare size={18} />;
+  const professionalInitials = getInitials(booking.professionalName);
+  const deliveryCopy = booking.mode === "video"
+    ? "AI-human video presence is ready with the field professional room link, pre-session brief, and live preparation tools."
+    : booking.mode === "voice"
+      ? "AI-human voice presence is ready with the field professional call room, agenda brief, and tone preparation."
+      : "Text delivery is ready with a field professional brief workspace for precise message review and asynchronous guidance.";
 
   async function copyRoom() {
     await navigator.clipboard.writeText(roomUrl);
@@ -208,6 +223,19 @@ export default function SessionDeliveryPage() {
           </section>
 
           <aside className="rounded-2xl border bg-white p-6" style={{ borderColor: "hsl(40 25% 88%)" }}>
+            <div className="mb-6 rounded-2xl border p-5" style={{ borderColor: "rgba(201,169,97,0.38)", background: "linear-gradient(145deg, hsl(220 55% 20%), hsl(220 45% 13%))" }}>
+              <div className="flex items-center gap-4">
+                <div className="relative flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full border border-[rgba(248,245,240,0.2)] bg-[hsl(43_80%_60%)] shadow-[0_18px_45px_rgba(0,0,0,0.25)]">
+                  <span className="font-serif text-2xl font-bold text-[hsl(220_45%_13%)]">{professionalInitials}</span>
+                  <span className="absolute bottom-1 right-1 h-4 w-4 rounded-full border-2 border-[hsl(220_45%_13%)] bg-emerald-400" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-[hsl(43_80%_60%)]">AI-human call layer</p>
+                  <h2 className="mt-1 font-serif text-xl font-bold text-[hsl(43_70%_88%)]">{booking.professionalName}</h2>
+                  <p className="mt-2 text-xs leading-relaxed text-[rgba(248,245,240,0.7)]">{deliveryCopy}</p>
+                </div>
+              </div>
+            </div>
             <h2 className="font-serif text-2xl font-bold" style={{ color: "hsl(220 45% 13%)" }}>Pre-session brief</h2>
             <div className="mt-5 grid gap-3">
               {[

@@ -148,9 +148,9 @@ export default function Book() {
   }, {});
 
   const modes = [
-    { key: "text" as Mode, label: "Text / Chat", icon: <MessageSquare size={20} />, desc: `GBP ${professional.priceText}/hr - async messaging for precise written guidance` },
-    { key: "voice" as Mode, label: "Voice Call", icon: <Phone size={20} />, desc: `GBP ${professional.priceVoice}/hr - private real-time advisory call` },
-    { key: "video" as Mode, label: "Video Call", icon: <Video size={20} />, desc: `GBP ${professional.priceVideo}/hr - full video consultation for complex issues` },
+    { key: "text" as Mode, label: "Text / Chat", icon: <MessageSquare size={20} />, desc: `GBP ${professional.priceText}/hr - field professional text workspace for precise written guidance` },
+    { key: "voice" as Mode, label: "Voice Call", icon: <Phone size={20} />, desc: `GBP ${professional.priceVoice}/hr - private AI-human voice room with a field professional brief` },
+    { key: "video" as Mode, label: "Video Call", icon: <Video size={20} />, desc: `GBP ${professional.priceVideo}/hr - AI-human video consultation room for complex issues` },
   ];
 
   async function handleConfirm() {

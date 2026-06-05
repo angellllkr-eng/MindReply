@@ -34,6 +34,8 @@ const launchStatus = [
 export default function Home() {
   const [featured, setFeatured] = useState<Professional[]>([]);
   const [loading, setLoading] = useState(true);
+  const [creditCheckout, setCreditCheckout] = useState<number | null>(null);
+  const [creditError, setCreditError] = useState("");
 
   useEffect(() => {
     fetch("/api/professionals/featured").then((r) => r.json()).then((f) => {
@@ -41,6 +43,31 @@ export default function Home() {
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
+
+  async function startCreditCheckout(credits: 5 | 20) {
+    setCreditCheckout(credits);
+    setCreditError("");
+
+    try {
+      const response = await fetch("/api/checkout/credits", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ credits }),
+      });
+      const data = await response.json();
+
+      if (!response.ok || !data.url) {
+        setCreditError(data.error ?? "Credit checkout is not available yet.");
+        return;
+      }
+
+      window.location.href = data.url;
+    } catch {
+      setCreditError("Credit checkout is not available right now.");
+    } finally {
+      setCreditCheckout(null);
+    }
+  }
 
   return (
     <div className="min-h-screen" style={{ background: "hsl(40 20% 96%)" }}>
@@ -270,9 +297,14 @@ export default function Home() {
           <h3 className="font-serif text-xl font-bold mb-2" style={{ color: "hsl(220 45% 13%)" }}>Expand Your Communication Intelligence</h3>
           <p className="text-sm mb-6" style={{ color: "hsl(220 25% 45%)" }}>Purchase credit packs for unlimited access to micro-tools and premium features.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-6 py-3 rounded-lg border font-semibold text-sm" style={{ borderColor: "hsl(220 55% 20%)", color: "hsl(220 55% 20%)" }}>5 Credits • $9</button>
-            <button className="px-6 py-3 rounded-lg font-semibold text-sm" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}>20 Credits • $29 (Best Value)</button>
+            <button onClick={() => startCreditCheckout(5)} disabled={creditCheckout !== null} className="px-6 py-3 rounded-lg border font-semibold text-sm disabled:opacity-50" style={{ borderColor: "hsl(220 55% 20%)", color: "hsl(220 55% 20%)" }}>
+              {creditCheckout === 5 ? "Opening checkout..." : "5 Credits - £9"}
+            </button>
+            <button onClick={() => startCreditCheckout(20)} disabled={creditCheckout !== null} className="px-6 py-3 rounded-lg font-semibold text-sm disabled:opacity-50" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}>
+              {creditCheckout === 20 ? "Opening checkout..." : "20 Credits - £29 (Best Value)"}
+            </button>
           </div>
+          {creditError && <p className="mt-4 text-xs font-semibold" style={{ color: "#991b1b" }}>{creditError}</p>}
         </div>
       </section>
 

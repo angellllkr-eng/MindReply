@@ -24,6 +24,7 @@ const routes = [
   "/api/health",
   "/api/agent",
   "/api/checkout/booking-session",
+  "/api/checkout/credits",
   "/api/agents/active",
   "/api/agents/roster",
   "/api/agents/learning",
