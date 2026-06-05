@@ -1,4 +1,5 @@
 import { logMetric } from "@/lib/metrics";
+import { runAzureChatCompletion } from "@/lib/azure-openai";
 
 export type ToolSlug =
   | "text-refiner"
@@ -30,6 +31,7 @@ export type ToolResult = {
     warmth: number;
     brevity: number;
   };
+  source: "azure-openai" | "local";
   metricLogged: boolean;
 };
 
@@ -318,6 +320,53 @@ function culturalAdapter(text: string) {
   ].join("\n");
 }
 
+function localToolResult(slug: ToolSlug, text: string, tone?: string) {
+  if (slug === "text-refiner") return refineText(text);
+  if (slug === "email-polisher") return polishEmail(text, tone);
+  if (slug === "call-scripter") return callScripter(text);
+  if (slug === "planning-assistant") return planningAssistant(text);
+  if (slug === "correction-engine") return correctionEngine(text);
+  if (slug === "teaching-optimizer") return teachingOptimizer(text);
+  if (slug === "lexicon-refiner") return lexiconRefiner(text);
+  if (slug === "tone-adjuster") return adjustTone(text, tone);
+  if (slug === "tone-calibrator") return toneCalibrator(text, tone);
+  if (slug === "shortener") return shorten(text);
+  if (slug === "expander") return expand(text);
+  if (slug === "professional-rewrite") return professionalRewrite(text);
+  if (slug === "structure-architect") return structureArchitect(text);
+  if (slug === "cultural-adapter") return culturalAdapter(text);
+  return clarityBoost(text);
+}
+
+async function azureToolResult(slug: ToolSlug, text: string, tone?: string) {
+  const catalog = toolCatalog[slug];
+  return runAzureChatCompletion({
+    temperature: 0.28,
+    maxTokens: 520,
+    messages: [
+      {
+        role: "system",
+        content: [
+          "You are MindReply's MR intelligence layer.",
+          "Rewrite and process professional communication with calm authority, emotional intelligence, subconscious intent awareness, and precise next-action framing.",
+          "Return only the finished user-facing result. Do not mention policies, implementation, model details, or internal analysis.",
+        ].join(" "),
+      },
+      {
+        role: "user",
+        content: [
+          `Tool: ${catalog.name}`,
+          `Action: ${catalog.action}`,
+          `Target tone: ${tone ?? "professional"}`,
+          "",
+          "Input:",
+          text,
+        ].join("\n"),
+      },
+    ],
+  });
+}
+
 export function isToolSlug(value: string): value is ToolSlug {
   return value in toolCatalog;
 }
@@ -329,23 +378,18 @@ export async function runTool(slug: ToolSlug, input: { text: string; tone?: stri
   }
 
   const catalog = toolCatalog[slug];
-  let result: string;
+  let result = localToolResult(slug, text, input.tone);
+  let source: ToolResult["source"] = "local";
 
-  if (slug === "text-refiner") result = refineText(text);
-  else if (slug === "email-polisher") result = polishEmail(text, input.tone);
-  else if (slug === "call-scripter") result = callScripter(text);
-  else if (slug === "planning-assistant") result = planningAssistant(text);
-  else if (slug === "correction-engine") result = correctionEngine(text);
-  else if (slug === "teaching-optimizer") result = teachingOptimizer(text);
-  else if (slug === "lexicon-refiner") result = lexiconRefiner(text);
-  else if (slug === "tone-adjuster") result = adjustTone(text, input.tone);
-  else if (slug === "tone-calibrator") result = toneCalibrator(text, input.tone);
-  else if (slug === "shortener") result = shorten(text);
-  else if (slug === "expander") result = expand(text);
-  else if (slug === "professional-rewrite") result = professionalRewrite(text);
-  else if (slug === "structure-architect") result = structureArchitect(text);
-  else if (slug === "cultural-adapter") result = culturalAdapter(text);
-  else result = clarityBoost(text);
+  try {
+    const azureResult = await azureToolResult(slug, text, input.tone);
+    if (azureResult) {
+      result = azureResult;
+      source = "azure-openai";
+    }
+  } catch (error) {
+    console.warn(`Tool ${slug} using local intelligence:`, error);
+  }
 
   const analysis = score(text, result);
   const metric = await logMetric({
@@ -353,6 +397,7 @@ export async function runTool(slug: ToolSlug, input: { text: string; tone?: stri
     eventName: `tool.${slug}`,
     eventValue: {
       creditCost: catalog.creditCost,
+      source,
       inputLength: text.length,
       outputLength: result.length,
       analysis,
@@ -371,6 +416,7 @@ export async function runTool(slug: ToolSlug, input: { text: string; tone?: stri
       "Remove any remaining ambiguity before sending.",
     ],
     analysis,
+    source,
     metricLogged: metric.logged,
   };
 }

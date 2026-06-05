@@ -25,6 +25,7 @@ type ToolResponse = {
   suggestions?: string[];
   analysis?: { clarity: number; authority: number; warmth: number; brevity: number };
   creditCost?: number;
+  source?: "azure-openai" | "local";
   metricLogged?: boolean;
 };
 
@@ -161,6 +162,12 @@ export default function Tools() {
 
               {result?.result && (
                 <div className="space-y-4">
+                  <div className="flex items-center justify-between rounded-xl border px-3 py-2 text-xs" style={{ borderColor: "hsl(40 25% 88%)", color: "hsl(220 25% 45%)" }}>
+                    <span>Intelligence source</span>
+                    <span className="font-semibold" style={{ color: result.source === "azure-openai" ? "hsl(43 80% 38%)" : "hsl(220 45% 13%)" }}>
+                      {result.source === "azure-openai" ? "Azure OpenAI" : "Local fallback"}
+                    </span>
+                  </div>
                   <div className="rounded-xl p-4 text-sm leading-relaxed whitespace-pre-line border border-[hsl(40_25%_88%)]" style={{ background: "hsl(40 20% 92% / 0.5)", color: "hsl(220 45% 13%)" }}>{result.result}</div>
 
                   {result.analysis && (

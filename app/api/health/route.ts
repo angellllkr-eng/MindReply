@@ -4,6 +4,7 @@ import { isClerkConfigured } from "@/lib/admin";
 import { isMonitoringConfigured } from "@/lib/monitoring";
 import { agentRosterSummary } from "@/lib/agent-roster";
 import { summarizeProductionRequirements } from "@/lib/production-requirements";
+import { isAzureOpenAIConfigured } from "@/lib/azure-openai";
 
 export async function GET() {
   const databaseConfigured = hasDatabaseUrl();
@@ -30,7 +31,7 @@ export async function GET() {
     monitoringConfigured: isMonitoringConfigured(),
     siteUrl: siteUrlConfigured ? "configured" : "fallback",
     siteUrlConfigured,
-    azureOpenAI: process.env.AZURE_OPENAI_ENDPOINT && process.env.AZURE_OPENAI_API_KEY && process.env.AZURE_OPENAI_DEPLOYMENT ? "configured" : "fallback",
+    azureOpenAI: isAzureOpenAIConfigured() ? "configured" : "fallback",
     orchestrator: "ready",
     backgroundReasoning: "ready",
     agentRoster: "ready",

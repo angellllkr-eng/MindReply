@@ -64,6 +64,7 @@ Production env readiness:
 - Requirements API: `https://www.mind-reply.com/api/config/requirements`
 - Health API includes a `requirements` array that maps each fallback service to exact env var names and what that service unlocks.
 - Entitlement API: `https://www.mind-reply.com/api/entitlements` returns the tier delivery catalog that checkout verification and Stripe webhooks use for product access.
+- Intelligence API: `https://www.mind-reply.com/api/intelligence/analyze` reports readiness for MR intent, emotional-valence, power-distance, clarity, and persuasion-frame analysis. POST `{ "text": "..." }` to receive the full analysis payload.
 
 ## Analytics Verification
 
