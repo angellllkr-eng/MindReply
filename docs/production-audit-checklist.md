@@ -122,6 +122,13 @@ vercel env pull .env.production.local --environment=production --yes
 npm run env:verify -- --file=.env.production.local
 ```
 
+If values are stored in a local secure `.env.production.local` file and the Vercel CLI is authenticated, dry-run the upload first. The command prints key names only, never values:
+
+```bash
+npm run env:vercel-upload -- --file=.env.production.local --environment=production
+npm run env:vercel-upload -- --file=.env.production.local --environment=production --apply
+```
+
 ## Automated Checks
 
 Route availability:
@@ -136,6 +143,7 @@ Production env readiness:
 - Pre-env route/gate evidence: `ALLOW_FALLBACK=1 PRODUCTION_BASE_URL=https://www.mind-reply.com npm run evidence:production`
 - Env setup queue: `npm run env:vercel-plan`
 - Local env verifier: `npm run env:verify -- --file=.env.production.local`
+- Local Vercel env uploader: `npm run env:vercel-upload -- --file=.env.production.local --environment=production`
 - Expected: `database`, `auth`, `stripe`, `stripeWebhook`, `bookingPayments`, `analytics`, `monitoring`, `slack`, `coreIntegrations`, `opsReports`, `siteUrl`, and `azureOpenAI` are `configured`.
 - Until encrypted provider env vars are added, this command is expected to fail and list the fallback checks.
 - Current production status on June 6, 2026: route health is online, but the 12 provider-backed checks report `fallback` until production env vars are set in the active hosting project.

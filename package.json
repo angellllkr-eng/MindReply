@@ -13,6 +13,7 @@
     "evidence:production": "tsx scripts/collect-production-evidence.ts",
     "env:vercel-plan": "tsx scripts/print-vercel-env-plan.ts",
     "env:verify": "tsx scripts/verify-provider-env.ts",
+    "env:vercel-upload": "tsx scripts/upload-vercel-env.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx scripts/seed.ts",
