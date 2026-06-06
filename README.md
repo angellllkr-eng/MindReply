@@ -30,8 +30,12 @@ The app renders with typed fallback data when `DATABASE_URL` is not configured. 
 | `AZURE_OPENAI_API_KEY` | local, Vercel, Azure runtime | Optional Azure OpenAI API key |
 | `AZURE_OPENAI_DEPLOYMENT` | local, Vercel, Azure runtime | Optional Azure OpenAI deployment name |
 | `AZURE_OPENAI_API_VERSION` | local, Vercel, Azure runtime | Azure OpenAI API version |
+| `OPENAI_API_KEY` | local, Vercel, Azure runtime | Alternate AI provider key for MRagent and tools |
+| `OPENAI_MODEL` | local, Vercel, Azure runtime | Optional OpenAI model override; defaults to `gpt-4o-mini` |
 | `AZURE_WEBAPP_NAME` | GitHub Actions secret | Azure App Service name |
 | `AZURE_WEBAPP_PUBLISH_PROFILE` | GitHub Actions secret | Azure publish profile for deployment |
+
+AI provider setup accepts either the Azure OpenAI env group or `OPENAI_API_KEY`. Use `npm run ai:verify` to confirm the requirement and source-label wiring without printing values.
 
 Vercel settings:
 
@@ -100,7 +104,7 @@ npm run db:seed
 
 ## Deployment
 
-- `.github/workflows/ci.yml` runs `npm ci`, `npm run typecheck`, and `npm run build`.
+- `.github/workflows/ci.yml` runs `npm ci`, `npm run typecheck`, `npm run agent:verify`, `npm run marketing:verify`, `npm run ai:verify`, and `npm run build`.
 - `.github/workflows/azure.yml` builds the Next.js app, pushes a Docker image to GHCR, deploys it to Azure Web App, and seeds the database.
 - The previous broad multi-provider deployment workflow has been removed to avoid unrelated secrets and automatic version bumps.
 - `scripts/azure-hardening.sh` applies Azure App Service health checks and optional Azure OpenAI, Search, and NAT hardening from environment variables.

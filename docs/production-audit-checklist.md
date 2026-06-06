@@ -7,10 +7,16 @@ Add these to the active production hosting project for `mind-reply.com`.
 Core:
 - `NEXT_PUBLIC_SITE_URL=https://www.mind-reply.com`
 - `DATABASE_URL`
-- `AZURE_OPENAI_ENDPOINT`
-- `AZURE_OPENAI_API_KEY`
-- `AZURE_OPENAI_DEPLOYMENT`
-- `AZURE_OPENAI_API_VERSION=2024-02-15-preview`
+
+AI Provider, choose one:
+- Azure OpenAI group:
+  - `AZURE_OPENAI_ENDPOINT`
+  - `AZURE_OPENAI_API_KEY`
+  - `AZURE_OPENAI_DEPLOYMENT`
+  - `AZURE_OPENAI_API_VERSION=2024-02-15-preview`
+- OpenAI group:
+  - `OPENAI_API_KEY`
+  - `OPENAI_MODEL=gpt-4o-mini` optional
 
 Analytics:
 - `NEXT_PUBLIC_GTM_ID`
@@ -108,6 +114,9 @@ vercel env add AZURE_OPENAI_ENDPOINT production
 vercel env add AZURE_OPENAI_API_KEY production
 vercel env add AZURE_OPENAI_DEPLOYMENT production
 vercel env add AZURE_OPENAI_API_VERSION production
+# Alternative AI provider path:
+vercel env add OPENAI_API_KEY production
+vercel env add OPENAI_MODEL production
 vercel --prod
 ```
 
@@ -145,7 +154,8 @@ Production env readiness:
 - Env setup queue: `npm run env:vercel-plan`
 - Local env verifier: `npm run env:verify -- --file=.env.production.local`
 - Local Vercel env uploader: `npm run env:vercel-upload -- --file=.env.production.local --environment=production`
-- Expected: `database`, `auth`, `stripe`, `stripeWebhook`, `bookingPayments`, `analytics`, `monitoring`, `slack`, `coreIntegrations`, `opsReports`, `siteUrl`, and `azureOpenAI` are `configured`.
+- AI provider verifier: `npm run ai:verify`
+- Expected: `database`, `auth`, `stripe`, `stripeWebhook`, `bookingPayments`, `analytics`, `monitoring`, `slack`, `coreIntegrations`, `opsReports`, `siteUrl`, and `azureOpenAI` are `configured`. The `azureOpenAI` internal health key now accepts either the Azure OpenAI env group or `OPENAI_API_KEY`.
 - Until encrypted provider env vars are added, this command is expected to fail and list the fallback checks.
 - Current production status on June 6, 2026: route health is online, but the 12 provider-backed checks report `fallback` until production env vars are set in the active hosting project.
 - Requirements API: `https://www.mind-reply.com/api/config/requirements`
