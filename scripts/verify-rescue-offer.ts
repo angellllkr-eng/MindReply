@@ -15,12 +15,14 @@ function readProjectFile(path: string) {
 const rescueCheckoutRoutePath = "app/api/checkout/rescue/route.ts";
 const rescueSessionRoutePath = "app/api/checkout/rescue-session/route.ts";
 const rescuePagePath = "app/rescue/page.tsx";
+const rescueWorkspacePath = "app/rescue/workspace/page.tsx";
 const purchasePanelPath = "components/PurchaseSuccessPanel.tsx";
 const seoPath = "lib/seo.ts";
 
 const checkoutRoute = readProjectFile(rescueCheckoutRoutePath);
 const sessionRoute = readProjectFile(rescueSessionRoutePath);
 const rescuePage = readProjectFile(rescuePagePath);
+const rescueWorkspace = readProjectFile(rescueWorkspacePath);
 const purchasePanel = readProjectFile(purchasePanelPath);
 const seo = readProjectFile(seoPath);
 
@@ -46,6 +48,14 @@ assert(
   "Message Rescue page must start checkout through /api/checkout/rescue.",
 );
 assert(
+  /\/api\/tools\/email-polisher/.test(rescueWorkspace),
+  "Message Rescue workspace must deliver output through the existing tool API.",
+);
+assert(
+  /mindreply\.rescue\.workspace/.test(rescueWorkspace),
+  "Message Rescue workspace must persist the buyer's three message slots.",
+);
+assert(
   /Your next\s*{messageRescueOffer\.messages}\s*difficult messages finished in\s*{messageRescueOffer\.deliveryMinutes}\s*minutes/.test(rescuePage),
   "Message Rescue page must lead with the fast outcome copy.",
 );
@@ -61,6 +71,8 @@ assert(
   /data\.confirmed[\s\S]*window\.localStorage\.setItem\("mindreply\.rescue"/.test(purchasePanel),
   "Message Rescue activation must require confirmed server verification.",
 );
+assert(/\/rescue\/workspace/.test(purchasePanel), "Verified checkout success must link to the Message Rescue workspace.");
 assert(/"\/rescue"/.test(seo), "Message Rescue route must be included in SEO public routes.");
+assert(/"\/rescue\/workspace"/.test(seo), "Message Rescue workspace must be included in SEO public routes.");
 
 console.log("Message Rescue offer verification passed.");

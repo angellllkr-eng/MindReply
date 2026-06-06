@@ -39,6 +39,7 @@ export const publicRoutes = [
   "/tools/email-polisher",
   "/memberships",
   "/rescue",
+  "/rescue/workspace",
   "/premium",
   "/enterprise",
   "/lexicons",

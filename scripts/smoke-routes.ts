@@ -23,6 +23,7 @@ const routes = [
   { path: "/admin" },
   { path: "/memberships" },
   { path: "/rescue" },
+  { path: "/rescue/workspace" },
   { path: "/integrations" },
   { path: "/lexicons" },
   { path: "/solutions/psychologists" },

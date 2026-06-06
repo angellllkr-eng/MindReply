@@ -93,6 +93,7 @@ const googleAdsCheckoutConversionLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_CHEC
 const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
 const productAccess = [
+  { href: "/rescue/workspace", title: "Message Rescue Workspace", body: "Paste the difficult messages and leave with send-ready wording." },
   { href: "/tools/email-polisher", title: "Email Polisher", body: "Send high-trust messages with calmer executive language." },
   { href: "/tools/text-refiner", title: "Text Refiner", body: "Shape notes into composed, intentional communication." },
   { href: "/lexicons", title: "Specialist Lexicons", body: "Use clinical, legal, finance, and executive language patterns." },
