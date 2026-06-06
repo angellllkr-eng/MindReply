@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { getSolutionLandingAudience, solutionLandingEventName } from "@/lib/marketing-events";
 
 declare global {
   interface Window {
@@ -16,12 +17,6 @@ const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
 const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
 const googleAdsConversionLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL;
 const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
-const solutionLandingPaths = new Set([
-  "/solutions/psychologists",
-  "/solutions/legal-counsel",
-  "/solutions/executives",
-  "/solutions/financial-advisors",
-]);
 
 export default function MarketingPixels() {
   const pathname = usePathname();
@@ -45,10 +40,10 @@ export default function MarketingPixels() {
       window.fbq("track", "PageView");
     }
 
-    if (solutionLandingPaths.has(window.location.pathname)) {
-      const audience = window.location.pathname.split("/").pop() || "unknown";
+    const audience = getSolutionLandingAudience(window.location.pathname);
+    if (audience) {
       window.dataLayer.push({
-        event: "solution_landing_conversion_intent",
+        event: solutionLandingEventName,
         audience,
         page_path: window.location.pathname,
       });

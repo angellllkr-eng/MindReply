@@ -10,6 +10,7 @@
     "typecheck": "next typegen && tsc --noEmit",
     "smoke": "tsx scripts/smoke-routes.ts",
     "agent:verify": "tsx scripts/verify-agent-behavior.ts",
+    "marketing:verify": "tsx scripts/verify-marketing-events.ts",
     "audit:production": "tsx scripts/audit-production-health.ts",
     "evidence:production": "tsx scripts/collect-production-evidence.ts",
     "env:vercel-plan": "tsx scripts/print-vercel-env-plan.ts",
