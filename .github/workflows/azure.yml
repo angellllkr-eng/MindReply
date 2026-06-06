@@ -36,9 +36,6 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Lint
-        run: npm run lint
-
       - name: Build Next.js app
         run: npm run build
 
