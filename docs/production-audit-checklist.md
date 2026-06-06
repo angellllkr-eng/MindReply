@@ -141,6 +141,7 @@ Production env readiness:
 - Command: `PRODUCTION_BASE_URL=https://www.mind-reply.com npm run audit:production`
 - Evidence bundle: `PRODUCTION_BASE_URL=https://www.mind-reply.com npm run evidence:production`
 - Pre-env route/gate evidence: `ALLOW_FALLBACK=1 PRODUCTION_BASE_URL=https://www.mind-reply.com npm run evidence:production`
+- Owner-only evidence: `OWNER_EVIDENCE_REQUIRED=1 REVENUE_OWNER_SECRET=<local secret> PRODUCTION_BASE_URL=https://www.mind-reply.com npm run evidence:production`
 - Env setup queue: `npm run env:vercel-plan`
 - Local env verifier: `npm run env:verify -- --file=.env.production.local`
 - Local Vercel env uploader: `npm run env:vercel-upload -- --file=.env.production.local --environment=production`

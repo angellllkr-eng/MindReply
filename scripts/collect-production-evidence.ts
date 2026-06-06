@@ -1,5 +1,7 @@
 const baseUrl = (process.env.PRODUCTION_BASE_URL || process.env.SMOKE_BASE_URL || "https://www.mind-reply.com").replace(/\/$/, "");
 const allowFallback = process.env.ALLOW_FALLBACK === "1";
+const ownerSecret = process.env.REVENUE_OWNER_SECRET?.trim() || process.env.OWNER_BEARER_TOKEN?.trim() || "";
+const ownerEvidenceRequired = process.env.OWNER_EVIDENCE_REQUIRED === "1";
 
 type HealthResponse = {
   status: string;
@@ -36,14 +38,45 @@ type AccelerationResponse = {
   multiplier: number;
 };
 
+type RevenueObservationResponse = {
+  status: string;
+  targetPerDay: number;
+  todaySales: number | null;
+  measurement: {
+    source: "database" | "fallback";
+  };
+};
+
+type OpsReportResponse = {
+  status: string;
+  service: string;
+  recipient: string;
+  salesObserver: RevenueObservationResponse;
+  operations: {
+    fallbackCount: number;
+  };
+};
+
+type PermanentAgentsResponse = {
+  status: string;
+  staffing: {
+    totalPermanentRoles: number;
+    activeAutomationDesks: number;
+  };
+  revenueTarget: {
+    dailySales: number;
+    todaySales: number | null;
+  };
+};
+
 type EvidenceCheck = {
   name: string;
   status: "pass" | "fail" | "warn";
   evidence: string;
 };
 
-async function getJson<T>(path: string) {
-  const response = await fetch(`${baseUrl}${path}`, { redirect: "manual" });
+async function getJson<T>(path: string, headers?: HeadersInit) {
+  const response = await fetch(`${baseUrl}${path}`, { headers, redirect: "manual" });
   if (!response.ok) {
     throw new Error(`${path} failed: ${response.status} ${response.statusText}`);
   }
@@ -121,6 +154,41 @@ async function main() {
     status: ownerGateStatuses.every((status) => status === 401) ? "pass" : "fail",
     evidence: `/api/revenue/observer=${ownerGateStatuses[0]}, /api/ops/report=${ownerGateStatuses[1]}, /api/agents/permanent=${ownerGateStatuses[2]}`,
   });
+
+  if (ownerSecret) {
+    try {
+      const ownerHeaders = { authorization: `Bearer ${ownerSecret}` };
+      const [revenue, report, permanent] = await Promise.all([
+        getJson<RevenueObservationResponse>("/api/revenue/observer", ownerHeaders),
+        getJson<OpsReportResponse>("/api/ops/report", ownerHeaders),
+        getJson<PermanentAgentsResponse>("/api/agents/permanent", ownerHeaders),
+      ]);
+      const backedByProviders = revenue.measurement.source === "database" && report.operations.fallbackCount === 0;
+
+      checks.push({
+        name: "authorized owner evidence",
+        status: backedByProviders ? "pass" : allowFallback ? "warn" : "fail",
+        evidence: [
+          `revenue=${revenue.status}/${revenue.measurement.source}`,
+          `sales=${revenue.todaySales ?? "unmeasured"}/${revenue.targetPerDay}`,
+          `ops=${report.status}/${report.operations.fallbackCount} fallback`,
+          `agents=${permanent.staffing.activeAutomationDesks}/${permanent.staffing.totalPermanentRoles}`,
+        ].join(", "),
+      });
+    } catch (error) {
+      checks.push({
+        name: "authorized owner evidence",
+        status: "fail",
+        evidence: error instanceof Error ? error.message : String(error),
+      });
+    }
+  } else {
+    checks.push({
+      name: "authorized owner evidence",
+      status: ownerEvidenceRequired ? "fail" : "warn",
+      evidence: "skipped; set REVENUE_OWNER_SECRET or OWNER_BEARER_TOKEN locally to verify owner-only payloads",
+    });
+  }
 
   const seoStatuses = await Promise.all([
     statusFor("/sitemap.xml"),
