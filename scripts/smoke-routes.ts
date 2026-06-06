@@ -1,4 +1,6 @@
 const baseUrl = (process.env.SMOKE_BASE_URL || "http://127.0.0.1:3000").replace(/\/$/, "");
+const retryAttempts = Number(process.env.CHECK_RETRY_ATTEMPTS || 3);
+const retryDelayMs = Number(process.env.CHECK_RETRY_DELAY_MS || 500);
 
 type SmokeRoute = {
   path: string;
@@ -55,9 +57,31 @@ const routes = [
   { path: "/sitemap.xml" },
 ] satisfies SmokeRoute[];
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchWithRetry(url: string, init: RequestInit) {
+  let lastError: unknown;
+  const attempts = Math.max(1, retryAttempts);
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await fetch(url, init);
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) {
+        await sleep(retryDelayMs * attempt);
+      }
+    }
+  }
+
+  throw lastError;
+}
+
 async function checkRoute(route: SmokeRoute) {
   const url = `${baseUrl}${route.path}`;
-  const response = await fetch(url, { redirect: "manual" });
+  const response = await fetchWithRetry(url, { redirect: "manual" });
   const ok = route.expectedStatuses
     ? route.expectedStatuses.includes(response.status)
     : response.status >= 200 && response.status < 400;

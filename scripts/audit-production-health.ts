@@ -1,4 +1,6 @@
 const baseUrl = (process.env.SMOKE_BASE_URL || process.env.PRODUCTION_BASE_URL || "https://www.mind-reply.com").replace(/\/$/, "");
+const retryAttempts = Number(process.env.CHECK_RETRY_ATTEMPTS || 3);
+const retryDelayMs = Number(process.env.CHECK_RETRY_DELAY_MS || 500);
 
 type HealthResponse = {
   status: string;
@@ -48,8 +50,30 @@ const requiredConfiguredChecks = [
   "azureOpenAI",
 ] as const;
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchWithRetry(url: string) {
+  let lastError: unknown;
+  const attempts = Math.max(1, retryAttempts);
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await fetch(url);
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) {
+        await sleep(retryDelayMs * attempt);
+      }
+    }
+  }
+
+  throw lastError;
+}
+
 async function getJson<T>(path: string) {
-  const response = await fetch(`${baseUrl}${path}`);
+  const response = await fetchWithRetry(`${baseUrl}${path}`);
   if (!response.ok) {
     throw new Error(`${path} failed: ${response.status} ${response.statusText}`);
   }
