@@ -35,11 +35,32 @@ type ActiveAgentStatus = {
   };
 };
 
+type ExecutionQueue = {
+  status: string;
+  mode: string;
+  fallbackCount: number;
+  itemCount: number;
+  items: Array<{
+    id: string;
+    priority: "P0" | "P1";
+    lane: string;
+    ownerId: string;
+    ownerRole: string;
+    service: string;
+    action: string;
+    actionRoute: string;
+    evidenceRequired: string[];
+    etaMinutes: number;
+    revenueImpact: string;
+  }>;
+};
+
 export default function OrchestratorPage() {
   const [objective, setObjective] = useState("Stabilize MindReply production deployment across Vercel and Azure while preserving the premium communication intelligence experience.");
   const [orchestration, setOrchestration] = useState<OrchestrationResult | null>(null);
   const [loop, setLoop] = useState<LoopResult | null>(null);
   const [agentStatus, setAgentStatus] = useState<ActiveAgentStatus | null>(null);
+  const [executionQueue, setExecutionQueue] = useState<ExecutionQueue | null>(null);
   const [loading, setLoading] = useState<"orchestrate" | "loop" | null>(null);
 
   useEffect(() => {
@@ -47,6 +68,11 @@ export default function OrchestratorPage() {
       .then((response) => response.json())
       .then((data) => setAgentStatus(data))
       .catch(() => setAgentStatus(null));
+
+    fetch("/api/agents/execution-queue")
+      .then((response) => response.json())
+      .then((data) => setExecutionQueue(data))
+      .catch(() => setExecutionQueue(null));
   }, []);
 
   async function runOrchestrator() {
@@ -139,6 +165,48 @@ export default function OrchestratorPage() {
                 <p className="text-sm font-bold" style={{ color: "hsl(220 45% 13%)" }}>{action.label}</p>
                 <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide" style={{ color: "hsl(43 80% 38%)" }}>{action.owner}</p>
                 <p className="mt-2 text-xs leading-relaxed" style={{ color: "hsl(220 25% 45%)" }}>{action.outcome}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="mb-6 rounded-2xl border bg-white p-5" style={{ borderColor: "hsl(40 25% 88%)" }}>
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: "hsl(43 80% 45%)" }}>Live Execution Queue</p>
+              <h2 className="mt-1 font-serif text-2xl font-bold" style={{ color: "hsl(220 45% 13%)" }}>
+                {executionQueue?.mode ?? "x66 execution queue"}
+              </h2>
+              <p className="mt-2 max-w-3xl text-sm leading-relaxed" style={{ color: "hsl(220 25% 45%)" }}>
+                Owned action queue for revenue conversion, provider readiness, product delivery, and visible evidence. P0 items stay above passive research.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-center sm:grid-cols-3">
+              {[
+                { label: "Items", value: executionQueue?.itemCount ?? "-" },
+                { label: "Fallback", value: executionQueue?.fallbackCount ?? "-" },
+                { label: "Status", value: executionQueue?.status ?? "loading" },
+              ].map((item) => (
+                <div key={item.label} className="rounded-xl border px-4 py-3" style={{ borderColor: "hsl(40 25% 88%)" }}>
+                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "hsl(220 25% 45%)" }}>{item.label}</p>
+                  <p className="mt-1 font-serif text-xl font-bold capitalize" style={{ color: "hsl(220 45% 13%)" }}>{item.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-3 lg:grid-cols-2">
+            {(executionQueue?.items ?? []).slice(0, 8).map((item) => (
+              <Link key={item.id} href={item.actionRoute} className="rounded-xl border p-4 transition hover:-translate-y-0.5 hover:border-[hsl(43_80%_60%)]" style={{ borderColor: "hsl(40 25% 88%)" }}>
+                <div className="mb-3 flex flex-wrap items-center gap-2">
+                  <span className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider" style={{ background: item.priority === "P0" ? "hsl(0 75% 94%)" : "hsl(43 80% 92%)", color: item.priority === "P0" ? "hsl(0 55% 36%)" : "hsl(38 75% 32%)" }}>{item.priority}</span>
+                  <span className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider" style={{ background: "hsl(220 45% 96%)", color: "hsl(220 45% 25%)" }}>{item.lane}</span>
+                  <span className="text-[11px] font-semibold" style={{ color: "hsl(220 25% 45%)" }}>{item.etaMinutes} min</span>
+                </div>
+                <h3 className="text-sm font-bold" style={{ color: "hsl(220 45% 13%)" }}>{item.service}</h3>
+                <p className="mt-2 text-xs leading-relaxed" style={{ color: "hsl(220 25% 45%)" }}>{item.action}</p>
+                <p className="mt-3 text-[11px] font-semibold uppercase tracking-wide" style={{ color: "hsl(43 80% 38%)" }}>{item.ownerId} - {item.ownerRole}</p>
+                <p className="mt-2 text-[11px]" style={{ color: "hsl(220 25% 45%)" }}>Evidence: {item.evidenceRequired.slice(0, 3).join(", ")}</p>
               </Link>
             ))}
           </div>

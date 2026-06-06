@@ -10,6 +10,7 @@
     "typecheck": "next typegen && tsc --noEmit",
     "smoke": "tsx scripts/smoke-routes.ts",
     "agent:verify": "tsx scripts/verify-agent-behavior.ts",
+    "agents:queue:verify": "tsx scripts/verify-agent-execution-queue.ts",
     "marketing:verify": "tsx scripts/verify-marketing-events.ts",
     "payments:verify": "tsx scripts/verify-payment-delivery.ts",
     "ai:verify": "tsx scripts/verify-ai-provider.ts",

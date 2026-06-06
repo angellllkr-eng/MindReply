@@ -250,6 +250,7 @@ export default async function AdminPage() {
             { title: "Background API", href: "/api/background", body: "Inspect the bounded reasoning-loop execution service readiness contract." },
             { title: "Ops Status", href: "/api/ops/status", body: "Inspect provider readiness, fallback services, and active-agent ownership." },
             { title: "x66 Acceleration", href: "/api/agents/accelerate", body: "Inspect direct action routes, lane targets, owners, and x66 operating mode." },
+            { title: "Execution Queue", href: "/api/agents/execution-queue", body: "Inspect the live owner, priority, route, evidence, and ETA queue for active desks." },
             { title: "60 Active Agents", href: "/api/agents/active", body: "Inspect active acceleration desks for production, growth, trust, and intelligence." },
             { title: "60-Role Roster", href: "/api/agents/roster", body: "Inspect the permanent operator and professional-desk staffing map." },
             { title: "Permanent Ops", href: "/api/agents/permanent", body: "Inspect hiring backlog, learning cadence, satisfaction guardrails, and sales target ownership." },

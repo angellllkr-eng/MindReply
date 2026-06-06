@@ -29,6 +29,9 @@ jobs:
       - name: Verify MRagent behavior
         run: npm run agent:verify
 
+      - name: Verify agent execution queue
+        run: npm run agents:queue:verify
+
       - name: Verify marketing events
         run: npm run marketing:verify
 

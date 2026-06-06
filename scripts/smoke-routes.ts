@@ -37,6 +37,7 @@ const routes = [
   { path: "/api/agents/accelerate" },
   { path: "/api/agents/roster" },
   { path: "/api/agents/learning" },
+  { path: "/api/agents/execution-queue" },
   { path: "/api/agents/permanent", expectedStatuses: [401] },
   { path: "/api/growth/plan" },
   { path: "/api/slack/test" },
