@@ -72,7 +72,7 @@ export function AuthNotConfigured({ label }: { label: string }) {
     <div className="w-full rounded-2xl border bg-white p-5 text-center shadow-2xl sm:p-8" style={{ borderColor: "rgba(201,169,97,0.22)" }}>
       <h1 className="font-serif text-2xl font-bold mb-3" style={{ color: "hsl(220 45% 13%)" }}>{label}</h1>
       <p className="text-sm leading-relaxed mb-5" style={{ color: "hsl(220 25% 45%)" }}>
-        Secure member access is being prepared. Continue into the workspace preview, review memberships, or return to the homepage while account access opens.
+        Secure member access is being prepared. Explore the tools, review memberships, or return to the homepage while account access opens.
       </p>
       <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {[
@@ -88,8 +88,8 @@ export function AuthNotConfigured({ label }: { label: string }) {
         ))}
       </div>
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-        <Link href="/dashboard" className="inline-flex justify-center rounded-lg px-5 py-3 text-sm font-semibold hover:opacity-90" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}>
-          Continue Demo Workspace
+        <Link href="/tools" className="inline-flex justify-center rounded-lg px-5 py-3 text-sm font-semibold hover:opacity-90" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}>
+          Explore Tools
         </Link>
         <Link href="/memberships" className="inline-flex justify-center rounded-lg px-5 py-3 text-sm font-semibold hover:opacity-90" style={{ background: "hsl(220 55% 20%)", color: "hsl(43 70% 88%)" }}>
           View Memberships
