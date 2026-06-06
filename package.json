@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "smoke": "tsx scripts/smoke-routes.ts",
     "audit:production": "tsx scripts/audit-production-health.ts",
+    "env:vercel-plan": "tsx scripts/print-vercel-env-plan.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx scripts/seed.ts",
