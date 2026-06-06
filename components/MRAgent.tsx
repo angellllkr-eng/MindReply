@@ -18,7 +18,6 @@ export default function MRAgent() {
   const [messages, setMessages] = useState<Msg[]>([GREET]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
-  const [lastSource, setLastSource] = useState("local-ready");
 
   async function send(text: string) {
     const message = text.trim();
@@ -38,16 +37,14 @@ export default function MRAgent() {
         throw new Error(`MR Agent failed with ${response.status}`);
       }
       const data = await response.json();
-      setLastSource(data.source ?? "local");
       setMessages((current) => [...current, { role: "agent", text: data.reply ?? "I have the context. Clarify the desired outcome and I will shape the next move.", source: data.source ?? "local" }]);
     } catch (error) {
-      setLastSource("browser-fallback");
       const fallback = message.toLowerCase().includes("login")
-        ? "For login, use Member Login or Sign Up. Google, Apple, Facebook, and email appear through Clerk when production OAuth is enabled. You can still enter the demo workspace now."
+        ? "For login, use Member Login or Sign Up. If access is still preparing, continue through the workspace preview and come back to sign in when your member account is ready."
         : message.toLowerCase().includes("book") || message.toLowerCase().includes("payment")
-          ? "For booking or payment, choose a professional, buy credits, or upgrade to Growth/Pro. Once Stripe is configured, checkout confirms access and opens the right dashboard or session room immediately."
+          ? "For booking or payment, choose a professional, buy credits, or upgrade to Growth/Pro. The clean path is to start with the action you need now, then confirm the dashboard or session room after checkout."
           : "I am still active locally. Ask me about the situation in plain language. If there is a paid path that will genuinely save time, I will make it clear without pushing.";
-      setMessages((current) => [...current, { role: "agent", text: fallback, source: "browser-fallback" }]);
+      setMessages((current) => [...current, { role: "agent", text: fallback, source: "ready" }]);
     } finally {
       setTyping(false);
     }
@@ -70,7 +67,7 @@ export default function MRAgent() {
               <div>
                 <p className="font-semibold text-sm" style={{ color: "hsl(43 70% 88%)" }}>MRagent</p>
                 <p className="text-xs flex items-center gap-1" style={{ color: "hsl(43 80% 60%)" }}>
-                  <span className="w-1.5 h-1.5 rounded-full inline-block animate-pulse" style={{ background: "#34d399" }} /> Online - {lastSource}
+                  <span className="w-1.5 h-1.5 rounded-full inline-block animate-pulse" style={{ background: "#34d399" }} /> Online
                 </p>
               </div>
             </div>
@@ -105,7 +102,7 @@ export default function MRAgent() {
           )}
 
           <div className="px-3 py-2 border-t border-[hsl(40_25%_88%)] flex flex-wrap gap-2 text-xs">
-            <span className="flex items-center gap-1 rounded-full bg-[hsl(43_80%_60%_/_0.16)] px-2 py-1 font-semibold text-[hsl(220_55%_20%)]"><Sparkles size={11} /> Live fallback</span>
+            <span className="flex items-center gap-1 rounded-full bg-[hsl(43_80%_60%_/_0.16)] px-2 py-1 font-semibold text-[hsl(220_55%_20%)]"><Sparkles size={11} /> Ready</span>
             {[["Professionals", "/professionals"], ["Tools", "/tools"], ["Membership", "/memberships"]].map(([label, href]) => (
               <Link key={href} href={href} className="flex items-center gap-0.5 text-[hsl(220_25%_45%)] hover:text-[hsl(220_55%_20%)] transition-colors">{label} <ChevronRight size={10} /></Link>
             ))}

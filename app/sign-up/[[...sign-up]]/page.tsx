@@ -7,7 +7,7 @@ export default function SignUpPage() {
       {process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? (
         <SignUp appearance={clerkAppearance} fallbackRedirectUrl="/dashboard" signInUrl="/sign-in" />
       ) : (
-        <AuthNotConfigured label="Account Creation Unavailable" />
+        <AuthNotConfigured label="Create Your Account" />
       )}
     </AuthShell>
   );

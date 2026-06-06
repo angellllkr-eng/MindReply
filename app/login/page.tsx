@@ -13,7 +13,7 @@ export default function LoginPage() {
       {process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? (
         <SignIn appearance={clerkAppearance} fallbackRedirectUrl="/dashboard" signUpUrl="/sign-up" />
       ) : (
-        <AuthNotConfigured label="Member Login Pending" />
+        <AuthNotConfigured label="Member Login" />
       )}
     </AuthShell>
   );

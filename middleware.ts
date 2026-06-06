@@ -5,8 +5,10 @@ const isProtectedRoute = createRouteMatcher([
   "/admin(.*)",
   "/dashboard(.*)",
   "/bookings(.*)",
+  "/orchestrator(.*)",
   "/api/background(.*)",
   "/api/bookings(.*)",
+  "/api/agents/execution-queue(.*)",
   "/api/monitoring(.*)",
   "/api/orchestrate(.*)",
   "/api/tasks(.*)",
@@ -67,6 +69,17 @@ export default function middleware(req: NextRequest, event: NextFetchEvent) {
   }
 
   if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || !process.env.CLERK_SECRET_KEY) {
+    if (isProtectedRoute(req)) {
+      if (req.nextUrl.pathname.startsWith("/api/")) {
+        return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+      }
+
+      const url = req.nextUrl.clone();
+      url.pathname = "/login";
+      url.searchParams.set("next", req.nextUrl.pathname);
+      return NextResponse.redirect(url);
+    }
+
     return languageResponse(req);
   }
 

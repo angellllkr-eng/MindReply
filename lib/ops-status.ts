@@ -62,7 +62,7 @@ function nextActionFor(status: ServiceCheck["status"], requirement: string) {
   if (requirement === "slack") return "Set SLACK_WEBHOOK_URL and trigger owner-authorized POST /api/slack/test.";
   if (requirement === "coreIntegrations") return "Set Slack, Gmail, and Notion integration envs; then verify /api/integrations/status.";
   if (requirement === "opsReports") return "Set RESEND_API_KEY, OPS_REPORT_FROM, CRON_SECRET, and REVENUE_OWNER_SECRET; then verify /api/cron/ops-report sends twice-daily owner reports.";
-  if (requirement === "azureOpenAI") return "Set either the Azure OpenAI env group or OPENAI_API_KEY, then verify MRagent and tools use provider intelligence.";
+  if (requirement === "azureOpenAI") return "Set any supported AI provider env group, then verify MRagent and tools use provider intelligence.";
   return "Configure required provider environment and rerun production audit.";
 }
 

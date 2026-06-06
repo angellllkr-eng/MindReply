@@ -32,10 +32,14 @@ The app renders with typed fallback data when `DATABASE_URL` is not configured. 
 | `AZURE_OPENAI_API_VERSION` | local, Vercel, Azure runtime | Azure OpenAI API version |
 | `OPENAI_API_KEY` | local, Vercel, Azure runtime | Alternate AI provider key for MRagent and tools |
 | `OPENAI_MODEL` | local, Vercel, Azure runtime | Optional OpenAI model override; defaults to `gpt-4o-mini` |
+| `ANTHROPIC_API_KEY` | local, Vercel, Azure runtime | Optional Anthropic provider key for MRagent webchat |
+| `OPENROUTER_API_KEY` | local, Vercel, Azure runtime | Optional OpenRouter provider key for MRagent webchat |
+| `GROQ_API_KEY` | local, Vercel, Azure runtime | Optional Groq provider key for MRagent webchat |
+| `BLACKBOX_API_KEY` + `BLACKBOX_CHAT_ENDPOINT` | local, Vercel, Azure runtime | Optional configurable Blackbox-compatible chat endpoint |
 | `AZURE_WEBAPP_NAME` | GitHub Actions secret | Azure App Service name |
 | `AZURE_WEBAPP_PUBLISH_PROFILE` | GitHub Actions secret | Azure publish profile for deployment |
 
-AI provider setup accepts either the Azure OpenAI env group or `OPENAI_API_KEY`. Use `npm run ai:verify` to confirm the requirement and source-label wiring without printing values.
+AI provider setup accepts the Azure OpenAI env group, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `OPENROUTER_API_KEY`, `GROQ_API_KEY`, or `BLACKBOX_API_KEY` with `BLACKBOX_CHAT_ENDPOINT`. Use `npm run ai:verify` to confirm provider readiness without printing values.
 
 Vercel settings:
 

@@ -51,7 +51,7 @@ export function AuthShell({ children, subtitle }: { children: React.ReactNode; s
             Continue to tools, professional booking, lexicons, analytics, and executive communication workflows.
           </p>
           <div className="mt-8 grid max-w-lg gap-3 sm:grid-cols-3">
-            {["Google ready", "Apple ready", "Facebook ready"].map((item) => (
+            {["Google", "Apple", "Facebook"].map((item) => (
               <div key={item} className="rounded-lg border border-white/10 bg-white/5 p-4 text-xs font-semibold text-[hsl(43_70%_88%)]">
                 {item}
               </div>
@@ -72,7 +72,7 @@ export function AuthNotConfigured({ label }: { label: string }) {
     <div className="w-full rounded-2xl border bg-white p-5 text-center shadow-2xl sm:p-8" style={{ borderColor: "rgba(201,169,97,0.22)" }}>
       <h1 className="font-serif text-2xl font-bold mb-3" style={{ color: "hsl(220 45% 13%)" }}>{label}</h1>
       <p className="text-sm leading-relaxed mb-5" style={{ color: "hsl(220 25% 45%)" }}>
-        Clerk provider keys are not live yet. Google, Apple, Facebook, and email access will appear here as soon as Clerk OAuth providers are enabled in production.
+        Secure member access is being prepared. Continue into the workspace preview, review memberships, or return to the homepage while account access opens.
       </p>
       <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {[

@@ -44,8 +44,8 @@ export default function OperationsHeroVisual() {
               <Sparkles size={18} />
             </span>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[hsl(43_80%_60%)]">MR Vision Layer</p>
-              <p className="text-sm text-[rgba(248,245,240,0.78)]">Operational composure engine</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[hsl(43_80%_60%)]">MR Guidance Layer</p>
+              <p className="text-sm text-[rgba(248,245,240,0.78)]">Composed communication support</p>
             </div>
           </div>
           <div className="flex items-center gap-2 rounded-full border border-emerald-300/25 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-200">
@@ -57,7 +57,7 @@ export default function OperationsHeroVisual() {
         <div className="grid grid-cols-3 gap-3">
           {[
             { label: "Clarity", value: `${score}/100` },
-            { label: "Ops today", value: count.toLocaleString() },
+            { label: "Refinements", value: count.toLocaleString() },
             { label: "Risk", value: "Low" },
           ].map((item) => (
             <div key={item.label} className="rounded-xl border border-white/10 bg-white/[0.06] p-4">

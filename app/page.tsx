@@ -22,13 +22,13 @@ const microTools = [
   { name: "Cultural Adapter", credits: 2, desc: "Automatically adjust phrasing and indirectness for cross-cultural communication." }
 ];
 
-const launchStatus = [
-  { icon: Bot, title: "MRagent active", detail: "Floating assistant and /agent are live with browser fallback plus OpenAI or Azure OpenAI when configured." },
-  { icon: Shield, title: "Social login ready", detail: "Clerk renders email, Google, Apple, and Facebook access as soon as providers are enabled." },
-  { icon: Globe, title: "Auto language", detail: "Browser locale, timezone, and ?lang= links select the best language without blocking manual choice." },
-  { icon: CheckCircle2, title: "Paid delivery", detail: "Stripe checkout and booking return routes confirm access immediately after successful payment." },
-  { icon: Users, title: "60 active desks", detail: "Revenue, platform, trust, intelligence, SEO, payments, auth, and support roles are exposed through live agent APIs." },
-  { icon: Zap, title: "Ops alerts", detail: "Sentry and Slack readiness endpoints are deployed for owner-authorized production checks." },
+const trustSignals = [
+  { icon: Bot, title: "Human-feeling guidance", detail: "MRagent helps with messages, decisions, plans, bookings, and credits in plain language." },
+  { icon: Shield, title: "Private by design", detail: "Sensitive communication workflows are framed around confidentiality and professional boundaries." },
+  { icon: Globe, title: "Worldwide communication", detail: "Language, tone, and cultural context support international professionals and teams." },
+  { icon: CheckCircle2, title: "Clear product delivery", detail: "Credits, memberships, and booking paths are designed to confirm the next useful step quickly." },
+  { icon: Users, title: "Professional marketplace", detail: "Specialist profiles connect users with clinical, legal, finance, executive, and HR support." },
+  { icon: Zap, title: "Fast micro-tools", detail: "Focused tools refine emails, notes, calls, tone, structure, and professional wording." },
 ];
 
 export default function Home() {
@@ -104,20 +104,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. Production Status */}
+      {/* 2. Public Trust Signals */}
       <section className="px-4 py-10 border-y" style={{ background: "hsl(218 38% 12%)", borderColor: "rgba(201,169,97,0.22)" }}>
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col gap-3 mb-6 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "hsl(43 80% 60%)" }}>Production Command Layer</p>
-              <h2 className="font-serif text-2xl md:text-3xl font-bold mt-2" style={{ color: "hsl(43 70% 88%)" }}>Visible systems now wired for launch</h2>
+              <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "hsl(43 80% 60%)" }}>Professional Trust Layer</p>
+              <h2 className="font-serif text-2xl md:text-3xl font-bold mt-2" style={{ color: "hsl(43 70% 88%)" }}>Private tools for serious communication</h2>
             </div>
-            <Link href="/health" className="inline-flex items-center gap-2 self-start rounded-lg border px-4 py-2 text-sm font-semibold transition-colors hover:text-[hsl(43_80%_60%)]" style={{ borderColor: "rgba(248,245,240,0.2)", color: "hsl(43 70% 88%)" }}>
-              View live health <ArrowRight size={14} />
+            <Link href="/privacy" className="inline-flex items-center gap-2 self-start rounded-lg border px-4 py-2 text-sm font-semibold transition-colors hover:text-[hsl(43_80%_60%)]" style={{ borderColor: "rgba(248,245,240,0.2)", color: "hsl(43 70% 88%)" }}>
+              View privacy approach <ArrowRight size={14} />
             </Link>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-6">
-            {launchStatus.map((item) => (
+            {trustSignals.map((item) => (
               <div key={item.title} className="rounded-xl border p-4" style={{ borderColor: "rgba(248,245,240,0.12)", background: "rgba(248,245,240,0.055)" }}>
                 <item.icon size={20} style={{ color: "hsl(43 80% 60%)" }} />
                 <h3 className="mt-3 text-sm font-bold" style={{ color: "hsl(43 70% 88%)" }}>{item.title}</h3>

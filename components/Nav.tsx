@@ -27,7 +27,7 @@ const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 export default function Nav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const { language, languageMode, resetLanguage, setLanguage, t } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
 
   return (
     <nav className="fixed inset-x-0 top-0 z-50 border-b border-[rgba(248,245,240,0.18)] bg-[rgba(13,28,54,0.88)] shadow-[0_12px_40px_rgba(8,18,35,0.22)] backdrop-blur-xl supports-[backdrop-filter]:bg-[rgba(13,28,54,0.78)]">
@@ -69,15 +69,6 @@ export default function Nav() {
               </select>
               <ChevronDown aria-hidden="true" size={14} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[rgba(248,245,240,0.55)]" />
             </label>
-            <button
-              type="button"
-              onClick={resetLanguage}
-              className="hidden rounded-lg border border-white/15 px-2.5 py-2 text-[11px] font-semibold uppercase tracking-wide text-[rgba(248,245,240,0.68)] transition hover:border-[hsl(43_80%_60%)] hover:text-[hsl(43_80%_60%)] lg:inline-flex"
-              title="Auto-detect language from browser, URL, and timezone"
-            >
-              {languageMode === "auto" ? `Auto ${language}` : "Auto"}
-            </button>
-
             {clerkEnabled ? (
               <>
                 <Show when="signed-in">
@@ -121,11 +112,8 @@ export default function Nav() {
               <Link key={link.href} href={link.href} prefetch={link.href === "/bookings" ? false : undefined} className="rounded-lg px-3 py-3 text-sm font-medium text-[rgba(248,245,240,0.78)] hover:bg-white/5" onClick={() => setOpen(false)}>{t(link.labelKey)}</Link>
             ))}
             <label className="mt-2 rounded-lg border border-white/10 px-3 py-3">
-              <span className="mb-2 flex items-center justify-between gap-3 text-xs font-semibold uppercase tracking-widest text-[rgba(248,245,240,0.45)]">
+              <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-[rgba(248,245,240,0.45)]">
                 {t("language")}
-                <button type="button" onClick={resetLanguage} className="rounded-md border border-white/15 px-2 py-1 text-[10px] text-[hsl(43_80%_60%)]">
-                  {languageMode === "auto" ? `Auto ${language}` : "Auto detect"}
-                </button>
               </span>
               <select
                 value={language}

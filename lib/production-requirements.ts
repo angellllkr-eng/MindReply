@@ -91,14 +91,18 @@ export const productionRequirements: ProductionRequirement[] = [
   },
   {
     service: "AI Provider",
-    keys: ["AZURE_OPENAI_ENDPOINT", "AZURE_OPENAI_API_KEY", "AZURE_OPENAI_DEPLOYMENT", "AZURE_OPENAI_API_VERSION"],
+    keys: ["OPENAI_API_KEY or Azure OpenAI env group or ANTHROPIC_API_KEY or OPENROUTER_API_KEY or GROQ_API_KEY or BLACKBOX_API_KEY + BLACKBOX_CHAT_ENDPOINT"],
     alternativeKeyGroups: [
       ["AZURE_OPENAI_ENDPOINT", "AZURE_OPENAI_API_KEY", "AZURE_OPENAI_DEPLOYMENT", "AZURE_OPENAI_API_VERSION"],
       ["OPENAI_API_KEY"],
+      ["ANTHROPIC_API_KEY"],
+      ["OPENROUTER_API_KEY"],
+      ["GROQ_API_KEY"],
+      ["BLACKBOX_API_KEY", "BLACKBOX_CHAT_ENDPOINT"],
     ],
     healthCheck: "azureOpenAI",
     publicValue: false,
-    unlocks: "Advanced MRagent intelligence, micro-tool processing, and background reasoning expansion through Azure OpenAI or OpenAI.",
+    unlocks: "Advanced MRagent intelligence, micro-tool processing, and background reasoning expansion through any supported AI webchat provider.",
   },
 ];
 
