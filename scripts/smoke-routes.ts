@@ -9,6 +9,7 @@ type SmokeRoute = {
 
 const routes = [
   { path: "/" },
+  { path: "/services" },
   { path: "/professionals" },
   { path: "/bookings" },
   { path: "/tools" },
@@ -33,6 +34,7 @@ const routes = [
   { path: "/solutions/financial-advisors" },
   { path: "/health" },
   { path: "/api/health" },
+  { path: "/api/language" },
   { path: "/api/agent" },
   { path: "/api/checkout/booking-session" },
   { path: "/api/checkout/credits" },
