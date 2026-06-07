@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Bot, CalendarDays, CreditCard, MessageSquare, Send, Sparkles, TrendingUp } from "lucide-react";
+import { Message as AIMessage, MessageContent, MessageResponse } from "@/components/ai-elements/message";
 import { useLanguage } from "@/components/LanguageProvider";
 
 type Message = { role: "agent" | "user"; text: string };
@@ -142,11 +143,11 @@ export default function AgentPage() {
 
             <div className="h-[460px] overflow-y-auto p-5 space-y-4" style={{ background: "hsl(40 20% 96%)" }}>
               {messages.map((message, index) => (
-                <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-                  <div className="max-w-[82%] rounded-2xl px-4 py-3 text-sm leading-relaxed" style={message.role === "agent" ? { background: "hsl(220 55% 20%)", color: "hsl(43 70% 88%)" } : { background: "white", color: "hsl(220 45% 13%)", border: "1px solid hsl(40 25% 88%)" }}>
-                    {message.text}
-                  </div>
-                </div>
+                <AIMessage key={index} from={message.role === "agent" ? "assistant" : "user"} className={message.role === "user" ? "items-end" : "items-start"}>
+                  <MessageContent className="max-w-[82%] rounded-2xl px-4 py-3 text-sm leading-relaxed" style={message.role === "agent" ? { background: "hsl(220 55% 20%)", color: "hsl(43 70% 88%)" } : { background: "white", color: "hsl(220 45% 13%)", border: "1px solid hsl(40 25% 88%)" }}>
+                    {message.role === "agent" ? <MessageResponse>{message.text}</MessageResponse> : message.text}
+                  </MessageContent>
+                </AIMessage>
               ))}
               {loading && <div className="text-sm" style={{ color: "hsl(220 25% 45%)" }}>MRagent is thinking through the useful next step...</div>}
             </div>
