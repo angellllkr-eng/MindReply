@@ -44,6 +44,12 @@ jobs:
       - name: Verify language routing
         run: npm run language:verify
 
+      - name: Verify ops overload analyzer
+        run: npm run ops:verify
+
+      - name: Verify prospect reply analyzer
+        run: npm run prospect:verify
+
       - name: Verify AI provider readiness
         run: npm run ai:verify
 
