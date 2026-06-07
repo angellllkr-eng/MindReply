@@ -19,7 +19,7 @@ const services = [
   {
     icon: CalendarDays,
     title: "Professional Booking",
-    body: "Choose a professional and book text, voice, or video. If provider systems are offline, the local fallback still creates a session room.",
+    body: "Choose a professional and book text, voice, or video. Your session room opens after confirmation.",
     href: "/professionals",
     cta: "Find a professional",
   },
@@ -32,13 +32,13 @@ const services = [
   },
 ];
 
-const recoveryChecks = [
-  "Footer routes point to working pages only",
-  "Integrations are removed from public navigation",
-  "Bookings can create local fallback session records",
-  "MRagent works with provider AI or local intelligence",
-  "Language status is available at /api/language",
-  "Lexicons render with database or fallback data",
+const serviceChecks = [
+  "Footer routes point to core pages",
+  "MRagent can answer broad questions",
+  "Bookings guide users to session rooms",
+  "Tools produce practical outputs",
+  "Language status is available",
+  "Lexicons support field-aware language",
 ];
 
 export default function ServicesPage() {
@@ -46,10 +46,10 @@ export default function ServicesPage() {
     <main className="min-h-screen pt-20" style={{ background: "hsl(40 33% 97%)" }}>
       <section className="px-4 py-16" style={{ background: "hsl(220 55% 20%)" }}>
         <div className="mx-auto max-w-6xl">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-widest" style={{ color: "hsl(43 80% 60%)" }}>Recovered Service Layer</p>
-          <h1 className="max-w-3xl font-serif text-4xl font-bold md:text-5xl" style={{ color: "hsl(43 70% 88%)" }}>Working services for chat, tools, bookings, and lexicons.</h1>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest" style={{ color: "hsl(43 80% 60%)" }}>Service Layer</p>
+          <h1 className="max-w-3xl font-serif text-4xl font-bold md:text-5xl" style={{ color: "hsl(43 70% 88%)" }}>Services for chat, tools, bookings, and lexicons.</h1>
           <p className="mt-4 max-w-2xl text-sm leading-6" style={{ color: "rgba(248,245,240,0.72)" }}>
-            This page routes visitors to the highest-confidence parts of MindReply right now: AI chat, practical tools, professional booking flows, and specialist language systems.
+            Core MindReply paths for AI chat, professional messages, expert previews, bookings, and specialist language.
           </p>
         </div>
       </section>
@@ -80,16 +80,16 @@ export default function ServicesPage() {
 
         <div className="mt-8 grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
           <section className="rounded-2xl border bg-white p-6" style={{ borderColor: "hsl(40 25% 88%)" }}>
-            <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest" style={{ color: "hsl(43 80% 45%)" }}><ShieldCheck size={14} /> Recovery status</p>
-            <h2 className="font-serif text-2xl font-bold" style={{ color: "hsl(220 45% 13%)" }}>Everything here is routed to a working surface.</h2>
+            <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest" style={{ color: "hsl(43 80% 45%)" }}><ShieldCheck size={14} /> Service status</p>
+            <h2 className="font-serif text-2xl font-bold" style={{ color: "hsl(220 45% 13%)" }}>Everything here is routed to a core MindReply surface.</h2>
             <p className="mt-3 text-sm leading-6" style={{ color: "hsl(220 25% 45%)" }}>
-              Provider-backed systems still become stronger when Vercel environment variables are fully connected, but the public path no longer depends on unfinished integration pages.
+              Start with MRagent for quick direction, use the tools for practical output, or move into booking when you need field-specific support.
             </p>
           </section>
           <section className="rounded-2xl border bg-white p-6" style={{ borderColor: "hsl(40 25% 88%)" }}>
             <p className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest" style={{ color: "hsl(43 80% 45%)" }}><Sparkles size={14} /> Working checks</p>
             <div className="grid gap-2 sm:grid-cols-2">
-              {recoveryChecks.map((item) => (
+              {serviceChecks.map((item) => (
                 <div key={item} className="flex gap-2 rounded-xl border px-3 py-3 text-sm" style={{ borderColor: "hsl(40 25% 88%)", color: "hsl(220 35% 30%)" }}>
                   <CheckCircle2 size={15} style={{ color: "hsl(43 80% 45%)" }} />
                   {item}
@@ -104,7 +104,7 @@ export default function ServicesPage() {
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-[hsl(43_80%_60%)]">Start now</p>
               <h2 className="mt-2 font-serif text-3xl font-bold">Use AI chat first, then move to tools or booking when useful.</h2>
-              <p className="mt-2 text-sm text-[rgba(248,245,240,0.68)]">That keeps the path useful even before every provider dashboard is fully connected.</p>
+              <p className="mt-2 text-sm text-[rgba(248,245,240,0.68)]">Start with MRagent, then choose the strongest next path.</p>
             </div>
             <Link href="/agent" className="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}>
               Start with MRagent <MessageSquare size={15} />
