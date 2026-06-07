@@ -3,10 +3,11 @@ import { Inter, Playfair_Display } from "next/font/google";
 import { headers } from "next/headers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import AuthProvider from "@/components/AuthProvider";
-import { LanguageProvider, type LanguageCode } from "@/components/LanguageProvider";
+import { LanguageProvider } from "@/components/LanguageProvider";
 import Nav from "@/components/Nav";
 import MRAgent from "@/components/MRAgent";
 import MarketingPixels from "@/components/MarketingPixels";
+import { normalizeLanguage, type LanguageSource } from "@/lib/language";
 import { absoluteUrl, seoMarketKeywords, SITE_URL, targetMarkets } from "@/lib/seo";
 import "./globals.css";
 
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
     "geo.region": targetMarkets.map((market) => market.code).join(","),
     "market:primary": targetMarkets.filter((market) => market.priority === "primary").map((market) => market.country).join(", "),
     "market:growth": targetMarkets.filter((market) => market.priority === "growth").map((market) => market.country).join(", "),
-    "language:auto": "browser-detected with manual override",
+    "language:auto": "IP-country detected with browser fallback and manual override",
   },
   openGraph: {
     title: "MindReply | Executive Communication Intelligence",
@@ -54,23 +55,18 @@ export const metadata: Metadata = {
   },
 };
 
-const supportedLanguages = new Set(["EN", "FR", "DE", "ES", "BG", "IT", "PT"]);
-
-function normalizeLanguage(value: string | null): LanguageCode {
-  const language = value?.toUpperCase() ?? "";
-  return supportedLanguages.has(language) ? language as LanguageCode : "EN";
-}
-
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const requestHeaders = await headers();
-  const initialLanguage = normalizeLanguage(requestHeaders.get("x-mr-language"));
+  const initialLanguage = normalizeLanguage(requestHeaders.get("x-mr-language")) ?? "EN";
   const initialLanguageMode = requestHeaders.get("x-mr-language-mode") === "manual" ? "manual" : "auto";
+  const initialLanguageSource = (requestHeaders.get("x-mr-language-source") ?? "fallback") as LanguageSource;
+  const initialCountry = requestHeaders.get("x-mr-country");
 
   return (
     <html lang={initialLanguage.toLowerCase()} className={`${inter.variable} ${playfair.variable} scroll-smooth`}>
       <body className="antialiased bg-mr-cream-light text-gray-900" style={{ fontFamily: "var(--font-inter)" }}>
         <AuthProvider>
-          <LanguageProvider initialLanguage={initialLanguage} initialLanguageMode={initialLanguageMode}>
+          <LanguageProvider initialLanguage={initialLanguage} initialLanguageMode={initialLanguageMode} initialLanguageSource={initialLanguageSource} initialCountry={initialCountry}>
             <Nav />
             {children}
             <MRAgent />
