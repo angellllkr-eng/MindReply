@@ -11,6 +11,8 @@
     "smoke": "tsx scripts/smoke-routes.ts",
     "agent:verify": "tsx scripts/verify-agent-behavior.ts",
     "language:verify": "tsx scripts/verify-language-routing.ts",
+    "ops:verify": "tsx scripts/verify-ops-overload-analyzer.ts",
+    "prospect:verify": "tsx scripts/verify-prospect-reply-analyzer.ts",
     "agents:queue:verify": "tsx scripts/verify-agent-execution-queue.ts",
     "marketing:verify": "tsx scripts/verify-marketing-events.ts",
     "payments:verify": "tsx scripts/verify-payment-delivery.ts",
