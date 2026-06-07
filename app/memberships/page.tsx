@@ -55,16 +55,16 @@ export default function Memberships() {
         <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "hsl(43 80% 60%)" }}>Operational Composure System</p>
         <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4" style={{ color: "hsl(43 70% 88%)" }}>Signal to Growth to Pro</h1>
         <p className="text-sm max-w-2xl mx-auto leading-relaxed" style={{ color: "rgba(248,245,240,0.7)" }}>
-          MindReply is the invisible AI operating layer for founders, agencies, teams, and premium individuals who need complex work handled with precision, privacy, and calm.
+          MindReply is a private AI communication workspace for founders, agencies, teams, and premium individuals who need complex work handled with precision, privacy, and calm.
         </p>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-16">
         <div className="mb-10 grid grid-cols-1 gap-4 lg:grid-cols-3">
           {[
-            { title: "Primary revenue lever", desc: "Convert free Signal users into Growth at £49/mo, then move Growth users to Pro at £129/mo when memory and integrations become essential." },
+            { title: "Primary revenue lever", desc: "Convert free Signal users into Growth at GBP 49/mo, then move Growth users to Pro at GBP 129/mo when memory, lexicons, and priority review become essential." },
             { title: "Why it works in 60 days", desc: "The fastest revenue is not a new product; it is upgrading users already feeling the workflow value, context pressure, and collaboration need." },
-            { title: "Trust proof", desc: "~4s operation resolution, 98% voice fidelity, and AES-256 privacy positioning make the upgrade feel operational, not decorative." },
+            { title: "Trust proof", desc: "Fast message resolution, voice fidelity, and AES-256 privacy positioning make the upgrade feel operational, not decorative." },
           ].map((item) => (
             <div key={item.title} className="rounded-2xl border bg-white p-5" style={{ borderColor: "hsl(40 25% 88%)" }}>
               <h2 className="font-serif text-xl font-bold" style={{ color: "hsl(220 45% 13%)" }}>{item.title}</h2>
@@ -77,8 +77,8 @@ export default function Memberships() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {[
               { title: "Growth trigger", desc: "30 days context memory gives Signal users a clear reason to upgrade before their working context disappears." },
-              { title: "Pro trigger", desc: "Unlimited memory plus Slack, Gmail, and Notion unlock the real productivity layer inside tools teams already use." },
-              { title: "Pro-only value", desc: "Character Profiles and Momentum Clarity justify £129/mo because they compound relationship context and decision movement." },
+              { title: "Pro trigger", desc: "Unlimited memory plus specialist lexicons and priority review unlock the real productivity layer for daily communication pressure." },
+              { title: "Pro-only value", desc: "Character Profiles and Momentum Clarity justify GBP 129/mo because they compound relationship context and decision movement." },
             ].map((item) => (
               <div key={item.title} className="flex gap-3 rounded-xl p-3" style={{ background: "hsl(40 33% 97%)" }}>
                 <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}>
@@ -113,7 +113,7 @@ export default function Memberships() {
                   <p className={`text-xs font-semibold uppercase tracking-widest mb-1 ${m.highlighted ? "text-[hsl(43_80%_60%)]" : "text-[hsl(220_25%_45%)]"}`}>{m.tier}</p>
                   <h3 className={`font-serif text-2xl font-bold ${m.highlighted ? "text-[hsl(43_70%_88%)]" : "text-[hsl(220_45%_13%)]"}`}>{m.name}</h3>
                   <div className="my-5">
-                    <span className={`font-serif text-5xl font-bold ${m.highlighted ? "text-[hsl(43_70%_88%)]" : "text-[hsl(220_45%_13%)]"}`}>{m.price === 0 ? "Free" : `£${m.price}`}</span>
+                    <span className={`font-serif text-5xl font-bold ${m.highlighted ? "text-[hsl(43_70%_88%)]" : "text-[hsl(220_45%_13%)]"}`}>{m.price === 0 ? "Free" : `GBP ${m.price}`}</span>
                     {m.price > 0 && <span className={`text-sm ml-1 ${m.highlighted ? "text-[rgba(248,245,240,0.6)]" : "text-[hsl(220_25%_45%)]"}`}>/month</span>}
                   </div>
                   <p className={`text-sm leading-relaxed mb-6 ${m.highlighted ? "text-[rgba(248,245,240,0.7)]" : "text-[hsl(220_25%_45%)]"}`}>{m.description}</p>
