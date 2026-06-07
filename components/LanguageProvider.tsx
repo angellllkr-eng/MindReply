@@ -157,6 +157,13 @@ function applyDocumentLanguage(language: LanguageCode) {
   document.documentElement.dataset.mrLanguage = language;
 }
 
+function persistLanguage(language: LanguageCode, mode: "auto" | "manual") {
+  window.localStorage.setItem("mindreply.language", language);
+  window.localStorage.setItem("mindreply.languageMode", mode);
+  document.cookie = `mindreply.language=${language}; path=/; samesite=lax; max-age=31536000`;
+  document.cookie = `mindreply.languageMode=${mode}; path=/; samesite=lax; max-age=31536000`;
+}
+
 function detectBrowserLanguage(): LanguageCode {
   const urlLanguage = new URLSearchParams(window.location.search).get("lang")?.toUpperCase() ?? null;
   if (isLanguageCode(urlLanguage)) return urlLanguage;
@@ -206,8 +213,7 @@ export function LanguageProvider({ children, initialLanguage = "EN", initialLang
       setLanguageMode("auto");
       setLanguageSource("url");
       applyDocumentLanguage(urlLanguage);
-      window.localStorage.setItem("mindreply.language", urlLanguage);
-      window.localStorage.setItem("mindreply.languageMode", "auto");
+      persistLanguage(urlLanguage, "auto");
       return;
     }
 
@@ -225,16 +231,14 @@ export function LanguageProvider({ children, initialLanguage = "EN", initialLang
     setLanguageMode("auto");
     setLanguageSource(initialLanguageSource === "fallback" ? "browser" : initialLanguageSource);
     applyDocumentLanguage(detected);
-    window.localStorage.setItem("mindreply.language", detected);
-    window.localStorage.setItem("mindreply.languageMode", "auto");
+    persistLanguage(detected, "auto");
   }, [initialLanguage, initialLanguageSource]);
 
   const setLanguage = (nextLanguage: LanguageCode) => {
     setLanguageState(nextLanguage);
     setLanguageMode("manual");
     setLanguageSource("manual");
-    window.localStorage.setItem("mindreply.language", nextLanguage);
-    window.localStorage.setItem("mindreply.languageMode", "manual");
+    persistLanguage(nextLanguage, "manual");
     applyDocumentLanguage(nextLanguage);
   };
 
@@ -243,8 +247,7 @@ export function LanguageProvider({ children, initialLanguage = "EN", initialLang
     setLanguageState(detected);
     setLanguageMode("auto");
     setLanguageSource(initialLanguageSource === "fallback" ? "browser" : initialLanguageSource);
-    window.localStorage.setItem("mindreply.language", detected);
-    window.localStorage.setItem("mindreply.languageMode", "auto");
+    persistLanguage(detected, "auto");
     applyDocumentLanguage(detected);
   };
 
