@@ -10,10 +10,18 @@ type Msg = { role: "agent" | "user"; text: string; source?: string };
 
 const GREET: Msg = {
   role: "agent",
-  text: "Hi, I am MRagent. Ask me anything - a message, a decision, a booking, credits, or which plan fits your work. I will keep it practical and point you to the fastest useful next step.",
+  text: "Hi, I am MRagent. Ask me anything - a message, a decision, a booking, an expert field, credits, or which plan fits your work. I will be useful first and only suggest a paid path when it genuinely helps.",
 };
 
-const SUGGESTIONS = ["Help me buy credits", "Book a video session", "Which plan should I choose?", "Can we talk about another topic?"];
+const SUGGESTIONS = ["Help me with a difficult reply", "Act like a psychologist for this", "Book a video session", "Can we talk about another topic?"];
+
+function sleep(ms: number) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+function replyDelay(message: string) {
+  return Math.min(2200, 900 + message.length * 12);
+}
 
 export default function MRAgent() {
   const { language } = useLanguage();
@@ -31,6 +39,7 @@ export default function MRAgent() {
     setTyping(true);
 
     try {
+      await sleep(replyDelay(message));
       const response = await fetch("/api/agent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -42,11 +51,15 @@ export default function MRAgent() {
       const data = await response.json();
       setMessages((current) => [...current, { role: "agent", text: data.reply ?? "I have the context. Clarify the desired outcome and I will shape the next move.", source: data.source ?? "local" }]);
     } catch (error) {
-      const fallback = message.toLowerCase().includes("login")
-        ? "For login, use Member Login or Sign Up. If access is still preparing, continue through the workspace preview and come back to sign in when your member account is ready."
-        : message.toLowerCase().includes("book") || message.toLowerCase().includes("payment")
-          ? "For booking or payment, choose a professional, buy credits, or upgrade to Growth/Pro. The clean path is to start with the action you need now, then confirm the dashboard or session room after checkout."
-          : "I am still active locally. Ask me about the situation in plain language. If there is a paid path that will genuinely save time, I will make it clear without pushing.";
+      await sleep(700);
+      const lower = message.toLowerCase();
+      const fallback = lower.includes("login")
+        ? "For login, use Member Login or Sign Up. If account access is unavailable, keep using tools and bookings from the public flow until the provider is refreshed."
+        : lower.includes("book") || lower.includes("professional") || lower.includes("expert")
+          ? "For expert help, start from Professionals. If you are not ready to book, ask me the field and the situation here first; I can give a careful AI preview and point you to text, voice, or video only if that is the right next step."
+          : lower.includes("payment") || lower.includes("credit")
+            ? "Credits are best for one-off tools. Membership is better when you keep repeating context. Tell me the work pattern and I will point to the least wasteful option."
+            : "I am still here locally. Ask me normally. I will think through the situation, use the behavioral dictionary, and keep the next step calm and practical.";
       setMessages((current) => [...current, { role: "agent", text: fallback, source: "ready" }]);
     } finally {
       setTyping(false);
@@ -70,7 +83,7 @@ export default function MRAgent() {
               <div>
                 <p className="font-semibold text-sm" style={{ color: "hsl(43 70% 88%)" }}>MRagent</p>
                 <p className="text-xs flex items-center gap-1" style={{ color: "hsl(43 80% 60%)" }}>
-                  <span className="w-1.5 h-1.5 rounded-full inline-block animate-pulse" style={{ background: "#34d399" }} /> Online
+                  <span className="w-1.5 h-1.5 rounded-full inline-block animate-pulse" style={{ background: "#34d399" }} /> Helpful AI chat
                 </p>
               </div>
             </div>
@@ -88,6 +101,7 @@ export default function MRAgent() {
             {typing && (
               <div className="flex justify-start">
                 <div className="rounded-2xl rounded-tl-sm px-3.5 py-2.5" style={{ background: "hsl(220 55% 20%)" }}>
+                  <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wider" style={{ color: "rgba(248,245,240,0.62)" }}>Behavioral dictionary pass</span>
                   <span className="flex gap-1 items-center h-4">
                     {[0, 150, 300].map((delay) => <span key={delay} className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: "hsl(43 70% 88%)", animationDelay: `${delay}ms` }} />)}
                   </span>
