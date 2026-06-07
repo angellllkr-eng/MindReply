@@ -2,6 +2,7 @@ import { logMetric } from "@/lib/metrics";
 import { runConfiguredChatCompletion, type AIProviderSource } from "@/lib/azure-openai";
 
 export type ToolSlug =
+  | "ops-overload-analyzer"
   | "text-refiner"
   | "email-polisher"
   | "call-scripter"
@@ -16,7 +17,8 @@ export type ToolSlug =
   | "professional-rewrite"
   | "clarity-booster"
   | "structure-architect"
-  | "cultural-adapter";
+  | "cultural-adapter"
+  | "prospect-reply-analyzer";
 
 export type ToolResult = {
   tool: ToolSlug;
@@ -36,6 +38,12 @@ export type ToolResult = {
 };
 
 export const toolCatalog: Record<ToolSlug, { name: string; creditCost: number; description: string; action: string }> = {
+  "ops-overload-analyzer": {
+    name: "Ops Overload Analyzer",
+    creditCost: 3,
+    description: "Turn overloaded messages and task notes into an action queue with urgency, owner, and next response.",
+    action: "Process Overload",
+  },
   "text-refiner": {
     name: "Text Refiner",
     creditCost: 1,
@@ -125,6 +133,12 @@ export const toolCatalog: Record<ToolSlug, { name: string; creditCost: number; d
     creditCost: 2,
     description: "Adapt phrasing for cross-cultural clarity, indirectness, and relationship context.",
     action: "Adapt Message",
+  },
+  "prospect-reply-analyzer": {
+    name: "Prospect Reply Analyzer",
+    creditCost: 3,
+    description: "Diagnose failed prospect replies, repair trust breaks, and rewrite the close.",
+    action: "Analyze Replies",
   },
 };
 
@@ -320,7 +334,174 @@ function culturalAdapter(text: string) {
   ].join("\n");
 }
 
+function opsOverloadAnalyzer(text: string) {
+  const items = text
+    .split(/\n{2,}|\n[-*]\s+|\n\d+[.)]\s+/)
+    .map((item) => normalize(item))
+    .filter(Boolean)
+    .slice(0, 10);
+  const reviewed = items.length ? items : [normalize(text)];
+  const urgent = reviewed.filter((item) => /\b(today|urgent|asap|blocked|client|deadline|approval|late|stuck|tomorrow)\b/i.test(item));
+  const owners = reviewed.map((item, index) => {
+    const owner = /\b(client|customer)\b/i.test(item) ? "Client-facing owner" : /\b(team|internal|ops|project)\b/i.test(item) ? "Operations owner" : "Decision owner";
+    const priority = urgent.includes(item) ? "High" : index < 3 ? "Medium" : "Normal";
+    return `${index + 1}. ${priority} priority - ${owner}: ${item}`;
+  });
+
+  return [
+    "Ops Overload Analyzer",
+    "",
+    "Immediate overload diagnosis:",
+    `You have ${reviewed.length} item${reviewed.length === 1 ? "" : "s"} competing for attention. ${urgent.length || "No"} item${urgent.length === 1 ? "" : "s"} look urgent enough to create missed-detail or client-delay risk today.`,
+    "",
+    "What is costing time:",
+    "The workflow is forcing manual triage, context switching, and follow-up decisions before any real work starts. That is where the 2+ hours/day loss appears.",
+    "",
+    "Action queue:",
+    ...owners,
+    "",
+    "Next 24-hour operating move:",
+    "Handle the high-priority client or deadline items first, convert every vague message into owner + deadline + next action, then batch the rest instead of reacting all day.",
+    "",
+    "Send-ready response:",
+    "I have this. To keep it moving today, please confirm the owner, deadline, and the single next action needed. I will prioritize the urgent items first and batch the rest so nothing critical slips.",
+    "",
+    "Upgrade trigger:",
+    "Free preview processes 10 messages/tasks. Upgrade when new items are queued and you need immediate processing instead of another manual triage loop.",
+    "",
+    "Outcome promise:",
+    "MindReply consolidates and actions incoming communications so operations teams stop losing 2+ hours daily to manual processing and follow-ups within 24 hours.",
+  ].join("\n");
+}
+
+function classifyProspectReply(reply: string) {
+  const lower = reply.toLowerCase();
+  if (/\b(price|cost|expensive|budget|afford)\b/.test(lower)) return "price_pushback";
+  if (/\b(later|not now|busy|no time|next month|next quarter)\b/.test(lower)) return "not_now";
+  if (/\b(send|info|information|details|deck|brochure)\b/.test(lower)) return "send_info";
+  if (/\b(ai|chatgpt|crm|already|using|have a tool|we have)\b/.test(lower)) return "already_have_solution";
+  if (/\b(not interested|no thanks|pass|not for us)\b/.test(lower)) return "polite_no";
+  if (/\b(trust|proof|case study|results|guarantee|who are you)\b/.test(lower)) return "low_trust";
+  if (/\b(team|partner|boss|approval|discuss internally)\b/.test(lower)) return "needs_approval";
+  return "curious_but_not_convinced";
+}
+
+function diagnosisForReplyType(type: string) {
+  if (type === "price_pushback") {
+    return {
+      why: "They do not connect the price to recovered revenue.",
+      friction: "Cost feels like software spend instead of a way to rescue warm conversations.",
+      trust: "ROI is not concrete enough.",
+      strategy: "Compare the price to lost replies, delayed calls, and stalled deals.",
+    };
+  }
+  if (type === "not_now") {
+    return {
+      why: "The offer sounds like extra work during an already busy period.",
+      friction: "The first step feels bigger than the pain relief.",
+      trust: "They do not believe the result can happen quickly.",
+      strategy: "Make the first action a small reply batch with a fast turnaround.",
+    };
+  }
+  if (type === "send_info") {
+    return {
+      why: "They are avoiding commitment because the value is not sharp enough yet.",
+      friction: "Information request creates a passive follow-up loop.",
+      trust: "They want proof before spending time.",
+      strategy: "Send one proof-led sentence, then ask for a yes/no micro-commitment.",
+    };
+  }
+  if (type === "already_have_solution") {
+    return {
+      why: "They think this is another AI or CRM tool.",
+      friction: "Category confusion makes the offer easy to dismiss.",
+      trust: "They do not see a unique operating outcome.",
+      strategy: "Position Message Rescue as recovering stalled replies, not replacing their stack.",
+    };
+  }
+  if (type === "low_trust") {
+    return {
+      why: "Belief broke before the offer reached urgency.",
+      friction: "They need a low-risk proof step.",
+      trust: "Delivery confidence is weak.",
+      strategy: "Use a small batch diagnosis before asking for a bigger rollout.",
+    };
+  }
+  if (type === "needs_approval") {
+    return {
+      why: "The buyer is not armed with a simple internal business case.",
+      friction: "Approval adds delay and weakens momentum.",
+      trust: "The value is not packaged for another stakeholder.",
+      strategy: "Give them a one-sentence ROI case and a small pilot ask.",
+    };
+  }
+  if (type === "polite_no") {
+    return {
+      why: "They did not feel a painful enough revenue problem.",
+      friction: "The offer did not attach to an urgent workflow.",
+      trust: "They may see it as generic outreach.",
+      strategy: "Challenge gently with a specific revenue-leak question.",
+    };
+  }
+  return {
+    why: "They are interested but not convinced enough to act.",
+    friction: "The next step is not obvious or urgent.",
+    trust: "The result feels plausible but not necessary today.",
+    strategy: "Turn curiosity into a small batch test with a deadline.",
+  };
+}
+
+function prospectReplyAnalyzer(text: string) {
+  const replies = text
+    .split(/\n{2,}|\n[-*]\s+|\n\d+[.)]\s+/)
+    .map((item) => normalize(item))
+    .filter(Boolean);
+  const sampledReplies = replies.length ? replies.slice(0, 8) : [normalize(text)];
+  const types = sampledReplies.map(classifyProspectReply);
+  const primaryType = types.sort((a, b) => types.filter((type) => type === b).length - types.filter((type) => type === a).length)[0];
+  const diagnosis = diagnosisForReplyType(primaryType);
+  const urgency = /price_pushback|not_now|polite_no/.test(primaryType) ? "medium" : "high";
+  const trustLevel = /low_trust|send_info|already_have_solution/.test(primaryType) ? "low" : "medium";
+
+  return [
+    "Prospect Reply Analyzer",
+    "",
+    `Reply pattern: ${primaryType.replace(/_/g, " ")}`,
+    `Urgency level: ${urgency}`,
+    `Trust level: ${trustLevel}`,
+    "",
+    "Why they did not convert:",
+    diagnosis.why,
+    "",
+    "Where friction exists:",
+    diagnosis.friction,
+    "",
+    "Where trust breaks:",
+    diagnosis.trust,
+    "",
+    "Rewritten messaging:",
+    "This is not another AI tool. It is a revenue recovery layer for replies your team already receives but is not converting. The fastest win is not more leads; it is rescuing the prospects who already raised their hand.",
+    "",
+    "Rewritten offer:",
+    "Send 10 recent prospect replies. We will diagnose where the close is breaking, rewrite the follow-up path, and give you a sharper close sequence designed to recover stalled conversations within days.",
+    "",
+    "Rewritten closing:",
+    "Can you send 10 recent replies today? I will show you exactly where money is leaking and the close I would use before more warm conversations go cold.",
+    "",
+    "Minimum 30% close-rate improvement rationale:",
+    "The current path is likely losing buyers through vague value, weak urgency, or low trust. This rewrite improves close probability by making the first step smaller, connecting the offer to recovered revenue, and replacing passive follow-up with a direct batch test.",
+    "",
+    "MOA agent routing:",
+    "Growth Agent: use the rewritten close immediately.",
+    "AI Content Agent: turn the strongest reply type into a DM and email variant.",
+    "Support Agent: prepare objection responses for price, trust, timing, and approval.",
+    "Business Agent: keep the low-risk batch offer and remove any vague platform language.",
+    "Security Agent: remove private prospect data before sharing examples externally.",
+  ].join("\n");
+}
+
 function localToolResult(slug: ToolSlug, text: string, tone?: string) {
+  if (slug === "ops-overload-analyzer") return opsOverloadAnalyzer(text);
   if (slug === "text-refiner") return refineText(text);
   if (slug === "email-polisher") return polishEmail(text, tone);
   if (slug === "call-scripter") return callScripter(text);
@@ -335,6 +516,7 @@ function localToolResult(slug: ToolSlug, text: string, tone?: string) {
   if (slug === "professional-rewrite") return professionalRewrite(text);
   if (slug === "structure-architect") return structureArchitect(text);
   if (slug === "cultural-adapter") return culturalAdapter(text);
+  if (slug === "prospect-reply-analyzer") return prospectReplyAnalyzer(text);
   return clarityBoost(text);
 }
 
@@ -381,14 +563,16 @@ export async function runTool(slug: ToolSlug, input: { text: string; tone?: stri
   let result = localToolResult(slug, text, input.tone);
   let source: ToolResult["source"] = "local";
 
-  try {
-    const providerResult = await azureToolResult(slug, text, input.tone);
-    if (providerResult) {
-      result = providerResult.content;
-      source = providerResult.source;
+  if (slug !== "prospect-reply-analyzer" && slug !== "ops-overload-analyzer") {
+    try {
+      const providerResult = await azureToolResult(slug, text, input.tone);
+      if (providerResult) {
+        result = providerResult.content;
+        source = providerResult.source;
+      }
+    } catch (error) {
+      console.warn(`Tool ${slug} using local intelligence:`, error);
     }
-  } catch (error) {
-    console.warn(`Tool ${slug} using local intelligence:`, error);
   }
 
   const analysis = score(text, result);
@@ -410,11 +594,23 @@ export async function runTool(slug: ToolSlug, input: { text: string; tone?: stri
     creditCost: catalog.creditCost,
     result,
     originalText: text,
-    suggestions: [
-      "Check that the next action is explicit.",
-      "Confirm the tone matches the recipient's status and context.",
-      "Remove any remaining ambiguity before sending.",
-    ],
+    suggestions: slug === "ops-overload-analyzer"
+      ? [
+        "Process the first 10 items, then make the upgrade moment visible.",
+        "Prioritize client, deadline, approval, and blocked-work messages first.",
+        "Tie payment to immediate processing and 2+ hours/day reclaimed.",
+      ]
+      : slug === "prospect-reply-analyzer"
+      ? [
+        "Send the rewritten close today, while the reply is still warm.",
+        "Ask for 10 replies instead of a broad demo.",
+        "Tie payment to recovered conversations, not software features.",
+      ]
+      : [
+        "Check that the next action is explicit.",
+        "Confirm the tone matches the recipient's status and context.",
+        "Remove any remaining ambiguity before sending.",
+      ],
     analysis,
     source,
     metricLogged: metric.logged,
