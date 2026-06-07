@@ -5,7 +5,7 @@ const checks = [
   { icon: Server, label: "Next.js app", status: "Online", href: "/" },
   { icon: Activity, label: "Health API", status: "Check", href: "/api/health" },
   { icon: Languages, label: "Language detection", status: "Check", href: "/api/language" },
-  { icon: Database, label: "Fallback data", status: "Ready", href: "/api/professionals" },
+  { icon: Database, label: "Professional data", status: "Ready", href: "/api/professionals" },
 ];
 
 export default function HealthPage() {
@@ -16,7 +16,7 @@ export default function HealthPage() {
           <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest" style={{ color: "hsl(43 80% 60%)" }}><ShieldCheck size={14} /> System status</p>
           <h1 className="font-serif text-4xl font-bold md:text-5xl" style={{ color: "hsl(43 70% 88%)" }}>MindReply health layer</h1>
           <p className="mt-4 max-w-2xl text-sm leading-6" style={{ color: "rgba(248,245,240,0.72)" }}>
-            Public status shortcuts for the app, language detection, fallback data, and API health.
+            Public status shortcuts for the app, language detection, service data, and API health.
           </p>
         </div>
       </section>
@@ -40,7 +40,7 @@ export default function HealthPage() {
 
         <div className="mt-8 rounded-2xl border bg-white p-6" style={{ borderColor: "hsl(40 25% 88%)" }}>
           <p className="text-sm leading-6" style={{ color: "hsl(220 25% 45%)" }}>
-            If a provider key or database is not connected, MindReply keeps the public experience usable through local intelligence and fallback data while the provider dashboard is being configured.
+            Use these links to verify the live app, API health, language detection, and professional data endpoints.
           </p>
         </div>
       </section>
