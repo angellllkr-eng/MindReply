@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronRight, MessageCircle, Send, Sparkles, X } from "lucide-react";
+import { Message as AIMessage, MessageContent, MessageResponse } from "@/components/ai-elements/message";
 import { useLanguage } from "@/components/LanguageProvider";
 
 type Msg = { role: "agent" | "user"; text: string; source?: string };
@@ -78,11 +79,11 @@ export default function MRAgent() {
 
           <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ background: "hsl(40 20% 92% / 0.3)" }}>
             {messages.map((message, index) => (
-              <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${message.role === "agent" ? "rounded-tl-sm" : "rounded-tr-sm border border-[hsl(40_25%_88%)]"}`} style={message.role === "agent" ? { background: "hsl(220 55% 20%)", color: "hsl(43 70% 88%)" } : { background: "white", color: "hsl(220 45% 13%)" }}>
-                  {message.text}
-                </div>
-              </div>
+              <AIMessage key={index} from={message.role === "agent" ? "assistant" : "user"} className={message.role === "user" ? "items-end" : "items-start"}>
+                <MessageContent className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${message.role === "agent" ? "rounded-tl-sm" : "rounded-tr-sm border border-[hsl(40_25%_88%)]"}`} style={message.role === "agent" ? { background: "hsl(220 55% 20%)", color: "hsl(43 70% 88%)" } : { background: "white", color: "hsl(220 45% 13%)" }}>
+                  {message.role === "agent" ? <MessageResponse>{message.text}</MessageResponse> : message.text}
+                </MessageContent>
+              </AIMessage>
             ))}
             {typing && (
               <div className="flex justify-start">
