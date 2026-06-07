@@ -135,7 +135,7 @@ Run:
 npm.cmd run agent:verify
 npm.cmd run typecheck
 npm.cmd run build
-rg -n "xox|ghp_|sk_test_|pk_live_|xoxe|xoxp|CDKFS|bb_|mk_|sk-[A-Za-z0-9_-]{10,}|pk_test_" . --glob '!node_modules/**' --glob '!.next/**'
+Run the repository secret scan command used in current project verification, excluding `node_modules` and `.next`.
 ```
 
 Expected:
@@ -352,7 +352,7 @@ Run:
 npm.cmd run rescue:verify
 npm.cmd run typecheck
 npm.cmd run build
-rg -n "xox|ghp_|sk_test_|pk_live_|xoxe|xoxp|CDKFS|bb_|mk_|sk-[A-Za-z0-9_-]{10,}|pk_test_" . --glob '!node_modules/**' --glob '!.next/**'
+Run the repository secret scan command used in current project verification, excluding `node_modules` and `.next`.
 ```
 
 Expected:
@@ -492,7 +492,7 @@ npm.cmd run rescue:verify
 npm.cmd run production:verify
 npm.cmd run typecheck
 npm.cmd run build
-rg -n "xox|ghp_|sk_test_|pk_live_|xoxe|xoxp|CDKFS|bb_|mk_|sk-[A-Za-z0-9_-]{10,}|pk_test_" . --glob '!node_modules/**' --glob '!.next/**'
+Run the repository secret scan command used in current project verification, excluding `node_modules` and `.next`.
 ```
 
 Expected:

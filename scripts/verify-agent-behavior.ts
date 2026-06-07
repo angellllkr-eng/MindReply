@@ -20,6 +20,15 @@ assert.match(checkoutReply, /credit/i);
 assert.match(checkoutReply, /video/i);
 assert.match(checkoutReply, /dashboard confirms access|session room/i);
 
+const rescuePrompt = "I have a difficult client reply I keep avoiding and need it send-ready today";
+const rescueAnalysis = analyzeCommunication(rescuePrompt);
+assert.equal(rescueAnalysis.intent, "message_rescue");
+
+const rescueReply = buildLocalAgentReply(rescuePrompt, rescueAnalysis);
+assert.match(rescueReply, /Message Rescue/i);
+assert.match(rescueReply, /3 difficult messages|send-ready/i);
+assert.match(rescueReply, /credits|professional/i);
+
 const planPrompt = "Which plan should I choose for daily work?";
 const planAnalysis = analyzeCommunication(planPrompt);
 assert.equal(planAnalysis.intent, "membership_upgrade");

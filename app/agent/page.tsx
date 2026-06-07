@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Bot, CalendarDays, CreditCard, Send, Sparkles, TrendingUp } from "lucide-react";
+import { Bot, CalendarDays, CreditCard, MessageSquare, Send, Sparkles, TrendingUp } from "lucide-react";
 
 type Message = { role: "agent" | "user"; text: string };
 type AgentAnalysis = {
@@ -18,6 +18,7 @@ const starter: Message = {
 };
 
 const quickPrompts = [
+  { icon: MessageSquare, label: "Rescue message", prompt: "I have a difficult client reply I keep avoiding. What is the fastest way to handle it?" },
   { icon: CreditCard, label: "Buy credits", prompt: "I want to buy credits for the tools. Which pack should I use?" },
   { icon: CalendarDays, label: "Book video", prompt: "I need to book a video session with the right professional. What is the best route?" },
   { icon: TrendingUp, label: "Pick plan", prompt: "Should I use Signal, Growth, or Pro for daily work?" },
@@ -73,7 +74,7 @@ export default function AgentPage() {
                 <span className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: "hsl(220 55% 20%)", color: "hsl(43 70% 88%)" }}><Bot size={20} /></span>
                 <div>
                   <p className="font-semibold text-sm" style={{ color: "hsl(220 45% 13%)" }}>MRagent</p>
-                  <p className="text-xs" style={{ color: "hsl(220 25% 45%)" }}>Online for chat, credits, bookings, and plan routing</p>
+                  <p className="text-xs" style={{ color: "hsl(220 25% 45%)" }}>Online for chat, Message Rescue, credits, bookings, and plan routing</p>
                 </div>
               </div>
               <Link href="/professionals" className="hidden sm:inline-flex text-xs font-semibold px-3 py-2 rounded-lg border" style={{ borderColor: "hsl(40 25% 88%)", color: "hsl(220 55% 20%)" }}>Find a professional</Link>

@@ -18,10 +18,13 @@ export function analyzeCommunication(message: string): AgentReply["analysis"] {
   const wantsBooking = /\b(book|booking|session|video|voice|call|professional|consultation)\b/i.test(message);
   const wantsCredits = /\b(credit|credits|buy|purchase|tool|tools|checkout|payment)\b/i.test(message);
   const wantsMembership = /\b(signal|growth|pro|membership|upgrade|price|pricing|plan|subscribe|subscription)\b/i.test(message);
+  const wantsRescue = /\b(rescue|stuck|avoid|avoiding|difficult message|sensitive message|urgent reply|client reply|apology|refund|boundary|fee message|send-ready)\b/i.test(message);
   const wantsGeneralChat = /\b(hello|hi|hey|how are you|what can you do|help|question|talk|chat)\b/i.test(message);
   const asksBroadQuestion = /[?]$|^\s*(what|how|why|where|when|who|can|could|should|do|does|is|are|am)\b/i.test(message);
   const intent = wantsBooking && wantsCredits
     ? "booking_and_credits"
+    : wantsRescue
+      ? "message_rescue"
     : wantsMembership
       ? "membership_upgrade"
     : wantsCredits
@@ -61,12 +64,16 @@ export function buildLocalAgentReply(message: string, analysis: AgentReply["anal
     return "Absolutely. The clean path is: buy a credit pack for tools, then book the right professional session. Use video for complex or sensitive situations, voice for fast advisory support, and text when you want careful written review. After payment, your dashboard confirms access and the booking opens the session room. If you want the strongest setup, Growth gives you continuity and Pro gives you the permanent memory plus integrations.";
   }
 
+  if (analysis.intent === "message_rescue") {
+    return "Use Message Rescue for this. It is built for the moment when one reply is taking too much mental bandwidth: pay once, paste up to 3 difficult messages, and use the workspace to turn them into calm, send-ready wording. If you only need one light rewrite, credits are enough. If the message is high-stakes or specialist, pair the rescue with a professional review.";
+  }
+
   if (analysis.intent === "credit_purchase") {
     return "Yes. Credits are for the micro-tools: email polishing, text refining, tone work, planning, and professional rewrites. The 20-credit pack is the better value if you expect to use the tools more than once or twice. Once Stripe is live, checkout opens from the homepage and your dashboard confirms the balance.";
   }
 
   if (analysis.intent === "membership_upgrade") {
-    return "Here is the simple version: Signal is free and temporary, Growth at £49/month gives you 30 days of context memory, and Pro at £129/month is the serious operating layer with unlimited memory plus Slack, Gmail, Notion, Character Profiles, and Momentum Clarity. If you are using MindReply for real work, Growth is the natural start. If you want it to become part of your daily system, Pro is the one.";
+    return "Here is the simple version: Signal is free and temporary, Growth at GBP 49/month gives you 30 days of context memory, and Pro at GBP 129/month is the serious operating layer with unlimited memory plus Slack, Gmail, Notion, Character Profiles, and Momentum Clarity. If you are using MindReply for real work, Growth is the natural start. If you want it to become part of your daily system, Pro is the one.";
   }
 
   if (analysis.intent === "professional_booking") {
