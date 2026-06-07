@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Bot, CalendarDays, CreditCard, MessageSquare, Send, Sparkles, TrendingUp } from "lucide-react";
+import { useLanguage } from "@/components/LanguageProvider";
 
 type Message = { role: "agent" | "user"; text: string };
 type AgentAnalysis = {
@@ -67,6 +68,7 @@ function getNextAction(analysis: AgentAnalysis | null) {
 }
 
 export default function AgentPage() {
+  const { language } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([starter]);
   const [input, setInput] = useState("");
   const [analysis, setAnalysis] = useState<AgentAnalysis | null>(null);
@@ -85,7 +87,7 @@ export default function AgentPage() {
       const response = await fetch("/api/agent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({ message: text, language }),
       });
       const data = await response.json();
       setAnalysis(data.analysis ?? null);
