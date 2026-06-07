@@ -41,6 +41,9 @@ jobs:
       - name: Verify Message Rescue offer
         run: npm run rescue:verify
 
+      - name: Verify language routing
+        run: npm run language:verify
+
       - name: Verify AI provider readiness
         run: npm run ai:verify
 
