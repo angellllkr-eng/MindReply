@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ArrowRight, Bot, CalendarDays, CreditCard, MessageSquare, Send, Sparkles, TrendingUp } from "lucide-react";
 import { Message as AIMessage, MessageContent, MessageResponse } from "@/components/ai-elements/message";
 import { useLanguage } from "@/components/LanguageProvider";
@@ -14,17 +15,18 @@ type AgentAnalysis = {
   clarityFramework: string[];
 };
 
-const starter: Message = {
+const baseStarter: Message = {
   role: "agent",
-  text: "Hi, I am MRagent. Ask me anything - a message, decision, booking, credits, or plan choice. I will answer naturally and show the fastest useful next step.",
+  text: "Hi, I am MRagent. Ask me anything - a message, decision, booking, credits, expert field, or plan choice. I will answer naturally and show the fastest useful next step.",
 };
 
-const quickPrompts = [
-  { icon: MessageSquare, label: "Rescue message", prompt: "I have a difficult client reply I keep avoiding. What is the fastest way to handle it?" },
-  { icon: CreditCard, label: "Buy credits", prompt: "I want to buy credits for the tools. Which pack should I use?" },
-  { icon: CalendarDays, label: "Book video", prompt: "I need to book a video session with the right professional. What is the best route?" },
-  { icon: TrendingUp, label: "Pick plan", prompt: "Should I use Signal, Growth, or Pro for daily work?" },
-];
+function sleep(ms: number) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+function replyDelay(message: string) {
+  return Math.min(2600, 1000 + message.length * 10);
+}
 
 function getNextAction(analysis: AgentAnalysis | null) {
   if (!analysis) return null;
@@ -62,14 +64,33 @@ function getNextAction(analysis: AgentAnalysis | null) {
   }
 
   return {
-    href: "/rescue",
-    label: "Start Message Rescue",
-    text: "If one reply is slowing your day, paste it and get moving now.",
+    href: "/tools/ops-overload-analyzer",
+    label: "Analyze overload",
+    text: "If the issue is pressure or too many messages, turn it into next actions first.",
   };
 }
 
 export default function AgentPage() {
   const { language } = useLanguage();
+  const searchParams = useSearchParams();
+  const expert = searchParams.get("expert")?.trim() ?? "";
+  const professional = searchParams.get("professional")?.trim() ?? "";
+  const expertContext = expert ? `${expert}${professional ? ` with ${professional}` : ""}` : "";
+  const starter = useMemo<Message>(() => expertContext
+    ? {
+        role: "agent",
+        text: `I can help as a ${expertContext}-aware AI preview. Tell me the situation, the person involved, and what outcome you want. I will be helpful first, then suggest text, voice, or video booking only if expert support is genuinely needed.`,
+      }
+    : baseStarter,
+  [expertContext]);
+
+  const quickPrompts = useMemo(() => [
+    { icon: MessageSquare, label: "Rescue message", prompt: "I have a difficult client reply I keep avoiding. What is the fastest way to handle it?" },
+    { icon: CreditCard, label: "Buy credits", prompt: "I want to buy credits for the tools. Which pack should I use?" },
+    { icon: CalendarDays, label: expertContext ? "Book this field" : "Book video", prompt: expertContext ? `I may need a ${expert} session. What mode should I choose and how should I prepare?` : "I need to book a video session with the right professional. What is the best route?" },
+    { icon: TrendingUp, label: "Pick plan", prompt: "Should I use Signal, Growth, or Pro for daily work?" },
+  ], [expert, expertContext]);
+
   const [messages, setMessages] = useState<Message[]>([starter]);
   const [input, setInput] = useState("");
   const [analysis, setAnalysis] = useState<AgentAnalysis | null>(null);
@@ -85,10 +106,12 @@ export default function AgentPage() {
     setLoading(true);
 
     try {
+      await sleep(replyDelay(text));
+      const messageForAgent = expertContext ? `[Expert preview context: ${expertContext}] ${text}` : text;
       const response = await fetch("/api/agent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, language }),
+        body: JSON.stringify({ message: messageForAgent, language }),
       });
       const data = await response.json();
       setAnalysis(data.analysis ?? null);
@@ -107,8 +130,8 @@ export default function AgentPage() {
       <section className="py-14 px-4" style={{ background: "hsl(220 55% 20%)" }}>
         <div className="max-w-5xl mx-auto">
           <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "hsl(43 80% 60%)" }}>MRagent</p>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-3" style={{ color: "hsl(43 70% 88%)" }}>Human-feeling sales and communication assistant</h1>
-          <p className="text-sm max-w-2xl leading-relaxed" style={{ color: "rgba(248,245,240,0.72)" }}>Ask broad questions, refine sensitive messages, book professionals, buy credits, or choose the right Signal, Growth, or Pro path without losing momentum.</p>
+          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-3" style={{ color: "hsl(43 70% 88%)" }}>{expertContext ? `${expert} AI preview` : "Human-feeling AI chat assistant"}</h1>
+          <p className="text-sm max-w-2xl leading-relaxed" style={{ color: "rgba(248,245,240,0.72)" }}>Ask broad questions, refine sensitive messages, prepare for a professional session, buy credits, or choose the right Signal, Growth, or Pro path without losing momentum.</p>
         </div>
       </section>
 
@@ -120,25 +143,28 @@ export default function AgentPage() {
                 <span className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: "hsl(220 55% 20%)", color: "hsl(43 70% 88%)" }}><Bot size={20} /></span>
                 <div>
                   <p className="font-semibold text-sm" style={{ color: "hsl(220 45% 13%)" }}>MRagent</p>
-                  <p className="text-xs" style={{ color: "hsl(220 25% 45%)" }}>Online for chat, Message Rescue, credits, bookings, and plan routing</p>
+                  <p className="text-xs" style={{ color: "hsl(220 25% 45%)" }}>{expertContext ? `${expertContext} preview mode` : "Online for chat, Message Rescue, credits, bookings, and plan routing"}</p>
                 </div>
               </div>
               <Link href="/professionals" className="hidden sm:inline-flex text-xs font-semibold px-3 py-2 rounded-lg border" style={{ borderColor: "hsl(40 25% 88%)", color: "hsl(220 55% 20%)" }}>Find a professional</Link>
             </div>
             <div className="flex flex-wrap gap-2 border-b px-5 py-3" style={{ borderColor: "hsl(40 25% 88%)" }}>
-              {quickPrompts.map((item) => (
-                <button
-                  key={item.label}
-                  type="button"
-                  onClick={() => sendText(item.prompt)}
-                  disabled={loading}
-                  className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition hover:border-[hsl(43_80%_60%)] disabled:opacity-50"
-                  style={{ borderColor: "hsl(40 25% 88%)", color: "hsl(220 45% 13%)" }}
-                >
-                  <item.icon size={13} />
-                  {item.label}
-                </button>
-              ))}
+              {quickPrompts.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={() => sendText(item.prompt)}
+                    disabled={loading}
+                    className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition hover:border-[hsl(43_80%_60%)] disabled:opacity-50"
+                    style={{ borderColor: "hsl(40 25% 88%)", color: "hsl(220 45% 13%)" }}
+                  >
+                    <Icon size={13} />
+                    {item.label}
+                  </button>
+                );
+              })}
             </div>
 
             <div className="h-[460px] overflow-y-auto p-5 space-y-4" style={{ background: "hsl(40 20% 96%)" }}>
@@ -149,7 +175,7 @@ export default function AgentPage() {
                   </MessageContent>
                 </AIMessage>
               ))}
-              {loading && <div className="text-sm" style={{ color: "hsl(220 25% 45%)" }}>MRagent is thinking through the useful next step...</div>}
+              {loading && <div className="text-sm" style={{ color: "hsl(220 25% 45%)" }}>MRagent is running the behavioral dictionary pass...</div>}
             </div>
 
             <div className="p-4 border-t" style={{ borderColor: "hsl(40 25% 88%)" }}>
