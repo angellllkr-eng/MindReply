@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import { headers } from "next/headers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import AuthProvider from "@/components/AuthProvider";
+import Footer from "@/components/Footer";
 import { LanguageProvider } from "@/components/LanguageProvider";
 import Nav from "@/components/Nav";
 import MRAgent from "@/components/MRAgent";
@@ -69,6 +70,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <LanguageProvider initialLanguage={initialLanguage} initialLanguageMode={initialLanguageMode} initialLanguageSource={initialLanguageSource} initialCountry={initialCountry}>
             <Nav />
             {children}
+            <Footer />
             <MRAgent />
             <MarketingPixels />
             <SpeedInsights />
