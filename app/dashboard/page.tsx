@@ -9,16 +9,15 @@ export default function UserDashboard() {
     { label: "Available Credits", value: "42", icon: <Wand2 size={20} /> },
     { label: "Tools Used This Month", value: "18", icon: <FileText size={20} /> },
     { label: "Clarity Score", value: "96/100", icon: <TrendingUp size={20} /> },
-    { label: "Network Connections", value: "124", icon: <Users size={20} /> },
+    { label: "Professional Network", value: "124", icon: <Users size={20} /> },
   ];
 
   const actions = [
+    { href: "/tools/ops-overload-analyzer", title: "Ops Overload Analyzer", body: "Turn pressure into next actions." },
     { href: "/tools/text-refiner", title: "Text Refiner", body: "Refine casual messages instantly." },
     { href: "/tools/email-polisher", title: "Email Polisher", body: "Transform drafts to executive-grade." },
     { href: "/dashboard/analytics", title: "Behavioral Analytics", body: "View communication impact scores." },
     { href: "/lexicons", title: "Specialist Lexicons", body: "Choose words that lower resistance." },
-    { href: "/integrations", title: "Pro Integrations", body: "Connect Slack, Gmail, and Notion." },
-    { href: "/orchestrator", title: "MR-Core Orchestrator", body: "Coordinate autonomous execution agents." },
   ];
 
   const engagementLoops = [
@@ -35,10 +34,10 @@ export default function UserDashboard() {
   ];
 
   const proPreviews = [
-    { title: "Unlimited Context Memory", body: "Growth keeps 30 days. Pro keeps the operational brain permanently available." },
+    { title: "Unlimited Context Memory", body: "Keep important working context available when pressure returns." },
     { title: "Character Profiles", body: "Preserve how investors, clients, team members, and partners respond under pressure." },
     { title: "Momentum Clarity", body: "See what is stuck, what moved, and what next action creates visible progress." },
-    { title: "Slack, Gmail, Notion", body: "Move MindReply into the tools where the work already happens." },
+    { title: "Priority Review Queue", body: "Move urgent messages through a faster clarity workflow when timing matters." },
   ];
 
   return (
@@ -110,9 +109,9 @@ export default function UserDashboard() {
           <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-[hsl(43_80%_60%)]">Pro outcome preview</p>
-              <h2 className="mt-2 font-serif text-3xl font-bold">You are leaking 70% of execution bandwidth.</h2>
+              <h2 className="mt-2 font-serif text-3xl font-bold">You are leaking execution bandwidth.</h2>
               <p className="mt-3 text-sm leading-6 text-[rgba(248,245,240,0.7)]">
-                Signal is temporary assistance. Growth gives 30 days of continuity. Pro turns MindReply into the permanent operational brain across memory, people, and tools.
+                Signal is temporary assistance. Growth gives 30 days of continuity. Pro gives the memory, lexicons, and priority review needed for daily communication pressure.
               </p>
               <Link href="/memberships" className="mt-5 inline-flex rounded-lg px-5 py-3 text-sm font-semibold" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}>
                 Upgrade to Pro
