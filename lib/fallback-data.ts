@@ -179,7 +179,7 @@ export const fallbackMemberships: MembershipDto[] = [
     name: "Signal",
     price: 0,
     description: "Free entry layer for founders, agencies, teams, and premium individuals who need calm operational clarity.",
-    features: ["Operational composure primer", "Starter MRagent access", "Public professional marketplace", "Upgrade prompts when memory or integrations are needed"],
+    features: ["Operational composure primer", "Starter MRagent access", "Public professional marketplace", "Upgrade prompts when memory or expert review is needed"],
     highlighted: false,
   },
   {
@@ -188,7 +188,7 @@ export const fallbackMemberships: MembershipDto[] = [
     name: "Growth",
     price: 49,
     description: "For users ready to convert free Signal work into a reliable operating layer.",
-    features: ["30 days context memory", "Core micro-tool suite", "Growth dashboard", "Upgrade path to Pro integrations"],
+    features: ["30 days context memory", "Core micro-tool suite", "Growth dashboard", "Upgrade path to Pro continuity"],
     highlighted: true,
   },
   {
@@ -196,8 +196,8 @@ export const fallbackMemberships: MembershipDto[] = [
     tier: "pro",
     name: "Pro",
     price: 129,
-    description: "For operators who want unlimited memory, integrations, and premium clarity systems.",
-    features: ["Unlimited context memory", "Slack, Gmail, and Notion integrations", "Character Profiles", "Momentum Clarity", "Priority professional booking"],
+    description: "For operators who want unlimited memory and premium clarity systems.",
+    features: ["Unlimited context memory", "Priority review queue", "Specialist lexicons", "Momentum Clarity", "Priority professional booking"],
     highlighted: false,
   },
 ];
