@@ -33,8 +33,8 @@ const footerGroups = [
 
 const statusItems = [
   { icon: Bot, label: "AI chat available" },
-  { icon: Wand2, label: "Tools recovered" },
-  { icon: CalendarDays, label: "Booking fallback ready" },
+  { icon: Wand2, label: "Tools available" },
+  { icon: CalendarDays, label: "Booking paths ready" },
   { icon: BookOpen, label: "Lexicons live" },
 ];
 
@@ -52,7 +52,7 @@ export default function Footer() {
               </span>
             </Link>
             <p className="mt-4 max-w-md text-sm leading-6 text-[rgba(248,245,240,0.68)]">
-              Practical AI chat, tools, professional booking paths, lexicons, and recovery workflows for people who need calm, useful communication support now.
+              Practical AI chat, tools, professional booking paths, lexicons, and communication workflows for people who need calm, useful support now.
             </p>
             <div className="mt-5 grid gap-2 sm:grid-cols-2">
               {statusItems.map((item) => {
@@ -87,7 +87,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 flex flex-col gap-3 border-t border-white/10 pt-5 text-xs text-[rgba(248,245,240,0.52)] sm:flex-row sm:items-center sm:justify-between">
-          <span>MindReply runs with database fallbacks where production providers are still being connected.</span>
+          <span>MindReply keeps chat, tools, bookings, lexicons, and system health within reach from every page.</span>
           <Link href="/api/health" className="inline-flex items-center gap-2 transition hover:text-[hsl(43_80%_60%)]">
             <Activity size={13} /> API health
           </Link>
