@@ -22,6 +22,7 @@ const sha = env.GITHUB_SHA || env.VERCEL_GIT_COMMIT_SHA || "unknown";
 const enabled = env.MINDREPLY_REPORT_ENABLED === "true";
 const dryRun = env.MINDREPLY_REPORT_DRY_RUN !== "false";
 const personalOnly = env.MINDREPLY_REPORT_PERSONAL_ONLY !== "false";
+const requireDelivery = env.MINDREPLY_REPORT_REQUIRE_DELIVERY === "true";
 const requestedChannels = parseChannels(env.MINDREPLY_REPORT_CHANNELS || "console");
 
 function parseChannels(value: string): Channel[] {
@@ -100,6 +101,7 @@ function reportMarkdown(snapshot: RepoSnapshot) {
     `Deploy status: ${statusLine}`,
     `Personal-only mode: ${boolWord(personalOnly)}`,
     `Dry run: ${boolWord(dryRun)}`,
+    `Require delivery: ${boolWord(requireDelivery)}`,
     "",
     "## What changed",
     "- MRagent ChatGPT app, receipt, and deployment signals are checked from the current repository context.",
@@ -181,6 +183,12 @@ async function sendEmail(markdown: string): Promise<SendResult> {
   return { channel: "email", status: "sent", detail: "Email report sent." };
 }
 
+function deliveryMissing(results: SendResult[]) {
+  const requestedDelivery = requestedChannels.some((channel) => channel === "slack" || channel === "email");
+  const delivered = results.some((result) => (result.channel === "slack" || result.channel === "email") && result.status === "sent");
+  return requestedDelivery && !delivered;
+}
+
 async function main() {
   const snapshot = await fetchRepoSnapshot();
   const markdown = reportMarkdown(snapshot);
@@ -201,6 +209,11 @@ async function main() {
 
   const failed = results.filter((result) => result.status === "failed");
   if (failed.length) process.exitCode = 1;
+
+  if (requireDelivery && deliveryMissing(results)) {
+    console.error("Required personal-pack delivery did not reach Slack or email.");
+    process.exitCode = 1;
+  }
 }
 
 void main();
