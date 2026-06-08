@@ -20,6 +20,20 @@ const packSources = [
   { label: "remotion-brief", path: "site/media/remotion-launch-brief.yml" },
 ];
 
+function githubRun() {
+  const repository = process.env.GITHUB_REPOSITORY || "Mind-Reply/MindReply";
+  const runId = process.env.GITHUB_RUN_ID || "local";
+  return {
+    repository,
+    ref: process.env.GITHUB_REF || "local",
+    branch: process.env.GITHUB_REF_NAME || "local",
+    sha: process.env.GITHUB_SHA || "local",
+    runId,
+    runAttempt: process.env.GITHUB_RUN_ATTEMPT || "local",
+    runUrl: runId === "local" ? null : `https://github.com/${repository}/actions/runs/${runId}`,
+  };
+}
+
 async function checkEndpoint(endpoint) {
   const started = Date.now();
   try {
@@ -79,6 +93,7 @@ function chooseNextAction({ mcpLive, healthLive, discoveryLive, packReady }) {
 }
 
 const generatedAt = new Date().toISOString();
+const run = githubRun();
 const results = await Promise.all(endpoints.map(checkEndpoint));
 const sourceResults = packSources.map((source) => ({ ...source, present: existsSync(source.path) }));
 const byLabel = new Map(results.map((result) => [result.label, result]));
@@ -94,6 +109,7 @@ const opinion = packReady ? "The repo has a workable personal pack; deploy quota
 const report = {
   generatedAt,
   siteUrl,
+  run,
   summary: {
     coreAgent: liveCore ? "live" : "check",
     mcpApp: mcpLive ? "live" : "not live",
@@ -115,6 +131,7 @@ console.log(`# MRagent 15-minute report`);
 console.log("");
 console.log(`Time: ${generatedAt}`);
 console.log(`Site: ${siteUrl}`);
+console.log(`Run: ${run.branch} ${run.sha.slice(0, 12)}`);
 console.log(`Core agent: ${report.summary.coreAgent}`);
 console.log(`MCP app: ${report.summary.mcpApp}`);
 console.log(`Discovery assets: ${report.summary.discoveryAssets}`);
