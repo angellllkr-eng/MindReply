@@ -8,14 +8,24 @@
     "start": "next start",
     "lint": "npm run typecheck",
     "typecheck": "next typegen && tsc --noEmit",
-    "decision:verify": "tsx scripts/verify-decision-layer.ts"
+    "decision:verify": "tsx scripts/verify-decision-layer.ts",
+    "mcp:verify": "tsx scripts/verify-mcp.ts"
   },
   "dependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.7.4",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@streamdown/cjk": "^2.4.0",
+    "@streamdown/code": "^2.4.0",
+    "@streamdown/math": "^2.4.0",
+    "@streamdown/mermaid": "^2.4.0",
+    "@vercel/blob": "^2.4.0",
     "@vercel/speed-insights": "^2.0.0",
     "lucide-react": "^0.545.0",
     "next": "^15.3.3",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "streamdown": "^2.4.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.14",
