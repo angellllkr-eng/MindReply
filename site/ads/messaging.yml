@@ -1,0 +1,18 @@
+campaign: MRagent warm mind read
+promise: Warm mind read. Clear next move.
+audience:
+  - people carrying tense messages
+  - founders handling client hesitation
+  - operators with follow-up pressure
+angles:
+  loaded_message: Read the pressure before you reply.
+  hesitant_client: Find the calmer move when the surface ask is not the whole story.
+  loose_follow_up: Turn the thread tugging at you into one quiet next move.
+landing_sections:
+  hero: Warm mind read. Clear next move.
+  moments: Built for the tense little moment before reply.
+  method: Paste the pressure. Read what is underneath. Move once, with a receipt.
+guardrails:
+  - no clinical claims
+  - no generic tool positioning
+  - no public claims about storing raw input
