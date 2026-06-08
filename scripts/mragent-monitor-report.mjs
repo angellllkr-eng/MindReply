@@ -21,6 +21,7 @@ const packSources = [
   { label: "visibility-plan", path: "site/growth/visibility-plan.yml" },
   { label: "search-intents", path: "site/growth/search-intents.yml" },
   { label: "live-copy-sync", path: "site/growth/live-copy-sync.yml" },
+  { label: "preview-qa", path: "site/growth/preview-qa.yml" },
   { label: "ad-messaging", path: "site/ads/messaging.yml" },
   { label: "ad-copy-tests", path: "site/ads/copy-tests.yml" },
   { label: "figma-loop", path: "site/design/figma-growth-loop.yml" },
