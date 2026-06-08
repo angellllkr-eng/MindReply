@@ -1,0 +1,37 @@
+qa: MRagent production preview
+status: ready_for_capture
+purpose: Make the next /agent browser pass explicit and repeatable.
+preview_target:
+  production: https://www.mind-reply.com/agent
+  active_vercel_context: Vercel - mind-reply
+  legacy_context_note: Vercel - mindreply may still show build-rate-limit and is not the active preview target.
+viewports:
+  desktop:
+    width: 1440
+    height: 1000
+  mobile:
+    width: 390
+    height: 844
+checks:
+  visual:
+    - MRagent session header is visible
+    - input box and send control are visible without overlap
+    - warm slow-read positioning is visible above the fold on desktop
+    - mobile view does not clip the composer or receipt area
+  behavior:
+    - submit a tense-message sample
+    - staged reading text appears before the response
+    - response includes one Mind Read and one action
+    - receipt id and risk level render without overlapping text
+  copy:
+    - visible copy matches site/growth/live-copy-sync.yml
+    - no generic helper positioning appears
+    - no clinical claims appear
+sample_input: I need to answer a client who says the price is too high, but I do not want to sound defensive.
+expected_result:
+  action_kind: reply
+  risk_level: low or medium
+  receipt: visible and privacy-safe
+reporting:
+  monitor_source_label: preview-qa
+  next_report_line: Capture fresh /agent desktop and mobile preview when Browser access is available.
