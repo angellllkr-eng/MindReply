@@ -1,0 +1,37 @@
+matrix: MRagent ad copy tests
+status: active
+purpose: Turn visibility work into small copy tests tied to real search intent.
+source_files:
+  search_intents: site/growth/search-intents.yml
+  messaging: site/ads/messaging.yml
+guardrails:
+  - no clinical claims
+  - no generic helper positioning
+  - no promises about storing raw intake text
+  - always point to one synthesis and one next move
+tests:
+  loaded_message:
+    intent_cluster: tense_reply
+    landing: /agent
+    headline: Read the pressure before you reply.
+    body: Bring the message that feels loaded. MRagent names the feeling, the protection pattern, and one clean move.
+    success_signal: Visitor opens MRagent or submits a tense-message sample.
+    discard_if: Sounds like generic writing help instead of pressure-reading.
+  client_hesitation:
+    intent_cluster: client_hesitation
+    landing: /
+    headline: Warm authority for the message you keep rewriting.
+    body: For price, timing, or trust friction: keep the relationship warm without sounding smaller than you are.
+    success_signal: Visitor continues from home into /agent.
+    discard_if: Implies negotiation advice beyond one safer reply.
+  follow_up_pressure:
+    intent_cluster: follow_up_pressure
+    landing: /agent
+    headline: One quiet next move for the thread still tugging at you.
+    body: Turn the follow-up in your head into one calm action and a private receipt.
+    success_signal: Visitor uses MRagent with a follow-up scenario.
+    discard_if: Feels like task management instead of emotional pressure relief.
+reporting:
+  cadence: weekly wednesday visibility pass
+  report_signal: ad_message_sync
+  next_review: compare copy against live home and /agent text before publishing externally
