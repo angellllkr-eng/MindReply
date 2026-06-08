@@ -109,6 +109,7 @@ for (const file of [
   ".github/workflows/mragent-monitor.yml",
   "site/automation/personal-pack.yml",
   "site/automation/report-schema.yml",
+  "site/automation/slack-api.yml",
 ]) {
   assert(existsSync(join(process.cwd(), file)), `${file} must exist.`);
 }
