@@ -29,6 +29,6 @@ export async function GET(req: NextRequest) {
     source,
     country,
     supported: LANG_OPTIONS.map((option) => option.code),
-    note: "Pages use detected language for navigation and MRagent replies; full human-quality translation still depends on content coverage and AI provider availability.",
+    note: "Language is detected automatically from visitor context, with manual override available from the language selector.",
   });
 }
