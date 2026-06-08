@@ -1,0 +1,17 @@
+{
+  "playbook_id": "risk-review",
+  "title": "Risk review",
+  "version": "0.1.0",
+  "triggers": ["threat", "legal", "regulator", "lawsuit", "unsafe"],
+  "recommended_action": "escalate",
+  "decision_tree": [
+    {
+      "condition": "The input contains legal, regulatory, safety, or coercive pressure.",
+      "action": "escalate"
+    }
+  ],
+  "verification": {
+    "risk_gate": true,
+    "receipt_required": true
+  }
+}
