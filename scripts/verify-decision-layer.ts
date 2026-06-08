@@ -90,6 +90,7 @@ const publicFiles = [
   "site/growth/search-intents.yml",
   "site/growth/live-copy-sync.yml",
   "site/growth/preview-qa.yml",
+  "site/growth/preview-results.yml",
   "site/design/figma-growth-loop.yml",
   "site/media/remotion-launch-brief.yml",
   "src/agents/prompts.md",
@@ -143,6 +144,13 @@ assertIncludes("MRagent preview QA", previewQa, "desktop");
 assertIncludes("MRagent preview QA", previewQa, "mobile");
 assertIncludes("MRagent preview QA", previewQa, "staged reading text appears");
 assertIncludes("MRagent preview QA", previewQa, "receipt id and risk level render");
+
+const previewResults = readFileSync(join(process.cwd(), "site/growth/preview-results.yml"), "utf-8");
+assertIncludes("MRagent preview results", previewResults, "pending_capture");
+assertIncludes("MRagent preview results", previewResults, "desktop");
+assertIncludes("MRagent preview results", previewResults, "mobile");
+assertIncludes("MRagent preview results", previewResults, "staged_reading");
+assertIncludes("MRagent preview results", previewResults, "receipt_visible");
 
 for (const file of [
   "app/api/agent/route.ts",
