@@ -14,10 +14,8 @@ node_modules/
 /build
 
 # env
-.env
 .env.local
 .env.*.local
-!.env.example
 
 # debug
 npm-debug.log*
