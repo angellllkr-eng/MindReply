@@ -1,0 +1,21 @@
+runbook: MRagent verification
+status: active
+purpose: Keep code-health checks separate from Vercel publishing while Vercel quota is constrained.
+workflow: .github/workflows/mragent-verify.yml
+commands:
+  - node scripts/vercel-ignore-build.mjs --self-test
+  - npm run decision:verify
+  - npm run mcp:verify
+  - npm run typecheck
+  - npm run build
+checks:
+  vercel_guard: Proves preview, duplicate, non-main, and automation-only changes are skipped.
+  decision_layer: Proves MRagent response shape, risk gate, receipts, and public-language guard.
+  mcp_app: Proves prepare_mindread, render_mindread, and fetch_receipt stay exposed.
+  typecheck: Proves Next and TypeScript contracts compile.
+  build: Proves the app can build independently of Vercel quota.
+when_failed:
+  - inspect the first failing GitHub Actions step
+  - fix the smallest code path tied to that step
+  - do not treat Vercel build-rate-limit as a code failure without build logs
+report_language: GitHub verification proves code health; Vercel status proves publishing health.
