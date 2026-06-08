@@ -110,6 +110,7 @@ for (const file of [
   "site/automation/personal-pack.yml",
   "site/automation/report-schema.yml",
   "site/automation/slack-api.yml",
+  "site/automation/vercel-build-limit-runbook.yml",
 ]) {
   assert(existsSync(join(process.cwd(), file)), `${file} must exist.`);
 }
