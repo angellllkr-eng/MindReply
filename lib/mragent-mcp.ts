@@ -2,7 +2,7 @@ import { fetchStoredReceipt, prepareMindRead, type MRAgentPreparation } from "./
 import type { IntakeSource } from "./decision-layer";
 
 export const MRAGENT_WIDGET_URI = "ui://widget/mragent-mindread-v1.html";
-export const MRAGENT_SERVER_INFO = { name: "mindreply-mragent", version: "0.2.0" };
+export const MRAGENT_SERVER_INFO = { name: "mindreply-mragent", version: "0.2.1" };
 export const MRAGENT_RESOURCE_MIME_TYPE = "text/html;profile=mcp-app";
 
 const sourceValues = ["manual", "gmail", "calendar", "extension"] as const;
@@ -176,6 +176,9 @@ function jsonToolSchemas() {
   return { prepare, receipt, preparationOutput, receiptOutput };
 }
 
+const preparationAnnotations = { readOnlyHint: false, destructiveHint: false, openWorldHint: false };
+const receiptAnnotations = { readOnlyHint: true, destructiveHint: false, openWorldHint: false };
+
 export function getMRAgentMcpManifest() {
   const schemas = jsonToolSchemas();
   const resourceMeta = getMRAgentResourceMeta();
@@ -194,18 +197,18 @@ export function getMRAgentMcpManifest() {
       {
         name: "prepare_mindread",
         title: "Prepare Mind Read",
-        description: "Use this when the user wants MRagent to read pressure, reflect the underlying behavior, and return one warm next move without rendering a widget.",
+        description: "Use this when the user wants MRagent to read pressure, reflect behavior, optionally store a privacy-safe receipt, and return one warm next move without rendering a widget.",
         inputSchema: schemas.prepare,
         outputSchema: schemas.preparationOutput,
-        annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+        annotations: preparationAnnotations,
       },
       {
         name: "render_mindread",
         title: "Render Mind Read",
-        description: "Use this when the user wants a visual MRagent card showing the Mind Read, protection pattern, calmer move, risk gate, and receipt.",
+        description: "Use this when the user wants a visual MRagent card showing the Mind Read, protection pattern, calmer move, risk gate, receipt, and persistence state.",
         inputSchema: schemas.prepare,
         outputSchema: schemas.preparationOutput,
-        annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+        annotations: preparationAnnotations,
         _meta: {
           ui: { resourceUri: MRAGENT_WIDGET_URI },
           "openai/outputTemplate": MRAGENT_WIDGET_URI,
@@ -219,7 +222,7 @@ export function getMRAgentMcpManifest() {
         description: "Use this when the user needs to retrieve a stored privacy-safe MRagent receipt by receipt id.",
         inputSchema: schemas.receipt,
         outputSchema: schemas.receiptOutput,
-        annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+        annotations: receiptAnnotations,
       },
     ],
   };
