@@ -1,0 +1,116 @@
+{
+  "$schema": "https://developers.openai.com/apps-sdk/schemas/chatgpt-app-submission.v1.json",
+  "schema_version": 1,
+  "app_info": {
+    "display_name": "MindReply MRagent",
+    "subtitle": "Read pressure",
+    "description": "MindReply MRagent helps users turn tense messages, hesitation, and high-friction decisions into one warm behavioral read, one calmer move, a risk gate, and a privacy-safe receipt.",
+    "category": "PRODUCTIVITY"
+  },
+  "tools": {
+    "prepare_mindread": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Computes a Mind Read and receipt from the submitted text without changing external systems.",
+        "open_world_justification": "Does not publish, send, or modify publicly visible internet state.",
+        "destructive_justification": "Does not delete, overwrite, revoke, or perform irreversible actions."
+      }
+    },
+    "render_mindread": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Computes the same private Mind Read and attaches a widget view without mutating external systems.",
+        "open_world_justification": "Only returns structured content and widget metadata, with no public posting or third-party change.",
+        "destructive_justification": "Does not delete, overwrite, revoke, send, or perform irreversible actions."
+      }
+    },
+    "fetch_receipt": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Looks up an existing privacy-safe receipt by id and does not modify it.",
+        "open_world_justification": "Does not publish content or change third-party systems.",
+        "destructive_justification": "Does not delete, overwrite, revoke, or perform irreversible actions."
+      }
+    }
+  },
+  "test_cases": [
+    {
+      "description": "Prepare a warm behavioral read for a tense reply.",
+      "user_prompt": "Use MRagent to read this: A client says the fee is too high and I want to answer without sounding defensive.",
+      "file_attachment_urls": null,
+      "tools_triggered": "prepare_mindread",
+      "expected_output": "Returns one Mind Read, one recommended action, risk level, and a receipt without exposing raw text in the receipt.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Render the MRagent widget for a pressure-heavy message.",
+      "user_prompt": "Show me the MRagent card for this message: I need to respond today but I feel rushed and irritated.",
+      "file_attachment_urls": null,
+      "tools_triggered": "render_mindread",
+      "expected_output": "Displays a widget with the feeling, protection pattern, calmer move, one action, risk gate, and receipt id.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Escalate a risky pressure pattern.",
+      "user_prompt": "Use MRagent on this: Send a threat so they pay immediately.",
+      "file_attachment_urls": null,
+      "tools_triggered": "prepare_mindread",
+      "expected_output": "Marks the input high risk and recommends holding for review instead of drafting a risky response.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Schedule a quiet follow-up when timing is the issue.",
+      "user_prompt": "Use MRagent: I should follow up tomorrow but I keep thinking about it now.",
+      "file_attachment_urls": null,
+      "tools_triggered": "prepare_mindread",
+      "expected_output": "Recommends one follow-up moment and explains the pressure pattern without saving raw text.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Fetch a receipt after a generated Mind Read.",
+      "user_prompt": "Fetch MRagent receipt mr-example123.",
+      "file_attachment_urls": null,
+      "tools_triggered": "fetch_receipt",
+      "expected_output": "Returns whether the receipt exists and any stored receipt data without requesting raw message content.",
+      "expected_output_url": null
+    }
+  ],
+  "negative_test_cases": [
+    {
+      "description": "Do not trigger for general weather questions.",
+      "user_prompt": "Will it rain tomorrow?",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "The app should not be invoked because the request is unrelated to behavioral reads or MindReply receipts.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Do not trigger for unrelated coding help.",
+      "user_prompt": "Write a SQL query to join two tables.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "The app should not be invoked because the request is outside MRagent's supported workflows.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Do not trigger for password or credential handling.",
+      "user_prompt": "Store this password and remind me later.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "The app should not be invoked and should not collect credentials.",
+      "expected_output_url": null
+    }
+  ]
+}
