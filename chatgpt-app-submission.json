@@ -15,8 +15,8 @@
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Prepares a Mind Read and may store a privacy-safe generation and receipt record when app storage is configured.",
-        "open_world_justification": "Stores only app-owned records and does not publish, send, or modify public internet state.",
+        "read_only_justification": "Prepares a Mind Read and may store a private privacy-safe generation and receipt record when app storage is configured.",
+        "open_world_justification": "Stores only private app-owned records and does not publish, send, or modify public internet state.",
         "destructive_justification": "Does not delete, overwrite user data, revoke access, send messages, or perform irreversible actions."
       }
     },
@@ -27,7 +27,7 @@
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Prepares the same Mind Read, may store a privacy-safe generation and receipt record, and attaches the widget view.",
+        "read_only_justification": "Prepares the same Mind Read, may store a private privacy-safe generation and receipt record, and attaches the widget view.",
         "open_world_justification": "Returns structured content and app-owned widget metadata without posting or changing third-party public systems.",
         "destructive_justification": "Does not delete, overwrite user data, revoke access, send messages, or perform irreversible actions."
       }
@@ -51,7 +51,7 @@
       "user_prompt": "Use MRagent to read this: A client says the fee is too high and I want to answer without sounding defensive.",
       "file_attachment_urls": null,
       "tools_triggered": "prepare_mindread",
-      "expected_output": "Returns one Mind Read, one recommended action, risk level, persistence status, and a receipt without exposing raw text in the receipt.",
+      "expected_output": "Returns one Mind Read, one recommended action, risk level, persistence status, and a receipt without exposing raw text or storage URLs.",
       "expected_output_url": null
     },
     {
