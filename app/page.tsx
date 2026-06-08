@@ -8,9 +8,25 @@ const rails = [
   "Leaves a quiet receipt, not the raw text.",
 ];
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "MindReply MRagent",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  url: "https://www.mind-reply.com/agent",
+  description: "Warm mind reads and one clear next move for tense work moments.",
+  featureList: ["One synthesis", "One recommended action", "Risk gate", "Quiet receipt"],
+  brand: {
+    "@type": "Brand",
+    name: "MindReply",
+  },
+};
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#f4efe4] text-[#162033]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <section className="border-b border-[#162033]/10 bg-[#f4efe4] px-4 py-4 md:px-8">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3">
