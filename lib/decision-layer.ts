@@ -41,6 +41,11 @@ export type IntakeRequest = {
 
 export type DecisionResponse = {
   synthesis: string;
+  mindRead: {
+    reallyAbout: string;
+    mindsetProtection: string;
+    calmerMove: string;
+  };
   recommendedAction: {
     kind: RecommendedActionKind;
     label: string;
@@ -105,6 +110,38 @@ function buildSynthesis(input: string, kind: RecommendedActionKind) {
   return "This can be closed with a clear record and no further movement.";
 }
 
+function buildMindRead(kind: RecommendedActionKind, risk: DecisionResponse["risk"]): DecisionResponse["mindRead"] {
+  if (risk.level === "high" || kind === "escalate") {
+    return {
+      reallyAbout: "This is not only about wording; it is about preventing pressure from turning into a risky move.",
+      mindsetProtection: "You are trying to regain control quickly. The steadier signal is restraint before response.",
+      calmerMove: "Do not answer from impact. Hold the message, review the context, and let the next step stay measured.",
+    };
+  }
+
+  if (kind === "reply") {
+    return {
+      reallyAbout: "This is less about the surface objection and more about trust, timing, and whether the relationship still feels steady.",
+      mindsetProtection: "You are trying to protect the relationship without giving away your position too quickly.",
+      calmerMove: "Answer with warmth and limits: acknowledge the concern, name the decision point, and keep the timing clear.",
+    };
+  }
+
+  if (kind === "schedule") {
+    return {
+      reallyAbout: "This needs rhythm more than more language. The right move is to place the pressure somewhere contained.",
+      mindsetProtection: "You are protecting your attention from being pulled back into the same decision repeatedly.",
+      calmerMove: "Set one quiet follow-up moment, then stop carrying it in your head.",
+    };
+  }
+
+  return {
+    reallyAbout: "This is ready to be closed without turning it into a larger decision.",
+    mindsetProtection: "You are looking for certainty before moving, but the clean record is enough here.",
+    calmerMove: "Mark the decision clearly, keep the receipt, and let it leave your attention.",
+  };
+}
+
 function buildAction(kind: RecommendedActionKind, synthesis: string): DecisionResponse["recommendedAction"] {
   if (kind === "reply") {
     return {
@@ -153,6 +190,7 @@ export function buildDecisionResponse(request: IntakeRequest): DecisionResponse 
 
   return {
     synthesis,
+    mindRead: buildMindRead(kind, risk),
     recommendedAction: buildAction(kind, synthesis),
     risk,
     memoryUpdate: {
