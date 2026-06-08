@@ -107,6 +107,7 @@ for (const file of [
   "scripts/verify-mcp.ts",
   "scripts/mragent-monitor-report.mjs",
   ".github/workflows/mragent-monitor.yml",
+  ".github/workflows/mragent-verify.yml",
   "site/automation/personal-pack.yml",
   "site/automation/report-schema.yml",
   "site/automation/slack-api.yml",
