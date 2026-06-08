@@ -1,46 +1,37 @@
-# MindReply — Architecture
+# MindReply Architecture
 
-## Overview
-MindReply is the N1 worldwide behavioral communication intelligence ecosystem — connecting professionals with elite advisors and AI-powered tools.
+## Intent
 
-## Stack
-- **Frontend + API**: Next.js 15 (App Router, Route Handlers)
-- **Database**: PostgreSQL + Drizzle ORM
-- **Styling**: TailwindCSS v4 (navy/gold/cream, Playfair Display + Inter)
-- **Deployment**: Azure App Service via GitHub Actions + Docker
+MindReply is a quiet decision layer for modern work. It does not add more screens. It reduces the space between pressure and movement.
 
-## Key Design Decisions
-- OpenAPI-contract-driven development in the Replit monorepo
-- Professionals store `languages` and `specializations` as comma-separated text (parsed at route layer)
-- Memberships and Lexicons store `features`/`terms` as JSON strings in a text column
-- Availability slots generated dynamically (7-day rolling window), not stored
-- AI tools (Email Refiner, Tone Adjuster, Note Clarifier, Planner) use deterministic transformations; upgradeable to LLM backends
+## Runtime Shape
 
-## Directory Structure
-```
-app/                   Next.js App Router pages + API routes
-  api/                 Route Handlers (server-side, direct DB access)
-  professionals/       Marketplace + individual profiles
-  book/[id]/           3-step booking flow
-  tools/               AI communication tools
-  memberships/         Tier comparison
-  lexicons/            Professional vocabulary library
-  bookings/            Session history
-  analytics/           Platform intelligence
-components/            Nav, MRAgent, ProfessionalCard
-lib/
-  db.ts                Drizzle instance + pg Pool
-  schema/              Drizzle table definitions
-styles/                TailwindCSS globals
+```mermaid
+flowchart LR
+  User["Input"] --> Intake["Intake Layer"]
+  Intake --> Triage["Triage Agent"]
+  Triage --> Risk["Risk Agent"]
+  Risk --> Action["Action Layer"]
+  Action --> Memory["Memory Layer"]
+  Memory --> Receipt["Quiet Receipt"]
 ```
 
-## Product
-- **Professionals marketplace** — psychologists, lawyers, financial advisors, coaches, HR leaders
-- **Session booking** — Text/Chat, Voice Call, Video Call with per-mode pricing
-- **Behavioral AI tools** — Email Refiner, Tone Adjuster, Note Clarifier, Mini-Planner
-- **Membership tiers** — Curator (£49/mo), Strategist (£149/mo), Sovereign (£499/mo)
-- **Lexicon library** — curated professional communication vocabularies
-- **MR Agent** — floating AI concierge
+## Source Boundaries
 
-## Deployment
-Push to `main` → GitHub Actions → Docker build → GHCR → Azure App Service
+- `app/`: public homepage, privacy page, intake endpoint, health endpoint.
+- `components/DecisionIntake.tsx`: minimal inline intake surface.
+- `lib/decision-layer.ts`: live TypeScript decision contract.
+- `src/backend/`: deterministic backend engines and tests.
+- `src/integrations/`: Gmail/IMAP and calendar connectors.
+- `src/edge/extension/`: browser extension surface.
+- `src/agents/prompts.md`: four-agent prompt contract.
+
+## Output Contract
+
+Every decision returns:
+
+- one synthesis
+- one recommended action
+- one risk status
+- one memory update
+- one receipt

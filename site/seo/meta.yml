@@ -1,0 +1,15 @@
+site: MindReply
+canonical: https://www.mind-reply.com
+title: MindReply | Executive Nervous System
+description: Decision Infrastructure for the space between input and action.
+robots: index,follow
+category: Executive Nervous System
+open_graph:
+  title: MindReply | Executive Nervous System
+  description: Paste the pressure. Receive one synthesis and one recommended action.
+  type: website
+principles:
+  - intake layer
+  - action layer
+  - memory layer
+  - risk check

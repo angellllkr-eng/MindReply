@@ -1,81 +1,51 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
-import { headers } from "next/headers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import AuthProvider from "@/components/AuthProvider";
-import Footer from "@/components/Footer";
-import { LanguageProvider } from "@/components/LanguageProvider";
-import Nav from "@/components/Nav";
-import MRAgent from "@/components/MRAgent";
-import MarketingPixels from "@/components/MarketingPixels";
-import { normalizeLanguage, type LanguageSource } from "@/lib/language";
-import { absoluteUrl, seoMarketKeywords, SITE_URL, targetMarkets } from "@/lib/seo";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.mind-reply.com";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "MindReply | Executive Communication Intelligence",
+    default: "MindReply | Executive Nervous System",
     template: "%s | MindReply",
   },
-  description:
-    "AI communication intelligence for executives, psychologists, legal counsel, financial advisors, and high-trust professional teams.",
-  alternates: { canonical: absoluteUrl("/") },
+  description: "A private decision layer for modern work. Paste the pressure. Receive one synthesis and one recommended action.",
+  alternates: { canonical: "/" },
   keywords: [
-    "AI communication intelligence",
-    "executive communication",
-    "professional email polisher",
-    "behavioral intelligence",
-    "legal communication AI",
-    "psychologist communication tools",
-    "financial advisor client communication",
-    ...seoMarketKeywords,
+    "Executive Nervous System",
+    "Decision Infrastructure",
+    "decision layer",
+    "private decision filter",
+    "professional playbooks",
+    "risk check",
+    "calm execution",
   ],
-  category: "AI communication intelligence",
-  other: {
-    "geo.region": targetMarkets.map((market) => market.code).join(","),
-    "market:primary": targetMarkets.filter((market) => market.priority === "primary").map((market) => market.country).join(", "),
-    "market:growth": targetMarkets.filter((market) => market.priority === "growth").map((market) => market.country).join(", "),
-    "language:auto": "IP-country detected with browser fallback and manual override",
-  },
+  category: "Decision Infrastructure",
   openGraph: {
-    title: "MindReply | Executive Communication Intelligence",
-    description:
-      "Premium AI tools for sensitive professional messages, executive emails, specialist lexicons, and high-trust communication workflows.",
-    url: absoluteUrl("/"),
+    title: "MindReply | Executive Nervous System",
+    description: "A private decision layer that turns pressure into one clear next move.",
+    url: "/",
     siteName: "MindReply",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "MindReply | Executive Communication Intelligence",
-    description: "Premium AI communication intelligence for high-trust professional work.",
+    title: "MindReply | Executive Nervous System",
+    description: "Paste the pressure. Receive one synthesis and one recommended action.",
   },
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const requestHeaders = await headers();
-  const initialLanguage = normalizeLanguage(requestHeaders.get("x-mr-language")) ?? "EN";
-  const initialLanguageMode = requestHeaders.get("x-mr-language-mode") === "manual" ? "manual" : "auto";
-  const initialLanguageSource = (requestHeaders.get("x-mr-language-source") ?? "fallback") as LanguageSource;
-  const initialCountry = requestHeaders.get("x-mr-country");
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang={initialLanguage.toLowerCase()} className={`${inter.variable} ${playfair.variable} scroll-smooth`}>
-      <body className="antialiased bg-mr-cream-light text-gray-900" style={{ fontFamily: "var(--font-inter)" }}>
-        <AuthProvider>
-          <LanguageProvider initialLanguage={initialLanguage} initialLanguageMode={initialLanguageMode} initialLanguageSource={initialLanguageSource} initialCountry={initialCountry}>
-            <Nav />
-            {children}
-            <Footer />
-            <MRAgent />
-            <MarketingPixels />
-            <SpeedInsights />
-          </LanguageProvider>
-        </AuthProvider>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} scroll-smooth`}>
+      <body className="antialiased bg-[#081121] text-[#f8f5f0]" style={{ fontFamily: "var(--font-inter)" }}>
+        {children}
+        <SpeedInsights />
       </body>
     </html>
   );

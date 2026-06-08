@@ -1,0 +1,35 @@
+#mindreply-inline-decision {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 2147483647;
+  max-width: 360px;
+  padding: 18px;
+  border: 1px solid rgba(201, 169, 97, 0.45);
+  border-radius: 18px;
+  background: #081121;
+  color: #f8f5f0;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+#mindreply-inline-decision p {
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+#mindreply-inline-decision button {
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: #c9a961;
+  color: #081121;
+  font-weight: 700;
+}
+
+#mindreply-inline-decision small {
+  display: block;
+  margin-top: 10px;
+  color: #cdd6e4;
+}

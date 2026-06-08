@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "MindReply Decision Layer",
+  "version": "0.1.0",
+  "description": "Inline intake, one recommended action, and quiet memory update.",
+  "permissions": ["activeTab", "scripting", "storage", "contextMenus"],
+  "host_permissions": ["https://www.mind-reply.com/*", "https://*.vercel.app/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "action": {
+    "default_title": "MindReply"
+  }
+}
