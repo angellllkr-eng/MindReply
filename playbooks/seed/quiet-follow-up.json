@@ -1,0 +1,17 @@
+{
+  "playbook_id": "quiet-follow-up",
+  "title": "Quiet follow-up",
+  "version": "0.1.0",
+  "triggers": ["follow", "calendar", "later", "tomorrow", "next week"],
+  "recommended_action": "schedule",
+  "decision_tree": [
+    {
+      "condition": "The input needs a timed check-in rather than more wording now.",
+      "action": "schedule"
+    }
+  ],
+  "verification": {
+    "risk_gate": true,
+    "receipt_required": true
+  }
+}
