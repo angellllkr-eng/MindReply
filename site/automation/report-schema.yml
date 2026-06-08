@@ -2,6 +2,7 @@ artifact: mragent-monitor-status
 file: mragent-monitor-status.json
 producer: scripts/mragent-monitor-report.mjs
 workflow: .github/workflows/mragent-monitor.yml
+verification_workflow: .github/workflows/mragent-verify.yml
 cadence: every 15 minutes and manual workflow_dispatch
 purpose: Give humans and future personal-pack automation the same compact state snapshot.
 fields:
@@ -29,6 +30,13 @@ fields:
     nextAction: The next recommended move.
   surfaces: Per-URL status, latency, and signal.
   packSources: Required personal-pack source files and whether each exists, including slack-api and vercel-build-limit.
+verification:
+  commands:
+    - npm run decision:verify
+    - npm run mcp:verify
+    - npm run typecheck
+    - npm run build
+  rule: Verification runs in GitHub Actions and is separate from Vercel publishing.
 slack_handoff:
   config: site/automation/slack-api.yml
   field_id: Xf0B6WHC2SBH
