@@ -43,11 +43,20 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "MindReply",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "MindReply MRagent - warm mind read, clear next move",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "MindReply | Executive Nervous System",
     description: "Paste the pressure. Receive one synthesis and one recommended action.",
+    images: ["/opengraph-image"],
   },
 };
 
