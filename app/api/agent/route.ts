@@ -13,8 +13,9 @@ type ProviderOutput = {
 
 function latestInput(body: unknown) {
   if (!body || typeof body !== "object") return "";
-  const record = body as { input?: unknown; messages?: unknown };
+  const record = body as { input?: unknown; message?: unknown; messages?: unknown };
   if (typeof record.input === "string") return record.input;
+  if (typeof record.message === "string") return record.message;
 
   if (Array.isArray(record.messages)) {
     const messages = record.messages as IncomingMessage[];
