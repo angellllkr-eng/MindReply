@@ -1,0 +1,24 @@
+artifact: mragent-monitor-status
+file: mragent-monitor-status.json
+producer: scripts/mragent-monitor-report.mjs
+workflow: .github/workflows/mragent-monitor.yml
+cadence: every 15 minutes and manual workflow_dispatch
+purpose: Give humans and future personal-pack automation the same compact state snapshot.
+fields:
+  generatedAt: ISO timestamp for the monitor run.
+  siteUrl: Production or override URL checked by the run.
+  summary:
+    coreAgent: live or check.
+    mcpApp: live or not live.
+    discoveryAssets: live or not live.
+    personalPack: ready or check.
+    currentBlocker: Current deploy or platform blocker in plain language.
+    opinion: Short operating opinion for the pass.
+    nextAction: The next recommended move.
+  surfaces: Per-URL status, latency, and signal.
+  packSources: Required personal-pack source files and whether each exists.
+uses:
+  - GitHub Actions summary
+  - future Slack report handoff after workspace channel is connected
+  - future Outlook digest handoff after mailbox target is named
+  - personal pack status checks
