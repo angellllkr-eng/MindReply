@@ -79,6 +79,7 @@ const publicFiles = [
   "components/MRAgentChat.tsx",
   "site/index.html",
   "site/seo/meta.yml",
+  "site/ads/messaging.yml",
   "src/agents/prompts.md",
   "docs/vision_dictionary.md",
   "docs/privacy_whitepaper_intro.md",
