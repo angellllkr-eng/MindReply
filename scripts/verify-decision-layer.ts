@@ -89,6 +89,7 @@ const publicFiles = [
   "site/growth/visibility-plan.yml",
   "site/growth/search-intents.yml",
   "site/growth/live-copy-sync.yml",
+  "site/growth/preview-qa.yml",
   "site/design/figma-growth-loop.yml",
   "site/media/remotion-launch-brief.yml",
   "src/agents/prompts.md",
@@ -135,6 +136,13 @@ assertIncludes("MRagent live copy sync", liveCopySync, "The message feels loaded
 assertIncludes("MRagent live copy sync", liveCopySync, "The follow-up keeps tugging");
 assertIncludes("MRagent live copy sync", liveCopySync, "aligned");
 assertIncludes("MRagent live copy sync", liveCopySync, "Capture fresh /agent production preview");
+
+const previewQa = readFileSync(join(process.cwd(), "site/growth/preview-qa.yml"), "utf-8");
+assertIncludes("MRagent preview QA", previewQa, "https://www.mind-reply.com/agent");
+assertIncludes("MRagent preview QA", previewQa, "desktop");
+assertIncludes("MRagent preview QA", previewQa, "mobile");
+assertIncludes("MRagent preview QA", previewQa, "staged reading text appears");
+assertIncludes("MRagent preview QA", previewQa, "receipt id and risk level render");
 
 for (const file of [
   "app/api/agent/route.ts",
