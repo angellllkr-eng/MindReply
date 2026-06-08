@@ -100,12 +100,12 @@ function makeInputHash(input: string) {
 function assessRisk(input: string): DecisionResponse["risk"] {
   const lower = input.toLowerCase();
   if (highRiskTerms.some((term) => lower.includes(term))) {
-    return { level: "high", reason: "Risk detected before communication." };
+    return { level: "high", reason: "The pressure could push a move that deserves review before it leaves your hands." };
   }
   if (mediumRiskTerms.some((term) => lower.includes(term))) {
-    return { level: "medium", reason: "Sensitive context detected; proceed with restraint." };
+    return { level: "medium", reason: "The situation is tender enough to need slower language and firmer edges." };
   }
-  return { level: "low", reason: "No blocking risk detected." };
+  return { level: "low", reason: "No blocking risk detected; this can move with care." };
 }
 
 function assessConfidence(input: string, risk: DecisionResponse["risk"]) {
@@ -118,48 +118,48 @@ function assessConfidence(input: string, risk: DecisionResponse["risk"]) {
 function chooseAction(input: string, risk: DecisionResponse["risk"]): RecommendedActionKind {
   if (risk.level === "high") return "escalate";
   const lower = input.toLowerCase();
-  if (/(follow up|check in|tomorrow|next week|calendar|later)/.test(lower)) return "schedule";
-  if (/(reply|client|email|message|fee|price|response|send)/.test(lower)) return "reply";
+  if (/(follow up|check in|tomorrow|next week|calendar|later|wait|pause)/.test(lower)) return "schedule";
+  if (/(reply|client|email|message|fee|price|response|send|say|wording)/.test(lower)) return "reply";
   return "resolve";
 }
 
 function buildSynthesis(input: string, kind: RecommendedActionKind) {
   if (!input) return "No usable input was provided.";
-  if (kind === "escalate") return "This carries risk and needs review before movement.";
-  if (kind === "reply") return "This needs a calm response that reduces pressure and preserves the relationship.";
-  if (kind === "schedule") return "This needs a quiet follow-up moment rather than more wording now.";
-  return "This can be closed with a clear record and no further movement.";
+  if (kind === "escalate") return "This is not a wording problem yet; it is a restraint problem, and restraint is the wiser move.";
+  if (kind === "reply") return "The visible question is wording, but the real pressure is trust, timing, and not sounding smaller than you are.";
+  if (kind === "schedule") return "The feeling wants an answer now, but the steadier move is to give it a clean place in time.";
+  return "This is complete enough to be named, recorded, and released from your attention.";
 }
 
 function buildMindRead(kind: RecommendedActionKind, risk: DecisionResponse["risk"]): DecisionResponse["mindRead"] {
   if (risk.level === "high" || kind === "escalate") {
     return {
-      reallyAbout: "This is not only about wording; it is about preventing pressure from turning into a risky move.",
-      mindsetProtection: "You are trying to regain control quickly. The steadier signal is restraint before response.",
-      calmerMove: "Do not answer from impact. Hold the message, review the context, and let the next step stay measured.",
+      reallyAbout: "This is not really about winning the moment. It is about stopping pressure from borrowing your voice.",
+      mindsetProtection: "Your mind is trying to regain command quickly. That urgency is protective, but it is not the best captain here.",
+      calmerMove: "Hold the response. Let review be the action, then return with a cleaner signal and no scorch in the wording.",
     };
   }
 
   if (kind === "reply") {
     return {
-      reallyAbout: "This is less about the surface objection and more about trust, timing, and whether the relationship still feels steady.",
-      mindsetProtection: "You are trying to protect the relationship without giving away your position too quickly.",
-      calmerMove: "Answer with warmth and limits: acknowledge the concern, name the decision point, and keep the timing clear.",
+      reallyAbout: "This is about keeping warmth and authority in the same room. The other person needs steadiness more than extra explanation.",
+      mindsetProtection: "You are protecting the bond, but also protecting your position. That is not cold; it is mature equipoise.",
+      calmerMove: "Answer softly, keep the boundary visible, and name the next step without chasing approval.",
     };
   }
 
   if (kind === "schedule") {
     return {
-      reallyAbout: "This needs rhythm more than more language. The right move is to place the pressure somewhere contained.",
-      mindsetProtection: "You are protecting your attention from being pulled back into the same decision repeatedly.",
-      calmerMove: "Set one quiet follow-up moment, then stop carrying it in your head.",
+      reallyAbout: "This needs rhythm, not more rumination. The pressure relaxes when it is placed somewhere reliable.",
+      mindsetProtection: "Your attention is trying to keep the matter alive so nothing slips. Sweet instinct, costly method.",
+      calmerMove: "Give it one follow-up moment, then let your mind stop rehearsing it.",
     };
   }
 
   return {
-    reallyAbout: "This is ready to be closed without turning it into a larger decision.",
-    mindsetProtection: "You are looking for certainty before moving, but the clean record is enough here.",
-    calmerMove: "Mark the decision clearly, keep the receipt, and let it leave your attention.",
+    reallyAbout: "This is asking to be closed, not enlarged. The clean record is enough.",
+    mindsetProtection: "You are seeking one more sign of certainty, but enough certainty is already present.",
+    calmerMove: "Name the decision, keep the receipt, and let the quiet do its work.",
   };
 }
 
@@ -167,17 +167,17 @@ function buildAction(kind: RecommendedActionKind, synthesis: string): DecisionRe
   if (kind === "reply") {
     return {
       kind,
-      label: "Send the prepared reply",
+      label: "Send the warm clear reply",
       payload: {
         draft:
-          "Thank you for being direct. I understand the concern. The next step is to confirm the decision point, protect the relationship, and agree the timing.",
+          "Thank you for being direct. I understand the concern. The clean next step is to keep the decision point clear, protect the relationship, and agree the timing without turning this into more pressure.",
       },
     };
   }
   if (kind === "schedule") {
     return {
       kind,
-      label: "Set the follow-up",
+      label: "Set one quiet follow-up",
       payload: {
         title: "MindReply follow-up",
         delayMinutes: 60,
@@ -187,7 +187,7 @@ function buildAction(kind: RecommendedActionKind, synthesis: string): DecisionRe
   if (kind === "escalate") {
     return {
       kind,
-      label: "Hold and review",
+      label: "Hold it for review",
       payload: {
         reason: synthesis,
       },
@@ -195,7 +195,7 @@ function buildAction(kind: RecommendedActionKind, synthesis: string): DecisionRe
   }
   return {
     kind,
-    label: "Mark resolved",
+    label: "Mark it resolved",
     payload: {
       record: synthesis,
     },
@@ -216,7 +216,7 @@ export function buildDecisionResponse(request: IntakeRequest): DecisionResponse 
     risk,
     memoryUpdate: {
       applied: true,
-      summary: "Decision memory adjusted quietly.",
+      summary: "Tone preference and pressure pattern noted without saving the raw text.",
     },
     receipt: {
       id: makeReceiptId(input, timestamp),
