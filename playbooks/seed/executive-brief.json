@@ -1,0 +1,17 @@
+{
+  "playbook_id": "executive-brief",
+  "title": "Executive brief",
+  "version": "0.1.0",
+  "triggers": ["board", "investor", "executive", "principal"],
+  "recommended_action": "reply",
+  "decision_tree": [
+    {
+      "condition": "The input references an executive, board, investor, or principal update.",
+      "action": "reply"
+    }
+  ],
+  "verification": {
+    "risk_gate": true,
+    "receipt_required": true
+  }
+}
