@@ -18,6 +18,7 @@ const packSources = [
   { label: "vercel-build-limit", path: "site/automation/vercel-build-limit-runbook.yml" },
   { label: "verification-runbook", path: "site/automation/verification-runbook.yml" },
   { label: "growth-positioning", path: "site/growth/positioning.yml" },
+  { label: "visibility-plan", path: "site/growth/visibility-plan.yml" },
   { label: "ad-messaging", path: "site/ads/messaging.yml" },
   { label: "figma-loop", path: "site/design/figma-growth-loop.yml" },
   { label: "remotion-brief", path: "site/media/remotion-launch-brief.yml" },
