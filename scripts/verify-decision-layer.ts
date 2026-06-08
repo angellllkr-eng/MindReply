@@ -105,7 +105,10 @@ for (const file of [
   "lib/mragent.ts",
   "lib/mragent-mcp.ts",
   "scripts/verify-mcp.ts",
+  "scripts/mragent-monitor-report.mjs",
+  ".github/workflows/mragent-monitor.yml",
   "site/automation/personal-pack.yml",
+  "site/automation/report-schema.yml",
 ]) {
   assert(existsSync(join(process.cwd(), file)), `${file} must exist.`);
 }
