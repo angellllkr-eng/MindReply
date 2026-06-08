@@ -35,10 +35,7 @@ export type MRAgentPersistence = {
   reason?: string;
   generationPath?: string;
   receiptPath?: string;
-  urls?: {
-    generation?: string;
-    receipt?: string;
-  };
+  access?: "private";
 };
 
 export type MRAgentPreparation = {
@@ -279,16 +276,16 @@ async function persistGeneration(args: {
       completedAt,
     };
 
-    const [generationBlob, receiptBlob] = await Promise.all([
+    await Promise.all([
       put(generationPath, JSON.stringify(generationRecord, null, 2), {
-        access: "public",
+        access: "private",
         addRandomSuffix: false,
         allowOverwrite: true,
         contentType: "application/json",
         token,
       }),
       put(receiptPath, JSON.stringify(receiptRecord, null, 2), {
-        access: "public",
+        access: "private",
         addRandomSuffix: false,
         allowOverwrite: true,
         contentType: "application/json",
@@ -303,10 +300,7 @@ async function persistGeneration(args: {
       receiptId,
       generationPath,
       receiptPath,
-      urls: {
-        generation: generationBlob.url,
-        receipt: receiptBlob.url,
-      },
+      access: "private",
     };
   } catch (error) {
     return {
@@ -368,16 +362,15 @@ export async function fetchStoredReceipt(receiptId: string) {
   }
 
   try {
-    const { list } = await import("@vercel/blob");
+    const { get } = await import("@vercel/blob");
     const receiptPath = `mragent/receipts/${receiptId}.json`;
-    const result = await list({ prefix: receiptPath, limit: 1, token });
-    const receiptBlob = result.blobs[0];
+    const receiptBlob = await get(receiptPath, { access: "private", token });
 
     if (!receiptBlob) {
       return { found: false, receiptId };
     }
 
-    const response = await fetch(receiptBlob.url, { cache: "no-store" });
+    const response = await fetch(receiptBlob.downloadUrl, { cache: "no-store" });
     if (!response.ok) return { found: false, receiptId };
 
     const stored = await response.json();
