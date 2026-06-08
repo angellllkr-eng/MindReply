@@ -91,7 +91,7 @@ const AGENT_COPY: Record<LanguageCode, AgentCopy> = {
     typingLabel: "Povedencheski rechnik proverka",
     placeholder: "Popitai MRagent...",
     ready: "Gotov",
-    suggestions: ["Pomogni mi s trudен otgovor", "Misli kato psiholog za tova", "Rezervirai video sesia", "Mozhe li za druga tema?"],
+    suggestions: ["Pomogni mi s truden otgovor", "Misli kato psiholog za tova", "Rezervirai video sesia", "Mozhe li za druga tema?"],
     links: { professionals: "Profesionalisti", tools: "Instrumenti", membership: "Chlenstvo" },
     fallbacks: {
       login: "Za vhod izpolzvai Vhod ili Nov profil. Ako dostuput vremenno ne e nalichen, produlzhi s publichnite instrumenti i rezervacii.",
