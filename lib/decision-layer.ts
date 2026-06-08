@@ -63,24 +63,38 @@ export type DecisionResponse = {
     id: string;
     timestamp: string;
     source: IntakeSource;
+    actionKind: RecommendedActionKind;
+    riskLevel: RiskLevel;
+    confidence: number;
+    playbookVersion: string;
+    inputHash: string;
+    rawContentRedacted: boolean;
   };
 };
 
 const highRiskTerms = ["threat", "force", "blackmail", "harass", "illegal", "lawsuit", "regulator"];
 const mediumRiskTerms = ["complaint", "refund", "termination", "medical", "legal", "fire"];
+const playbookVersion = "mragent-mindread-v1";
 
 function cleanInput(input: string) {
   return input.replace(/\s+/g, " ").trim();
 }
 
-function makeReceiptId(input: string, timestamp: string) {
-  let hash = 0;
-  const value = `${timestamp}:${input}`;
+function makeStableHash(value: string) {
+  let hash = 2166136261;
   for (let index = 0; index < value.length; index += 1) {
-    hash = (hash << 5) - hash + value.charCodeAt(index);
-    hash |= 0;
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
   }
-  return `mr-${Math.abs(hash).toString(36)}`;
+  return (hash >>> 0).toString(36);
+}
+
+function makeReceiptId(input: string, timestamp: string) {
+  return `mr-${makeStableHash(`${timestamp}:${input}`)}`;
+}
+
+function makeInputHash(input: string) {
+  return `mrh-${makeStableHash(input)}`;
 }
 
 function assessRisk(input: string): DecisionResponse["risk"] {
@@ -92,6 +106,13 @@ function assessRisk(input: string): DecisionResponse["risk"] {
     return { level: "medium", reason: "Sensitive context detected; proceed with restraint." };
   }
   return { level: "low", reason: "No blocking risk detected." };
+}
+
+function assessConfidence(input: string, risk: DecisionResponse["risk"]) {
+  if (!input) return 0.2;
+  if (risk.level === "high") return 0.68;
+  if (risk.level === "medium") return 0.76;
+  return 0.84;
 }
 
 function chooseAction(input: string, risk: DecisionResponse["risk"]): RecommendedActionKind {
@@ -201,6 +222,12 @@ export function buildDecisionResponse(request: IntakeRequest): DecisionResponse 
       id: makeReceiptId(input, timestamp),
       timestamp,
       source: request.source,
+      actionKind: kind,
+      riskLevel: risk.level,
+      confidence: assessConfidence(input, risk),
+      playbookVersion,
+      inputHash: makeInputHash(input),
+      rawContentRedacted: true,
     },
   };
 }
