@@ -17,7 +17,7 @@ type AgentAnalysis = {
 
 const baseStarter: Message = {
   role: "agent",
-  text: "Hi, I am MRagent. Ask me anything - a message, decision, booking, credits, expert field, or plan choice. I will answer naturally and show the fastest useful next step.",
+  text: "Hi, I am MRagent. Bring me the reply, decision, booking question, or pressure point that is stuck. I will reduce it to the next move, keep the tone calm, and only suggest credits, a plan, or expert review when it genuinely removes friction.",
 };
 
 function sleep(ms: number) {
@@ -34,39 +34,39 @@ function getNextAction(analysis: AgentAnalysis | null) {
   if (analysis.intent === "message_rescue") {
     return {
       href: "/rescue",
-      label: "Open Message Rescue",
-      text: "Clear 3 stuck replies today instead of carrying them into tomorrow.",
+      label: "Clear the reply",
+      text: "The decision is the reply itself. Turn the stuck message into one calm next action before it loses momentum.",
     };
   }
 
   if (analysis.intent === "booking_and_credits" || analysis.intent === "professional_booking") {
     return {
       href: "/professionals",
-      label: "Book a professional",
-      text: "Use video, voice, or text review when the situation is high-stakes.",
+      label: "Book expert review",
+      text: "Use professional review when the risk is reputational, legal, clinical, financial, or relationship-sensitive.",
     };
   }
 
   if (analysis.intent === "credit_purchase") {
     return {
       href: "/tools",
-      label: "Open tools",
-      text: "Use credits for fast rewrites, tone fixes, and message polishing.",
+      label: "Use credits",
+      text: "Credits fit when the next move is clear enough to process now: rewrite, polish, analyze, send.",
     };
   }
 
   if (analysis.intent === "membership_upgrade") {
     return {
       href: "/memberships",
-      label: "Compare plans",
-      text: "Choose Growth or Pro when repeating context is costing time.",
+      label: "Choose access level",
+      text: "Upgrade when the same hesitation repeats every day and private context would prevent repeated re-explaining.",
     };
   }
 
   return {
     href: "/tools/ops-overload-analyzer",
-    label: "Analyze overload",
-    text: "If the issue is pressure or too many messages, turn it into next actions first.",
+    label: "Reduce the overload",
+    text: "When there are too many inputs, triage first. The next move becomes obvious only after the noise is ranked.",
   };
 }
 
@@ -79,16 +79,16 @@ export default function AgentPage() {
   const starter = useMemo<Message>(() => expertContext
     ? {
         role: "agent",
-        text: `I can help as a ${expertContext}-aware AI preview. Tell me the situation, the person involved, and what outcome you want. I will be helpful first, then suggest text, voice, or video booking only if expert support is genuinely needed.`,
+        text: `I can help with ${expertContext}-level preparation. Tell me the situation, the person involved, the risk, and the outcome you want. I will clarify the next move first, then suggest text, voice, or video review only if the situation deserves a specialist.` ,
       }
     : baseStarter,
   [expertContext]);
 
   const quickPrompts = useMemo(() => [
-    { icon: MessageSquare, label: "Rescue message", prompt: "I have a difficult client reply I keep avoiding. What is the fastest way to handle it?" },
-    { icon: CreditCard, label: "Buy credits", prompt: "I want to buy credits for the tools. Which pack should I use?" },
-    { icon: CalendarDays, label: expertContext ? "Book this field" : "Book video", prompt: expertContext ? `I may need a ${expert} session. What mode should I choose and how should I prepare?` : "I need to book a video session with the right professional. What is the best route?" },
-    { icon: TrendingUp, label: "Pick plan", prompt: "Should I use Signal, Growth, or Pro for daily work?" },
+    { icon: MessageSquare, label: "Clear a reply", prompt: "I have a difficult client reply I keep avoiding. Reduce it to the next move." },
+    { icon: CreditCard, label: "Use credits", prompt: "I want to process a few messages quickly. When should I use credits instead of a plan?" },
+    { icon: CalendarDays, label: expertContext ? "Prepare review" : "Book review", prompt: expertContext ? `I may need a ${expert} session. What should I prepare, and what mode should I choose?` : "I may need professional review. What situation deserves text, voice, or video support?" },
+    { icon: TrendingUp, label: "Choose access", prompt: "Should I use Signal, Growth, or Pro for repeated decision and communication pressure?" },
   ], [expert, expertContext]);
 
   const [messages, setMessages] = useState<Message[]>([starter]);
@@ -115,7 +115,7 @@ export default function AgentPage() {
       });
       const data = await response.json();
       setAnalysis(data.analysis ?? null);
-      setMessages((current) => [...current, { role: "agent", text: data.reply ?? "I have the context. Clarify the desired outcome and I will shape the next message." }]);
+      setMessages((current) => [...current, { role: "agent", text: data.reply ?? "I have the context. Clarify the desired outcome and I will shape the next move." }]);
     } finally {
       setLoading(false);
     }
@@ -130,8 +130,8 @@ export default function AgentPage() {
       <section className="py-14 px-4" style={{ background: "hsl(220 55% 20%)" }}>
         <div className="max-w-5xl mx-auto">
           <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "hsl(43 80% 60%)" }}>MRagent</p>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-3" style={{ color: "hsl(43 70% 88%)" }}>{expertContext ? `${expert} AI preview` : "Human-feeling AI chat assistant"}</h1>
-          <p className="text-sm max-w-2xl leading-relaxed" style={{ color: "rgba(248,245,240,0.72)" }}>Ask broad questions, refine sensitive messages, prepare for a professional session, buy credits, or choose the right Signal, Growth, or Pro path without losing momentum.</p>
+          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-3" style={{ color: "hsl(43 70% 88%)" }}>{expertContext ? `${expert} preparation filter` : "Private decision filter for the next move"}</h1>
+          <p className="text-sm max-w-2xl leading-relaxed" style={{ color: "rgba(248,245,240,0.72)" }}>Use MRagent when a reply, booking, plan choice, or sensitive decision is stuck. It triages the pressure, protects the tone, and points to the smallest useful next step.</p>
         </div>
       </section>
 
@@ -143,7 +143,7 @@ export default function AgentPage() {
                 <span className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: "hsl(220 55% 20%)", color: "hsl(43 70% 88%)" }}><Bot size={20} /></span>
                 <div>
                   <p className="font-semibold text-sm" style={{ color: "hsl(220 45% 13%)" }}>MRagent</p>
-                  <p className="text-xs" style={{ color: "hsl(220 25% 45%)" }}>{expertContext ? `${expertContext} preview mode` : "Online for chat, Message Rescue, credits, bookings, and plan routing"}</p>
+                  <p className="text-xs" style={{ color: "hsl(220 25% 45%)" }}>{expertContext ? `${expertContext} preparation mode` : "Decision, message, booking, credit, and access guidance"}</p>
                 </div>
               </div>
               <Link href="/professionals" className="hidden sm:inline-flex text-xs font-semibold px-3 py-2 rounded-lg border" style={{ borderColor: "hsl(40 25% 88%)", color: "hsl(220 55% 20%)" }}>Find a professional</Link>
@@ -175,12 +175,12 @@ export default function AgentPage() {
                   </MessageContent>
                 </AIMessage>
               ))}
-              {loading && <div className="text-sm" style={{ color: "hsl(220 25% 45%)" }}>MRagent is running the behavioral dictionary pass...</div>}
+              {loading && <div className="text-sm" style={{ color: "hsl(220 25% 45%)" }}>MRagent is reading the pressure, risk, and next move...</div>}
             </div>
 
             <div className="p-4 border-t" style={{ borderColor: "hsl(40 25% 88%)" }}>
               <div className="flex gap-2">
-                <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder="Ask about anything - messages, credits, bookings, plans..." className="flex-1 rounded-lg border px-3 py-3 text-sm outline-none focus:border-[hsl(43_80%_60%)]" style={{ borderColor: "hsl(40 25% 88%)", color: "hsl(220 45% 13%)" }} />
+                <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder="What reply, decision, or next move is stuck?" className="flex-1 rounded-lg border px-3 py-3 text-sm outline-none focus:border-[hsl(43_80%_60%)]" style={{ borderColor: "hsl(40 25% 88%)", color: "hsl(220 45% 13%)" }} />
                 <button onClick={send} disabled={loading || !input.trim()} className="px-4 rounded-lg flex items-center gap-2 text-sm font-semibold hover:opacity-90 disabled:opacity-40" style={{ background: "hsl(43 80% 60%)", color: "hsl(220 45% 13%)" }}><Send size={16} /> Send</button>
               </div>
             </div>
@@ -197,13 +197,13 @@ export default function AgentPage() {
                 </Link>
               </div>
             )}
-            <p className="text-xs font-semibold uppercase tracking-widest mb-3 flex items-center gap-2" style={{ color: "hsl(43 80% 45%)" }}><Sparkles size={13} /> Live Analysis</p>
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3 flex items-center gap-2" style={{ color: "hsl(43 80% 45%)" }}><Sparkles size={13} /> Decision Read</p>
             {analysis ? (
               <div className="space-y-4">
                 {[
-                  ["Intent", analysis.intent],
-                  ["Emotional Valence", analysis.emotionalValence],
-                  ["Power Distance", analysis.powerDistance],
+                  ["Request type", analysis.intent],
+                  ["Pressure", analysis.emotionalValence],
+                  ["Relationship risk", analysis.powerDistance],
                 ].map(([label, value]) => (
                   <div key={label}>
                     <p className="text-xs mb-1" style={{ color: "hsl(220 25% 45%)" }}>{label}</p>
@@ -211,7 +211,7 @@ export default function AgentPage() {
                   </div>
                 ))}
                 <div>
-                  <p className="text-xs mb-2" style={{ color: "hsl(220 25% 45%)" }}>Clarity Framework</p>
+                  <p className="text-xs mb-2" style={{ color: "hsl(220 25% 45%)" }}>What to clarify</p>
                   <ul className="space-y-2">
                     {analysis.clarityFramework.map((item) => (
                       <li key={item} className="text-xs flex gap-2" style={{ color: "hsl(220 45% 13%)" }}><span style={{ color: "hsl(43 80% 45%)" }}>-</span>{item}</li>
@@ -220,7 +220,7 @@ export default function AgentPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-sm leading-relaxed" style={{ color: "hsl(220 25% 45%)" }}>Send a message to surface intent, emotional valence, power distance, and the best paid or free route when it helps.</p>
+              <p className="text-sm leading-relaxed" style={{ color: "hsl(220 25% 45%)" }}>Send the stuck input. MRagent will show the pressure, relationship risk, missing clarity, and the smallest useful next step.</p>
             )}
           </aside>
         </div>
