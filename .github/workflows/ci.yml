@@ -24,6 +24,9 @@ jobs:
       - name: Verify decision layer
         run: npm run decision:verify
 
+      - name: Verify MRagent MCP
+        run: npm run mcp:verify
+
       - name: Typecheck
         run: npm run typecheck
 
