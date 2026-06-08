@@ -32,15 +32,6 @@ function makeId(prefix: string) {
   return `${prefix}-${Date.now().toString(36)}`;
 }
 
-function actionDetail(decision: DecisionResponse) {
-  const payload = decision.recommendedAction.payload;
-  if (typeof payload.draft === "string") return payload.draft;
-  if (typeof payload.title === "string") return `${payload.title}.`;
-  if (typeof payload.reason === "string") return payload.reason;
-  if (typeof payload.record === "string") return payload.record;
-  return "The next move is ready.";
-}
-
 export default function MRAgentChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([starter]);
   const [input, setInput] = useState("A client is hesitating after seeing the fee and says they need to think about it.");
@@ -142,18 +133,10 @@ export default function MRAgentChat() {
                 {message.role === "assistant" ? <MessageResponse>{message.content}</MessageResponse> : <p className="whitespace-pre-wrap leading-7">{message.content}</p>}
               </div>
               {message.decision ? (
-                <div className="mt-2 space-y-3 rounded-2xl border border-white/10 bg-[#081121]/70 p-3 text-sm text-[#cdd6e4]">
-                  <div className="grid gap-2 sm:grid-cols-3">
-                    <span>Action: {message.decision.recommendedAction.kind}</span>
-                    <span>Receipt: {message.decision.receipt.id}</span>
-                    <span>{message.decision.memoryUpdate.summary}</span>
-                  </div>
-                  <div className="grid gap-2 md:grid-cols-3">
-                    <p><span className="text-[#c9a961]">Really about:</span> {message.decision.mindRead.reallyAbout}</p>
-                    <p><span className="text-[#c9a961]">Protecting:</span> {message.decision.mindRead.mindsetProtection}</p>
-                    <p><span className="text-[#c9a961]">Move:</span> {message.decision.mindRead.calmerMove}</p>
-                  </div>
-                  <p className="rounded-2xl border border-[#c9a961]/20 bg-[#c9a961]/10 p-3 text-[#f8f5f0]">{actionDetail(message.decision)}</p>
+                <div className="mt-2 grid gap-2 rounded-2xl border border-white/10 bg-[#081121]/70 p-3 text-xs text-[#cdd6e4] sm:grid-cols-3">
+                  <span>Action: {message.decision.recommendedAction.kind}</span>
+                  <span>Receipt: {message.decision.receipt.id}</span>
+                  <span>{message.decision.memoryUpdate.summary}</span>
                 </div>
               ) : null}
             </article>
