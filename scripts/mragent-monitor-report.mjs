@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, writeFileSync } from "node:fs";
 
 const siteUrl = process.env.MRAGENT_SITE_URL || "https://www.mind-reply.com";
 const endpoints = [
@@ -69,8 +69,7 @@ function row(result) {
 }
 
 function sourceRow(source) {
-  const present = existsSync(source.path);
-  return `| ${source.label} | ${present ? "ok" : "check"} | ${source.path} |`;
+  return `| ${source.label} | ${source.present ? "ok" : "check"} | ${source.path} |`;
 }
 
 function chooseNextAction({ mcpLive, healthLive, discoveryLive, packReady }) {
@@ -79,24 +78,47 @@ function chooseNextAction({ mcpLive, healthLive, discoveryLive, packReady }) {
   return "Capture a fresh /agent production preview and turn it into the next design or video asset.";
 }
 
+const generatedAt = new Date().toISOString();
 const results = await Promise.all(endpoints.map(checkEndpoint));
+const sourceResults = packSources.map((source) => ({ ...source, present: existsSync(source.path) }));
 const byLabel = new Map(results.map((result) => [result.label, result]));
 const liveCore = byLabel.get("agent")?.ok === true;
 const mcpLive = byLabel.get("mcp")?.ok === true;
 const healthLive = byLabel.get("health")?.ok === true;
 const discoveryLive = ["sitemap", "robots", "manifest", "social-preview"].every((label) => byLabel.get(label)?.ok === true);
-const packReady = packSources.every((source) => existsSync(source.path));
+const packReady = sourceResults.every((source) => source.present);
 const blocker = mcpLive && healthLive && discoveryLive ? "none detected" : "latest GitHub main is not fully deployed to production yet";
 const nextAction = chooseNextAction({ mcpLive, healthLive, discoveryLive, packReady });
+const opinion = packReady ? "The repo has a workable personal pack; deploy quota is the loudest constraint." : "The personal pack is incomplete.";
+
+const report = {
+  generatedAt,
+  siteUrl,
+  summary: {
+    coreAgent: liveCore ? "live" : "check",
+    mcpApp: mcpLive ? "live" : "not live",
+    discoveryAssets: discoveryLive ? "live" : "not live",
+    personalPack: packReady ? "ready" : "check",
+    currentBlocker: blocker,
+    opinion,
+    nextAction,
+  },
+  surfaces: results.map(({ label, url, status, ok, ms, signal }) => ({ label, url, status, ok, latencyMs: ms, signal })),
+  packSources: sourceResults,
+};
+
+if (process.env.MRAGENT_REPORT_JSON) {
+  writeFileSync(process.env.MRAGENT_REPORT_JSON, `${JSON.stringify(report, null, 2)}\n`, "utf-8");
+}
 
 console.log(`# MRagent 15-minute report`);
 console.log("");
-console.log(`Time: ${new Date().toISOString()}`);
+console.log(`Time: ${generatedAt}`);
 console.log(`Site: ${siteUrl}`);
-console.log(`Core agent: ${liveCore ? "live" : "check"}`);
-console.log(`MCP app: ${mcpLive ? "live" : "not live"}`);
-console.log(`Discovery assets: ${discoveryLive ? "live" : "not live"}`);
-console.log(`Personal pack: ${packReady ? "ready" : "check"}`);
+console.log(`Core agent: ${report.summary.coreAgent}`);
+console.log(`MCP app: ${report.summary.mcpApp}`);
+console.log(`Discovery assets: ${report.summary.discoveryAssets}`);
+console.log(`Personal pack: ${report.summary.personalPack}`);
 console.log(`Current blocker: ${blocker}`);
 console.log("");
 console.log("| Surface | Result | Status | Latency | Signal |");
@@ -105,7 +127,7 @@ for (const result of results) console.log(row(result));
 console.log("");
 console.log("| Pack source | Result | File |");
 console.log("| --- | --- | --- |");
-for (const source of packSources) console.log(sourceRow(source));
+for (const source of sourceResults) console.log(sourceRow(source));
 console.log("");
-console.log(`Opinion: ${packReady ? "The repo has a workable personal pack; deploy quota is the loudest constraint." : "The personal pack is incomplete."}`);
+console.log(`Opinion: ${opinion}`);
 console.log(`Next action: ${nextAction}`);
