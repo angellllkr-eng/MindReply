@@ -24,11 +24,14 @@ fields:
     opinion: Short operating opinion for the pass.
     nextAction: The next recommended move.
   surfaces: Per-URL status, latency, and signal.
-  packSources: Required personal-pack source files and whether each exists, including slack-api.
+  packSources: Required personal-pack source files and whether each exists, including slack-api and vercel-build-limit.
 slack_handoff:
   config: site/automation/slack-api.yml
   field_id: Xf0B6WHC2SBH
   rule: Use only after Slack connector access and a destination channel or DM are available.
+vercel_handoff:
+  runbook: site/automation/vercel-build-limit-runbook.yml
+  rule: Treat upgradeToPro=build-rate-limit as account quota until build logs prove a code failure.
 uses:
   - GitHub Actions summary
   - future Slack report handoff after workspace channel is connected
