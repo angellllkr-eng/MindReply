@@ -84,6 +84,7 @@ const publicFiles = [
   "site/index.html",
   "site/seo/meta.yml",
   "site/ads/messaging.yml",
+  "site/ads/copy-tests.yml",
   "site/growth/positioning.yml",
   "site/growth/visibility-plan.yml",
   "site/growth/search-intents.yml",
@@ -119,6 +120,13 @@ assertIncludes("MRagent search intents", searchIntents, "tense_reply");
 assertIncludes("MRagent search intents", searchIntents, "client_hesitation");
 assertIncludes("MRagent search intents", searchIntents, "follow_up_pressure");
 assertIncludes("MRagent search intents", searchIntents, "Read the pressure before you reply");
+
+const adCopyTests = readFileSync(join(process.cwd(), "site/ads/copy-tests.yml"), "utf-8");
+assertIncludes("MRagent ad copy tests", adCopyTests, "loaded_message");
+assertIncludes("MRagent ad copy tests", adCopyTests, "client_hesitation");
+assertIncludes("MRagent ad copy tests", adCopyTests, "follow_up_pressure");
+assertIncludes("MRagent ad copy tests", adCopyTests, "ad_message_sync");
+assertIncludes("MRagent ad copy tests", adCopyTests, "Read the pressure before you reply");
 
 for (const file of [
   "app/api/agent/route.ts",
