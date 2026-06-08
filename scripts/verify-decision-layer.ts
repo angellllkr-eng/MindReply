@@ -105,6 +105,7 @@ for (const file of [
   "lib/mragent.ts",
   "lib/mragent-mcp.ts",
   "scripts/verify-mcp.ts",
+  "site/automation/personal-pack.yml",
 ]) {
   assert(existsSync(join(process.cwd(), file)), `${file} must exist.`);
 }
