@@ -11,6 +11,10 @@ on:
         description: "Keep true until Slack/email secrets are verified"
         required: false
         default: "true"
+      require_delivery:
+        description: "Fail unless Slack or email actually sends"
+        required: false
+        default: "false"
   schedule:
     # GitHub cron cannot keep an exact 23-minute rolling interval across hour boundaries.
     # This gives frequent personal-only pulses without adding an external scheduler.
@@ -28,6 +32,7 @@ jobs:
       NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL || 'https://www.mind-reply.com' }}
       MINDREPLY_REPORT_ENABLED: ${{ vars.MINDREPLY_REPORT_ENABLED || 'false' }}
       MINDREPLY_REPORT_DRY_RUN: ${{ github.event.inputs.dry_run || vars.MINDREPLY_REPORT_DRY_RUN || 'true' }}
+      MINDREPLY_REPORT_REQUIRE_DELIVERY: ${{ github.event.inputs.require_delivery || vars.MINDREPLY_REPORT_REQUIRE_DELIVERY || 'false' }}
       MINDREPLY_REPORT_CHANNELS: ${{ github.event.inputs.channels || vars.MINDREPLY_REPORT_CHANNELS || 'console' }}
       MINDREPLY_REPORT_PERSONAL_ONLY: "true"
       MINDREPLY_REPORT_PERSONAL_LABEL: ${{ vars.MINDREPLY_REPORT_PERSONAL_LABEL || 'Angel personal pack' }}
