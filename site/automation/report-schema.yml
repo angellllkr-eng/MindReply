@@ -34,12 +34,13 @@ fields:
     opinion: Short operating opinion for the pass.
     nextAction: The next recommended move.
   surfaces: Per-URL status, latency, and signal.
-  packSources: Required personal-pack source files and whether each exists, including slack-api, vercel-build-limit, verification-runbook, visibility-plan, and search-intents.
+  packSources: Required personal-pack source files and whether each exists, including slack-api, vercel-build-limit, verification-runbook, visibility-plan, search-intents, and ad-copy-tests.
 visibility:
   plan: site/growth/visibility-plan.yml
   positioning: site/growth/positioning.yml
   search_intents: site/growth/search-intents.yml
   ads: site/ads/messaging.yml
+  ad_copy_tests: site/ads/copy-tests.yml
   report_fields:
     - active_deployment
     - legacy_quota_context
