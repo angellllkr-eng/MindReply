@@ -25,17 +25,34 @@ MRagent is the gentle Mind Read surface for MindReply. It reflects what the pres
 - `/`
 - `/agent`
 - `/privacy`
+- `/mcp`
 - `/api/intake`
 - `/api/agent`
 - `/api/health`
 
 Old public surfaces are redirected into the decision layer.
 
+## ChatGPT App Surface
+
+`/mcp` exposes the internal MRagent MCP Apps endpoint for ChatGPT Developer Mode.
+
+Tools:
+
+- `prepare_mindread`: prepares one synthesis, one action, risk gate, receipt, and persistence status.
+- `render_mindread`: prepares the result and attaches the MRagent widget resource.
+- `fetch_receipt`: fetches a privacy-safe receipt by id when Blob storage is configured.
+
+Widget resource:
+
+- URI: `ui://widget/mragent-mindread-v1.html`
+- MIME: `text/html;profile=mcp-app`
+
 ## Local Commands
 
 ```bash
 npm ci
 npm run decision:verify
+npm run mcp:verify
 npm run typecheck
 npm run build
 python -m unittest discover src
@@ -50,6 +67,8 @@ Optional MRagent provider settings:
 ```bash
 OPENAI_API_KEY=
 MRAGENT_MODEL=gpt-5
+BLOB_READ_WRITE_TOKEN=
+NEXT_PUBLIC_SITE_URL=https://www.mind-reply.com
 ```
 
-When no provider key is configured, MRagent returns a deterministic privacy-safe Mind Read from the decision layer.
+When no provider key is configured, MRagent returns a deterministic privacy-safe Mind Read from the decision layer. When Blob storage is not configured, generation persistence reports `stored=false` while the response remains usable.
