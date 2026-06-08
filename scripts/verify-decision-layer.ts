@@ -85,6 +85,7 @@ const publicFiles = [
   "site/seo/meta.yml",
   "site/ads/messaging.yml",
   "site/growth/positioning.yml",
+  "site/growth/visibility-plan.yml",
   "site/design/figma-growth-loop.yml",
   "site/media/remotion-launch-brief.yml",
   "src/agents/prompts.md",
@@ -104,6 +105,12 @@ assertIncludes("MRagent prompt contract", promptSpec, "Read slowly before answer
 assertIncludes("MRagent prompt contract", promptSpec, "best-friend warmth with confident boundaries");
 assertIncludes("MRagent prompt contract", promptSpec, "Give one next move, not a menu");
 assertIncludes("MRagent prompt contract", promptSpec, "Keep the receipt quiet, private, and free of raw intake text");
+
+const visibilityPlan = readFileSync(join(process.cwd(), "site/growth/visibility-plan.yml"), "utf-8");
+assertIncludes("MRagent visibility plan", visibilityPlan, "weekly_loop");
+assertIncludes("MRagent visibility plan", visibilityPlan, "search_assets");
+assertIncludes("MRagent visibility plan", visibilityPlan, "ad_message_sync");
+assertIncludes("MRagent visibility plan", visibilityPlan, "next_visibility_task");
 
 for (const file of [
   "app/api/agent/route.ts",
