@@ -37,9 +37,22 @@ function githubRun() {
   };
 }
 
+function chooseDeploymentStatus(statuses) {
+  const vercelStatuses = statuses.filter((status) => /vercel/i.test(status.context || ""));
+  const active = vercelStatuses.find((status) => /mind-reply/i.test(status.context || ""));
+  const legacy = vercelStatuses.find((status) => /mindreply/i.test(status.context || ""));
+  const quotaLimited = vercelStatuses.find((status) => /build-rate-limit|upgradeToPro/i.test(status.targetUrl || ""));
+  return {
+    primary: active || vercelStatuses[0] || null,
+    legacy: legacy || null,
+    quotaLimited: quotaLimited || null,
+    all: vercelStatuses,
+  };
+}
+
 async function fetchCommitStatus(run) {
   if (!run.repository || run.sha === "local") {
-    return { state: "local", statuses: [], signal: "Commit status unavailable outside GitHub Actions." };
+    return { state: "local", statuses: [], deployment: { primary: null, legacy: null, quotaLimited: null, all: [] }, signal: "Commit status unavailable outside GitHub Actions." };
   }
 
   try {
@@ -47,7 +60,7 @@ async function fetchCommitStatus(run) {
     if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
     const response = await fetch(`https://api.github.com/repos/${run.repository}/commits/${run.sha}/status`, { headers });
     if (!response.ok) {
-      return { state: "unknown", statuses: [], signal: `GitHub status API returned ${response.status}.` };
+      return { state: "unknown", statuses: [], deployment: { primary: null, legacy: null, quotaLimited: null, all: [] }, signal: `GitHub status API returned ${response.status}.` };
     }
     const data = await response.json();
     const statuses = Array.isArray(data.statuses)
@@ -58,16 +71,18 @@ async function fetchCommitStatus(run) {
           description: status.description,
         }))
       : [];
-    const vercel = statuses.find((status) => /vercel/i.test(status.context || ""));
+    const deployment = chooseDeploymentStatus(statuses);
     return {
       state: data.state || "unknown",
       statuses,
-      signal: vercel ? `${vercel.context}: ${vercel.state}` : "No Vercel status context found.",
+      deployment,
+      signal: deployment.primary ? `${deployment.primary.context}: ${deployment.primary.state}` : "No Vercel status context found.",
     };
   } catch (error) {
     return {
       state: "error",
       statuses: [],
+      deployment: { primary: null, legacy: null, quotaLimited: null, all: [] },
       signal: error instanceof Error ? error.message : "GitHub status request failed.",
     };
   }
@@ -129,10 +144,25 @@ function sourceRow(source) {
   return `| ${source.label} | ${source.present ? "ok" : "check"} | ${source.path} |`;
 }
 
+function deploymentBlocker(commitStatus) {
+  const primary = commitStatus.deployment?.primary;
+  const quota = commitStatus.deployment?.quotaLimited;
+  if (primary?.state === "failure") return `${primary.context}: failure`;
+  if (primary?.state === "pending") return `${primary.context}: pending`;
+  if (primary?.state === "success" && quota && quota.context !== primary.context) {
+    return `legacy ${quota.context} is quota-limited; active ${primary.context} is success`;
+  }
+  if (commitStatus.state === "failure") return commitStatus.signal;
+  return null;
+}
+
 function chooseNextAction({ mcpLive, healthLive, discoveryLive, packReady, commitStatus }) {
-  if (commitStatus.signal.includes("Vercel") && commitStatus.state === "failure") return "Follow the Vercel build-limit runbook, then rerun the production checks.";
-  if (!mcpLive || !healthLive || !discoveryLive) return "Follow the Vercel build-limit runbook, then verify missing production surfaces.";
+  const primary = commitStatus.deployment?.primary;
+  if (primary?.state === "failure") return "Fix the active Vercel deployment first, then rerun production checks.";
+  if (primary?.state === "pending") return "Wait for the active Vercel deployment, then rerun production checks.";
+  if (!mcpLive || !healthLive || !discoveryLive) return "Verify missing production surfaces after the active deployment is live.";
   if (!packReady) return "Restore missing personal-pack source files.";
+  if (commitStatus.deployment?.quotaLimited && primary?.state === "success") return "Clean up the legacy quota-limited Vercel context or leave it documented as non-active.";
   return "Connect a Slack channel target or capture a fresh /agent production preview for the next asset.";
 }
 
@@ -146,9 +176,10 @@ const mcpLive = byLabel.get("mcp")?.ok === true;
 const healthLive = byLabel.get("health")?.ok === true;
 const discoveryLive = ["sitemap", "robots", "manifest", "social-preview"].every((label) => byLabel.get(label)?.ok === true);
 const packReady = sourceResults.every((source) => source.present);
-const blocker = commitStatus.state === "failure" ? commitStatus.signal : mcpLive && healthLive && discoveryLive ? "none detected" : "latest GitHub main is not fully deployed to production yet";
+const deployBlocker = deploymentBlocker(commitStatus);
+const blocker = deployBlocker || (mcpLive && healthLive && discoveryLive ? "none detected" : "latest GitHub main is not fully deployed to production yet");
 const nextAction = chooseNextAction({ mcpLive, healthLive, discoveryLive, packReady, commitStatus });
-const opinion = packReady ? "The repo has a workable personal pack; Vercel status and Slack destination are the active handoff items." : "The personal pack is incomplete.";
+const opinion = packReady ? "The repo has a workable personal pack; active deployment health is now separated from legacy quota noise." : "The personal pack is incomplete.";
 
 const report = {
   generatedAt,
