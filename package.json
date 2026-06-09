@@ -12,7 +12,8 @@
     "mcp:verify": "tsx scripts/verify-mcp.ts",
     "report:personal-pack": "tsx scripts/personal-pack-report.ts",
     "incident:domain": "node scripts/production-domain-incident.mjs",
-    "growth:pulse": "node scripts/mragent-growth-pulse.mjs"
+    "growth:pulse": "node scripts/mragent-growth-pulse.mjs",
+    "report:digest": "node scripts/mragent-short-digest.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.2",
