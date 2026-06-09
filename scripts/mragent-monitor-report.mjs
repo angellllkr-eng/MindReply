@@ -5,6 +5,7 @@ const endpoints = [
   { label: "home", url: `${siteUrl}/` },
   { label: "agent", url: `${siteUrl}/agent` },
   { label: "mcp", url: `${siteUrl}/mcp` },
+  { label: "api-mcp", url: `${siteUrl}/api/mcp` },
   { label: "health", url: `${siteUrl}/api/health` },
   { label: "sitemap", url: `${siteUrl}/sitemap.xml` },
   { label: "robots", url: `${siteUrl}/robots.txt` },
@@ -121,7 +122,7 @@ async function checkEndpoint(endpoint) {
 }
 
 function summarize(label, status, text, contentType = "") {
-  if (label === "mcp" && status === 404) return "MCP route not live on production yet.";
+  if ((label === "mcp" || label === "api-mcp") && status === 404) return "MCP route not live on production yet.";
   if (label === "health" && status === 404) return "Health route not live on production yet.";
   if (label === "sitemap" && status === 404) return "Sitemap not live on production yet.";
   if (label === "robots" && status === 404) return "Robots file not live on production yet.";
@@ -130,7 +131,7 @@ function summarize(label, status, text, contentType = "") {
   if (status >= 500) return "Server error.";
   if (status >= 400) return "Blocked or missing.";
   if (label === "agent" && /MRagent|Mind Read|MindReply/i.test(text)) return "MRagent page visible.";
-  if (label === "mcp" && /prepare_mindread|render_mindread|fetch_receipt/i.test(text)) return "MCP tools visible.";
+  if ((label === "mcp" || label === "api-mcp") && /prepare_mindread|render_mindread|fetch_receipt/i.test(text)) return "MCP tools visible.";
   if (label === "health" && /mcpApp|privacyDefaults|status/i.test(text)) return "Health JSON visible.";
   if (label === "sitemap" && /<urlset|\/agent|\/privacy/i.test(text)) return "Sitemap visible.";
   if (label === "robots" && /Sitemap|Allow/i.test(text)) return "Robots file visible.";
@@ -180,7 +181,7 @@ const [results, commitStatus] = await Promise.all([Promise.all(endpoints.map(che
 const sourceResults = packSources.map((source) => ({ ...source, present: existsSync(source.path) }));
 const byLabel = new Map(results.map((result) => [result.label, result]));
 const liveCore = byLabel.get("agent")?.ok === true;
-const mcpLive = byLabel.get("mcp")?.ok === true;
+const mcpLive = byLabel.get("mcp")?.ok === true || byLabel.get("api-mcp")?.ok === true;
 const healthLive = byLabel.get("health")?.ok === true;
 const discoveryLive = ["sitemap", "robots", "manifest", "social-preview"].every((label) => byLabel.get(label)?.ok === true);
 const packReady = sourceResults.every((source) => source.present);
