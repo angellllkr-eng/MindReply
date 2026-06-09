@@ -29,7 +29,7 @@ const starter: ChatMessage = {
   id: "mra-welcome",
   role: "assistant",
   content:
-    "Come here. Put the message, the awkward feeling, or the decision fog in front of me. I will read the pressure slowly, name what your mind is protecting, and give you one warm next move.",
+    "Place the charged message here. I will read the pressure beneath it, name what your mind is protecting, and return one composed move you can actually use.",
 };
 
 const readingPhases = ["listening under the words", "finding the emotional weather", "checking the risk gate", "choosing one clean move"];
@@ -155,17 +155,17 @@ export default function MRAgentChat({ compact = false }: MRAgentChatProps) {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[#e2b757]">Mind Read</p>
             <h1 className="mt-6 font-serif text-4xl font-bold leading-tight md:text-6xl">
-              A clever, warm companion for high-friction moments.
+              A composed read for high-friction moments.
             </h1>
             <p className="mt-5 text-base leading-8 text-[#d8deea]">
-              MRagent replies slowly on purpose. It listens for the feeling, the protection pattern, the risk, and the cleanest next move.
+              MRagent does not rush the reply. It studies the feeling, the protective pattern, the risk, and the cleanest next move.
             </p>
           </div>
 
           <div className="mt-8 grid gap-3 text-sm text-[#d8deea]">
             <div className="rounded-xl border border-white/10 bg-white/[0.045] p-4">
-              <p className="flex items-center gap-2 font-semibold text-[#f8f5f0]"><HeartHandshake size={16} className="text-[#e2b757]" /> Warm but not vague</p>
-              <p className="mt-2 leading-6">Bestie energy with a spine: tender, lucid, and quietly firm.</p>
+              <p className="flex items-center gap-2 font-semibold text-[#f8f5f0]"><HeartHandshake size={16} className="text-[#e2b757]" /> Warm, not weightless</p>
+              <p className="mt-2 leading-6">Tender enough to soften the moment; precise enough to keep your position intact.</p>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/[0.045] p-4">
               <p className="flex items-center gap-2 font-semibold text-[#f8f5f0]"><LockKeyhole size={16} className="text-[#e2b757]" /> Private by shape</p>
@@ -273,7 +273,7 @@ export default function MRAgentChat({ compact = false }: MRAgentChatProps) {
               <ArrowUp size={18} />
             </button>
           </div>
-          <p className="mt-2 text-xs text-[#8fa0b8]">Tip: press Ctrl+Enter to send. MRagent will answer slowly on purpose.</p>
+          <p className="mt-2 text-xs text-[#8fa0b8]">Tip: press Ctrl+Enter to send. MRagent answers slowly on purpose.</p>
         </div>
       </div>
     </section>
