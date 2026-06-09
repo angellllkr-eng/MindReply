@@ -1,0 +1,54 @@
+version: 1
+created: 2026-06-09
+repo: Mind-Reply/MindReply
+request: keep main as deploy/app branch and mind-reply as storage branch
+status:
+  default_branch: main
+  storage_branch: mind-reply
+  storage_sync_commit: 2e87e1ebeb2022bc09e0ba90b420a62b35a7f97d
+  storage_relation_after_sync:
+    ahead_of_main: 4
+    behind_main: 0
+  local_checkout:
+    has_git_remote: false
+    local_head: refs/heads/master
+    note: local folder is not a usable remote-connected checkout; GitHub connector was used for safe branch operations
+main_truth:
+  current_main_commit_observed: 9b46a0f7419292fd0031d3425d89d0aadbbaf666
+  production_deploy_status: not_confirmed_from_vercel_api
+  reason: Vercel API auth/rate-limit issues still need VERCEL_TOKEN or re-auth before deploy truth is final
+branch_policy:
+  keep:
+    - main
+    - mind-reply
+  storage_synced:
+    - mind-reply now contains main plus storage-only reports
+  safe_obsolete_after_confirmation:
+    - codex/mindreply-moa-production-minimal
+  review_before_merge_or_delete:
+    - codex/executive-nervous-system
+    - codex/executive-nervous-system-build
+    - codex/executive-nervous-system-main-sync
+    - codex/executive-nervous-system-rebrand
+    - codex/mindreply-moa-controller
+    - codex/mindreply-moa-main
+    - codex/mragent-decision-chat
+useful_merge_candidates:
+  high:
+    branch: codex/executive-nervous-system-main-sync
+    why: CircleCI, Slack/email reporting docs, Vercel limit runbook, Angel pack report, launch audits, playbooks, and app/reporting scripts
+    risk: diverged and behind main; do not overwrite main with branch tree
+  high_chat:
+    branch: codex/mragent-decision-chat
+    why: MRagent chat page, /api/agent, AI-elements message component, warm decision-chat wiring
+    risk: diverged; merge file-by-file or via PR review
+  medium:
+    branch: codex/executive-nervous-system-build
+    why: decision layer/playbooks/backend connector improvements
+    risk: older than main and needs conflict review
+next_actions:
+  - create or use a real git checkout connected to https://github.com/Mind-Reply/MindReply.git
+  - merge/cherry-pick useful files from main-sync and mragent-decision-chat into main through a PR or controlled tree commit
+  - delete obsolete codex branches only after explicit confirmation
+  - re-auth Vercel or add VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID before claiming latest main is deployed
+short_report: mind-reply storage is now synced with main and keeps reports; main is the canonical app branch, but not every useful codex branch is merged into main yet.

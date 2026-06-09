@@ -1,0 +1,112 @@
+version: 1
+created: 2026-06-09
+branch: mind-reply
+report_type: implementation_readiness_pack
+scope: first post-quota main implementation pass
+status: ready_when_vercel_quota_clears
+canonical_repo: Mind-Reply/MindReply
+canonical_deploy_branch: main
+latest_checked_main_commit: 6ab180402ce88352497d25e0c0ba6fa1180e5003
+objective: >-
+  Make the next main pass surgical: restore production freshness, align the product-first
+  redesign, verify MRagent and ChatGPT app surfaces, then prepare for small growth tests.
+current_blocker:
+  type: deployment_quota
+  detail: Both Vercel mind-reply and mindreply contexts report build-rate-limit.
+  policy: Do not make non-urgent app-changing main commits until quota clears.
+first_main_change_sequence:
+  step_1_route_freshness:
+    reason: Source already has missing routes; production does not serve them.
+    files_to_check_before_edit:
+      - app/api/version/route.ts
+      - app/api/agent/route.ts
+      - app/mcp/route.ts
+      - app/api/mcp/route.ts
+      - app/manifest.ts
+      - app/opengraph-image.tsx
+      - middleware.ts
+      - vercel.json
+    expected_result:
+      - /api/version returns current commit JSON
+      - /api/agent returns MRagent result on POST
+      - /mcp and /api/mcp expose MCP tools
+      - /manifest.webmanifest returns 200
+      - /opengraph-image returns image/png
+  step_2_product_first_home:
+    files_to_touch:
+      - app/page.tsx
+      - app/layout.tsx
+      - site/seo/meta.yml
+      - site/ads/messaging.yml
+    required_copy:
+      h1: Read the pressure before you reply.
+      support: Warm mind read. One clear next move. Quiet receipt.
+    constraints:
+      - first viewport shows MRagent/product surface
+      - fewer future links until routes are stable
+      - no generic AI assistant language
+      - no therapy or diagnosis claims
+  step_3_agent_workspace_tightening:
+    files_to_touch:
+      - app/agent/page.tsx
+      - components/MRAgentChat.tsx
+    required_behavior:
+      - warm slow-read phases remain
+      - one mind read, one action, one risk state, one receipt
+      - fallback /api/intake route remains usable if /api/agent fails
+      - receipt/result layout does not jump or overlap on mobile
+  step_4_growth_ready_assets:
+    files_to_touch:
+      - app/manifest.ts
+      - app/opengraph-image.tsx
+      - app/sitemap.ts
+      - app/robots.ts
+      - site/growth/positioning.yml
+      - site/ads/copy-tests.yml
+    required_behavior:
+      - social sharing has a real image
+      - manifest is live
+      - sitemap and robots stay live
+      - ad promise matches page promise
+verification_commands:
+  local_or_ci:
+    - npm run decision:verify
+    - npm run mcp:verify
+    - npm run typecheck
+    - npm run build
+    - python -m unittest discover src
+  production_after_deploy:
+    - GET https://www.mind-reply.com/api/version
+    - POST https://www.mind-reply.com/api/agent
+    - GET https://www.mind-reply.com/mcp
+    - GET https://www.mind-reply.com/api/mcp
+    - GET https://www.mind-reply.com/manifest.webmanifest
+    - GET https://www.mind-reply.com/opengraph-image
+    - browser capture https://www.mind-reply.com/agent desktop and mobile
+acceptance_gate:
+  must_pass:
+    - active Vercel mind-reply status is success
+    - /api/version shortSha equals latest main commit
+    - /agent renders MRagent first-screen product experience
+    - /api/agent is preferred route and /api/intake remains fallback
+    - /mcp lists prepare_mindread, render_mindread, fetch_receipt
+    - manifest and Open Graph are no longer 404
+    - no overlapping text in desktop/mobile capture
+risk_notes:
+  - Do not delete old branches until useful material is preserved or explicit delete tooling/confirmation is available.
+  - Do not scale paid ads until route proof and social preview proof pass.
+  - If Vercel succeeds but /api/version still shows stale, inspect domain assignment and middleware before editing product files.
+  - Keep raw input out of receipts and reports.
+post_deploy_report_template:
+  status_line: Agent live, version current, MCP live, discovery assets live/not live.
+  include:
+    - active Vercel status
+    - live commit shortSha
+    - route probe table
+    - screenshot artifact link
+    - one next action
+opinion: >-
+  The next main pass should start with proof, not redesign. If the domain cannot prove it is serving
+  latest main through /api/version, visual work will be invisible or misleading. Once freshness is
+  proven, the product-first redesign should be compact and decisive.
+short_digest_line: Implementation readiness is mapped: first prove route freshness, then product-first redesign, then growth assets and capture.

@@ -1,0 +1,79 @@
+version: 1
+created: 2026-06-09
+branch: mind-reply
+report_type: vercel_quota_recheck
+scope: active deployment status and public route freshness
+canonical_repo: Mind-Reply/MindReply
+canonical_deploy_branch: main
+checked_main_commit: 6ab180402ce88352497d25e0c0ba6fa1180e5003
+vercel_statuses:
+  mind_reply:
+    context: Vercel – mind-reply
+    state: failure
+    target: https://vercel.com/mr-64b2efc9?upgradeToPro=build-rate-limit
+    classification: build_rate_limited
+  mindreply:
+    context: Vercel – mindreply
+    state: failure
+    target: https://vercel.com/mr-64b2efc9?upgradeToPro=build-rate-limit
+    classification: build_rate_limited
+public_routes:
+  home:
+    url: https://www.mind-reply.com/
+    status: 200
+    result: live
+  agent:
+    url: https://www.mind-reply.com/agent
+    status: 200
+    result: live
+  preferred_agent_api:
+    url: https://www.mind-reply.com/api/agent
+    status: 410
+    result: stale
+  fallback_intake_api:
+    url: https://www.mind-reply.com/api/intake
+    status: 200
+    result: live
+  version:
+    url: https://www.mind-reply.com/api/version
+    status: 410
+    result: stale
+  mcp:
+    url: https://www.mind-reply.com/mcp
+    status: 404
+    result: missing
+  api_mcp:
+    url: https://www.mind-reply.com/api/mcp
+    status: 410
+    result: stale
+  manifest:
+    url: https://www.mind-reply.com/manifest.webmanifest
+    status: 404
+    result: missing
+  opengraph_image:
+    url: https://www.mind-reply.com/opengraph-image
+    status: 404
+    result: missing
+  sitemap:
+    url: https://www.mind-reply.com/sitemap.xml
+    status: 200
+    result: live
+  robots:
+    url: https://www.mind-reply.com/robots.txt
+    status: 200
+    result: live
+readiness_state:
+  can_use_public_agent: true
+  can_use_fallback_decision_route: true
+  can_connect_chatgpt_mcp_publicly: false
+  can_prove_latest_main_on_domain: false
+  can_scale_paid_ads: false
+next_action:
+  immediate: Keep work on mind-reply storage while quota is active.
+  when_quota_clears: Trigger or wait for successful main deploy, then verify /api/version shortSha equals latest main.
+  do_not_do_yet: Do not run paid ads or ChatGPT Developer Mode connection testing until route freshness passes.
+opinion: >-
+  The current site is usable enough for manual MRagent trials through /agent and /api/intake,
+  but not ready for public growth or ChatGPT app connection. The bottleneck remains Vercel
+  quota/deployment freshness, not source readiness.
+short_digest_line: Vercel quota still active; /agent and /api/intake live, but /api/version, /api/agent, /mcp, manifest, and OG remain stale or missing.

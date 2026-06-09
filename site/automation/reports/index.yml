@@ -1,0 +1,78 @@
+version: 1
+created: 2026-06-09
+updated: 2026-06-09
+branch: mind-reply
+purpose: Central index for storage-branch reports while main/Vercel deployment is rate-limited.
+canonical_repo: Mind-Reply/MindReply
+canonical_deploy_branch: main
+storage_branch: mind-reply
+latest_checked_main_commit: 6ab180402ce88352497d25e0c0ba6fa1180e5003
+current_state:
+  production:
+    home_page: live_200
+    agent_page: live_200
+    fallback_intake_api: live_200
+    api_agent: stale_410
+    api_version: stale_410
+    mcp: missing_404
+    manifest: missing_404
+    opengraph_image: missing_404
+    sitemap: live_200
+    robots: live_200
+  deployment:
+    vercel_mind_reply: build_rate_limited
+    vercel_mindreply: build_rate_limited
+  policy:
+    main_commits: pause_non_urgent_app_changes_until_quota_clears
+    storage_commits: allowed_for_reports_plans_and_growth_material
+reports:
+  - date: 2026-06-09
+    type: storage_status
+    path: site/automation/reports/2026-06-09-storage-status.yml
+    commit: 825b61e684b938419d9de3f014d0efa0f2479e51
+    one_line: Public /agent and fallback /api/intake work; production is stale for preferred app routes.
+  - date: 2026-06-09
+    type: seo_visibility_pulse
+    path: site/automation/reports/2026-06-09-seo-visibility-pulse.yml
+    commit: fc09756f1bc6db580fafd35d3f6b78d3ae22bfa9
+    one_line: Title, description, sitemap, and robots are live; manifest and Open Graph are missing.
+  - date: 2026-06-09
+    type: ad_test_sprint
+    path: site/automation/reports/2026-06-09-ad-test-sprint.yml
+    commit: e309b2559441d46a20ba30ba62487034d5aba3d1
+    one_line: Ad sprint is ready, but paid traffic waits for discovery routes and app routes to deploy.
+  - date: 2026-06-09
+    type: production_route_recovery
+    path: site/automation/reports/2026-06-09-route-recovery.yml
+    commit: bdfe91c755a08ec3ef7f6c7eb90245b6c15d9594
+    one_line: Missing public routes exist in GitHub main, so the gap is deployment freshness.
+  - date: 2026-06-09
+    type: design_rebuild_brief
+    path: site/automation/reports/2026-06-09-design-rebuild-brief.yml
+    commit: fe4d0c47db07f8a5ab6e948fc031b92bb9ebe126
+    one_line: Product-first redesign plan is ready for the next main pass after Vercel quota clears.
+  - date: 2026-06-09
+    type: implementation_readiness_pack
+    path: site/automation/reports/2026-06-09-implementation-readiness-pack.yml
+    commit: 72b67bce2c36c50820511614da54b6b012d2aca3
+    one_line: First post-quota main pass is mapped: route freshness, product-first redesign, growth assets, capture.
+  - date: 2026-06-09
+    type: vercel_quota_recheck
+    path: site/automation/reports/2026-06-09-vercel-quota-recheck.yml
+    commit: a3988d6abcc9281ffd74a3c4a985d12e5e650b3f
+    one_line: Vercel quota still active; public page and fallback API live, app/developer routes stale or missing.
+next_report_slots:
+  - type: daily_short_digest
+    cadence: every active work pass while quota is limited
+    focus: live route state, Vercel state, one next action
+  - type: branch_cleanup_followup
+    cadence: after delete/ref tooling or user confirmation
+    focus: keep only main and mind-reply after preserving useful files
+  - type: post_quota_main_execution
+    cadence: once active Vercel mind-reply can build again
+    focus: route freshness, product-first redesign, growth assets, capture
+opinion: >-
+  The storage branch remains the right place for planning, growth, SEO, ad, and recovery reports.
+  Main should stay quiet until Vercel can build again, because the source already contains the
+  missing app routes and the remaining problem is deployment freshness.
+short_digest_line: Latest recheck: Vercel quota still active; /agent and /api/intake live, but app/developer/growth routes need a successful main deploy.

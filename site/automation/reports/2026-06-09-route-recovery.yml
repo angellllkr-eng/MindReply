@@ -1,0 +1,72 @@
+version: 1
+created: 2026-06-09
+branch: mind-reply
+report_type: production_route_recovery
+scope: routes missing on public production but present in GitHub main
+canonical_repo: Mind-Reply/MindReply
+checked_main_commit: 6ab180402ce88352497d25e0c0ba6fa1180e5003
+summary:
+  finding: source_ready_production_stale
+  blocker: Vercel build-rate-limit on both mind-reply and mindreply contexts
+  deploy_policy: avoid main app commits until quota clears unless urgent
+source_evidence:
+  api_agent:
+    path: app/api/agent/route.ts
+    exists_on_main: true
+    purpose: preferred MRagent decision endpoint
+  api_version:
+    path: app/api/version/route.ts
+    exists_on_main: true
+    purpose: deployment freshness proof
+  manifest:
+    path: app/manifest.ts
+    exists_on_main: true
+    purpose: browser/install discovery asset
+  opengraph_image:
+    path: app/opengraph-image.tsx
+    exists_on_main: true
+    purpose: social preview asset
+  mcp:
+    path: app/mcp/route.ts
+    exists_on_main: true
+    purpose: ChatGPT Apps MCP endpoint
+  api_mcp:
+    path: app/api/mcp/route.ts
+    exists_on_main: true
+    purpose: fallback MCP endpoint
+public_probe:
+  api_agent:
+    url: https://www.mind-reply.com/api/agent
+    status: 410
+    expected_after_deploy: 200 on valid POST
+  api_version:
+    url: https://www.mind-reply.com/api/version
+    status: 410
+    expected_after_deploy: 200 JSON with deployment.shortSha
+  manifest:
+    url: https://www.mind-reply.com/manifest.webmanifest
+    status: 404
+    expected_after_deploy: 200 manifest JSON
+  opengraph_image:
+    url: https://www.mind-reply.com/opengraph-image
+    status: 404
+    expected_after_deploy: 200 image/png
+  mcp:
+    url: https://www.mind-reply.com/mcp
+    status: 404
+    expected_after_deploy: 200 JSON or MCP JSON-RPC response
+  api_mcp:
+    url: https://www.mind-reply.com/api/mcp
+    status: 410
+    expected_after_deploy: 200 JSON or MCP JSON-RPC response
+recovery_plan_when_quota_clears:
+  - Trigger or wait for a successful active Vercel mind-reply deployment from main.
+  - Use /api/version to prove the public domain commit equals latest main.
+  - Re-probe /api/agent, /api/version, /manifest.webmanifest, /opengraph-image, /mcp, and /api/mcp.
+  - If routes are still stale after a successful deploy, inspect Vercel domain assignment and middleware rewrites.
+  - Only then start paid ads or ChatGPT Developer Mode connection testing.
+short_digest_line: Main already has the missing route files; production is stale because Vercel is build-rate-limited.
+opinion: >-
+  This is not a coding gap today. The correct move is to preserve reporting and growth work on
+  mind-reply storage, avoid noisy main commits, and use /api/version as the proof gate as soon as
+  Vercel can build again.

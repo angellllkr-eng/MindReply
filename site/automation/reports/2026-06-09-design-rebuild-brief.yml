@@ -1,0 +1,125 @@
+version: 1
+created: 2026-06-09
+branch: mind-reply
+report_type: design_rebuild_brief
+scope: full website redesign direction for next main implementation pass
+status: ready_for_main_after_vercel_quota_clears
+source_review:
+  home_source: app/page.tsx
+  agent_source: app/agent/page.tsx
+  chat_source: components/MRAgentChat.tsx
+  current_strengths:
+    - MRagent is already the central product surface in source.
+    - Warm, clever, slow-read language is present.
+    - Decision output includes feeling, protection, move, receipt, and risk.
+    - The fallback route keeps /agent usable when /api/agent is stale.
+  current_weaknesses:
+    - Home and agent still share a marketing-site frame instead of one direct product experience.
+    - The hero promise is split between Warm mind read and private decision support.
+    - The visual system uses heavy framed panels; the rebuild should feel calmer and more spacious.
+    - Navigation includes future pack links before the core product routes are fully deployed.
+    - Public deployment is stale, so source improvements are not fully visible yet.
+new_design_principle: Product first. The first screen should be MRagent in motion, with the brand promise wrapped around it instead of above it.
+positioning:
+  primary_line: Read the pressure before you reply.
+  support_line: Warm mind read. One clear next move. Quiet receipt.
+  personality: warm bestie with a spine; clever, calm, uncommon but understandable language
+  category_to_imply: private pressure-reading companion for tense work messages
+  category_to_avoid: generic AI chat, productivity assistant, therapy tool
+audience:
+  primary:
+    - founders answering client hesitation
+    - sellers handling pricing or urgency pressure
+    - operators carrying unresolved follow-ups
+  emotional_state:
+    - tense
+    - over-explaining
+    - delaying
+    - trying not to sound small or sharp
+recommended_information_architecture:
+  home:
+    role: immediate product entry
+    first_view:
+      left: compact brand promise and trust rails
+      right: live MRagent input/result preview
+      primary_cta: Try the Mind Read
+      secondary_cta: See privacy receipt
+    sections:
+      - pressure moments
+      - how the read works
+      - receipt/privacy proof
+      - use cases
+      - final MRagent entry
+  agent:
+    role: full working product
+    layout:
+      desktop: two-column context rail plus chat workspace
+      mobile: chat first, context collapsed below
+    expected_states:
+      - welcome
+      - listening phases
+      - result with mind read, risk, action, receipt
+      - fallback route badge when /api/intake is used
+      - clear retry state
+  privacy:
+    role: receipt-first trust proof
+    sections:
+      - what is stored
+      - what is not stored
+      - risk gate
+      - receipt example
+visual_direction:
+  palette:
+    base: warm parchment, ink navy, muted brass, clean white
+    avoid: one-note beige, generic purple gradients, dark-slate SaaS overload
+  layout:
+    - fewer nested cards
+    - stable chat dimensions
+    - product workspace visible in first viewport
+    - tight but breathable information density
+  typography:
+    - avoid viewport-scaled type
+    - hero can be expressive, but panels need compact readable headings
+  interaction:
+    - slow reading phases remain
+    - result cards should not shift layout
+    - buttons use icon-first where obvious
+implementation_slices_when_quota_clears:
+  slice_1_routes_and_freshness:
+    - get /api/version live
+    - get /api/agent live
+    - get /mcp and /api/mcp live
+    - get manifest and Open Graph live
+  slice_2_home_redesign:
+    - replace marketing-heavy hero with product-first MRagent preview
+    - align H1 to Read the pressure before you reply.
+    - reduce future navigation links until routes are stable
+  slice_3_agent_workspace:
+    - show route status/fallback subtly in the result receipt
+    - tighten mobile chat spacing
+    - make receipt and risk easier to scan
+  slice_4_growth_ready:
+    - align metadata and Open Graph with primary line
+    - run browser capture desktop/mobile
+    - enable small ad tests only after route proof
+acceptance_checks:
+  source_checks:
+    - app/page.tsx contains the primary line or approved equivalent
+    - app/agent/page.tsx keeps MRagent as first screen
+    - components/MRAgentChat.tsx shows one mind read, one action, risk, receipt
+  production_checks:
+    - /agent returns 200 and visible MRagent
+    - /api/agent returns decision response on POST
+    - /api/version returns current commit
+    - /mcp lists prepare_mindread, render_mindread, fetch_receipt
+    - /manifest.webmanifest returns 200
+    - /opengraph-image returns image/png
+  visual_checks:
+    - desktop and mobile screenshots have no overlapping text
+    - first viewport shows product, not just explanation
+    - result state is readable without layout jump
+opinion: >-
+  The rebuild should not become a larger marketing site. MindReply wins if it feels like a
+  private, emotionally intelligent work surface the moment it opens. Make MRagent the artifact,
+  keep the promise short, and let the receipt/risk structure prove seriousness.
+short_digest_line: Design rebuild brief is ready: product-first home, MRagent-first agent page, route proof before ads.

@@ -1,0 +1,67 @@
+version: 1
+created: 2026-06-09
+branch: mind-reply
+purpose: storage report while Vercel production builds are rate-limited
+canonical_repo: Mind-Reply/MindReply
+canonical_deploy_branch: main
+latest_checked_main_commit: 6ab180402ce88352497d25e0c0ba6fa1180e5003
+status_summary:
+  active_surface:
+    agent_page: live
+    fallback_intake_api: live
+  stale_or_missing_surface:
+    preferred_agent_api: stale_410
+    version_api: stale_410
+    mcp_endpoint: missing_404
+  deployment:
+    vercel_mind_reply: build_rate_limited
+    vercel_mindreply: build_rate_limited
+  branch_storage:
+    storage_branch_exists: true
+    deploy_branch: main
+    storage_branch: mind-reply
+opinion: >-
+  MRagent is usable through the public agent page and fallback intake route, but the
+  production domain is not yet serving the newer ChatGPT app/MCP/version surfaces.
+  While Vercel is rate-limited, useful work should be written to the mind-reply
+  storage branch or GitHub Actions artifacts unless it must change the live app.
+next_actions:
+  - Clear or wait out Vercel build-rate-limit before pushing app-changing main commits.
+  - Keep reporting-only and branch-cleanup material on mind-reply storage when possible.
+  - After Vercel quota clears, push a main app commit that makes /api/agent, /api/version, and /mcp live on the public domain.
+  - Then run browser capture for /agent and verify the warm Mind Read flow end to end.
+public_probe:
+  agent:
+    url: https://www.mind-reply.com/agent
+    status: 200
+    result: live
+  api_agent:
+    url: https://www.mind-reply.com/api/agent
+    status: 410
+    result: stale
+  api_intake:
+    url: https://www.mind-reply.com/api/intake
+    status: 200
+    result: live
+  api_version:
+    url: https://www.mind-reply.com/api/version
+    status: 410
+    result: stale
+  mcp:
+    url: https://www.mind-reply.com/mcp
+    status: 404
+    result: missing
+branch_policy:
+  keep:
+    - main
+    - mind-reply
+  safe_delete_after_confirmation:
+    - codex/mindreply-moa-production-minimal
+  do_not_blind_merge:
+    - codex/executive-nervous-system
+    - codex/executive-nervous-system-build
+    - codex/executive-nervous-system-main-sync
+    - codex/executive-nervous-system-rebrand
+    - codex/mindreply-moa-controller
+    - codex/mindreply-moa-main
+    - codex/mragent-decision-chat

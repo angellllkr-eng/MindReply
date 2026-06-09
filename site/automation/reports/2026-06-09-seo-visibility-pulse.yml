@@ -1,0 +1,85 @@
+version: 1
+created: 2026-06-09
+branch: mind-reply
+report_type: seo_visibility_pulse
+scope: public discovery, positioning, advertising readiness
+canonical_site: https://www.mind-reply.com
+source_refs:
+  live_home: https://www.mind-reply.com/
+  live_agent: https://www.mind-reply.com/agent
+  live_sitemap: https://www.mind-reply.com/sitemap.xml
+  live_robots: https://www.mind-reply.com/robots.txt
+  repo_positioning: site/growth/positioning.yml
+  repo_seo_meta: site/seo/meta.yml
+  repo_ads_messaging: site/ads/messaging.yml
+live_probe:
+  home:
+    status: 200
+    title: MindReply | Private Decision Support for Work Messages
+    description: MindReply helps founders, sellers, and operators turn sensitive work messages into one clear next move.
+    result: good_indexable_entry
+  agent:
+    status: 200
+    title: MindReply | Private Decision Support for Work Messages
+    description: MindReply helps founders, sellers, and operators turn sensitive work messages into one clear next move.
+    result: good_core_product_entry
+  sitemap:
+    status: 200
+    result: live
+  robots:
+    status: 200
+    result: live
+  manifest:
+    status: 404
+    result: missing_discovery_asset
+  opengraph_image:
+    status: 404
+    result: missing_share_asset
+positioning_read:
+  current_public_lane: private decision support for tense work messages
+  stronger_internal_lane: warm mind read, clear next move
+  best_ad_angle: Read the pressure before you reply.
+  strongest_audience:
+    - founders handling client hesitation
+    - sellers handling pricing or urgency pressure
+    - operators carrying unresolved follow-ups
+  language_to_keep:
+    - pressure
+    - mind read
+    - one clear next move
+    - quiet receipt
+    - warm but firm
+  language_to_avoid:
+    - generic AI assistant
+    - clinical diagnosis
+    - productivity hack
+    - public claims about storing raw input
+advertising_readiness:
+  ready_now:
+    - one promise exists
+    - page title and description are indexed-shape
+    - sitemap and robots are live
+  not_ready:
+    - manifest is missing from production
+    - Open Graph image is missing from production
+    - /mcp is missing from production
+    - /api/version is stale on production
+    - /api/agent is stale on production
+  paid_ads_recommendation: do_not_scale_paid_ads_until_share_assets_and_core_routes_are_live
+opinion: >-
+  MindReply has a sharp emotional niche, but the public surface still under-sells the
+  warmer MRagent idea. The safest next growth move is not more ad copy; it is making
+  the production discovery assets and app routes real, then using one tight promise
+  everywhere: Read the pressure before you reply.
+next_actions:
+  storage_safe:
+    - keep weekly SEO pulses on mind-reply while Vercel is rate-limited
+    - draft three ad tests around tense client, pricing pressure, and follow-up dread
+    - prepare social preview copy/assets for when Open Graph route is live
+  main_when_quota_clears:
+    - restore /manifest.webmanifest on production
+    - restore /opengraph-image on production
+    - restore /api/version on production
+    - restore /api/agent on production
+    - restore /mcp on production
+short_digest_line: SEO is partly live: title, description, sitemap, robots work; manifest, Open Graph, MCP, version, and preferred agent API still need a successful production deploy.

@@ -1,0 +1,81 @@
+version: 1
+created: 2026-06-09
+branch: mind-reply
+report_type: branch_cleanup_followup
+scope: move toward only main plus mind-reply while preserving useful material
+canonical_repo: Mind-Reply/MindReply
+branch_inventory:
+  keep:
+    - main
+    - mind-reply
+  old_codex_branches:
+    - codex/executive-nervous-system
+    - codex/executive-nervous-system-build
+    - codex/executive-nervous-system-main-sync
+    - codex/executive-nervous-system-rebrand
+    - codex/mindreply-moa-controller
+    - codex/mindreply-moa-main
+    - codex/mindreply-moa-production-minimal
+    - codex/mragent-decision-chat
+cleanup_goal:
+  final_branches:
+    - main
+    - mind-reply
+  main_role: canonical deploy branch
+  mind_reply_role: storage branch for reports, preserved files, growth plans, and non-deploy material
+safe_delete_candidate:
+  branch: codex/mindreply-moa-production-minimal
+  reason: previously compared as behind main with ahead_by 0
+  condition: delete only after explicit destructive-action confirmation or delete-ref tooling is available
+preserve_before_delete:
+  codex/mragent-decision-chat:
+    useful_material:
+      - early MRagent chat route and UI
+      - AI Elements message component seed
+    storage_action: no full merge; current main already has newer MRagent surface
+  codex/mindreply-moa-controller:
+    useful_material:
+      - MOA console concept
+      - multi-agent blueprint doc
+      - lib/moa.ts concept implementation
+    storage_action: preserve selected concept docs before retiring branch
+  codex/mindreply-moa-main:
+    useful_material:
+      - memory/action route concepts
+      - early action API
+    storage_action: preserve selected notes only if still relevant to MRagent receipts/actions
+  codex/executive-nervous-system-build:
+    useful_material:
+      - expanded playbook seed set
+      - extension/integration improvements
+      - ChatGPT app reference docs
+    storage_action: preserve selected playbook seeds and docs on mind-reply storage
+  codex/executive-nervous-system-main-sync:
+    useful_material:
+      - ops docs
+      - reporting scripts lineage
+      - vercel guard lineage
+      - playbook seed variants
+    storage_action: review remaining docs; much reporting work is already represented in current storage reports
+  codex/executive-nervous-system:
+    useful_material:
+      - early executive nervous system positioning
+    storage_action: preserve reference only if unique language remains
+  codex/executive-nervous-system-rebrand:
+    useful_material:
+      - early rebrand language
+    storage_action: preserve reference only if unique language remains
+risks:
+  - Blind merging any old codex branch can delete current MRagent routes and reports because several branches are far behind main.
+  - Branch deletion is destructive and current exposed GitHub tools do not include a delete-ref action.
+  - The Vercel quota blocker means branch cleanup should stay on storage unless it affects production safety.
+recommended_next_storage_pass:
+  type: preserved_material_manifest
+  action: Create a manifest listing selected files/concepts to preserve from old branches before deletion.
+recommended_next_destructive_action:
+  action: Delete codex/mindreply-moa-production-minimal only after explicit confirmation and delete-ref capability.
+opinion: >-
+  The branch cleanup path is clear: main and mind-reply should be the only long-lived branches.
+  The old codex branches are not merge candidates; they are archives to mine for selected ideas.
+  Treat mind-reply as the warehouse, not a second deploy line.
+short_digest_line: Branch cleanup plan confirmed: keep main and mind-reply, preserve selected old branch material, delete only after confirmation/tooling.
