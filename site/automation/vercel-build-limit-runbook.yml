@@ -1,13 +1,32 @@
-runbook: Vercel build-rate-limit
-status: active_blocker_when_latest_commit_status_links_to_upgradeToPro
+runbook: Vercel build-rate-limit and production-domain mismatch
+status: active_blocker_when_latest_commit_status_links_to_upgradeToPro_or_public_routes_are_stale
 symptom:
   github_status_context: Vercel
   target_url_contains: upgradeToPro=build-rate-limit
   effect: Latest GitHub main may not publish even when code is valid.
+secondary_symptom:
+  public_domain: https://www.mind-reply.com
+  signs:
+    - /agent opens but /api/agent returns 410
+    - /api/intake works as fallback
+    - /api/version returns 410 or health lacks version metadata
+  likely_meaning: Public domain is attached to an older or legacy Vercel deployment while the active mind-reply project reports success.
 known_mitigation_in_repo:
   file: vercel.json
   guard: scripts/vercel-ignore-build.mjs
   purpose: Skip non-canonical preview builds, duplicate projects, and automation-only commits to reduce avoidable Vercel build usage.
+incident_probe:
+  workflow: .github/workflows/mragent-domain-incident.yml
+  script: scripts/production-domain-incident.mjs
+  artifact: mragent-domain-incident.json
+  use_when: Public domain appears stale, preferred API returns 410, MCP surfaces disappear, or Vercel status and public behavior disagree.
+  checks:
+    - /agent page visibility
+    - /api/agent preferred decision route
+    - /api/intake fallback decision route
+    - /api/version deployed SHA route
+    - /api/health version metadata
+    - /mcp and /api/mcp ChatGPT app surfaces
 skipped_change_scopes:
   - .github workflows
   - site/automation source files
@@ -17,10 +36,11 @@ skipped_change_scopes:
 checks:
   - confirm latest GitHub commit status
   - open Vercel target URL and verify whether it is quota/rate-limit or code failure
-  - if quota clears, verify /agent, /mcp, /api/health, sitemap, robots, manifest, and social preview
+  - run MRagent Domain Incident when public domain behavior disagrees with active Vercel status
+  - if quota clears, verify /agent, /api/agent, /api/intake, /api/version, /mcp, /api/health, sitemap, robots, manifest, and social preview
   - if quota remains, avoid unnecessary extra deploy-triggering commits unless the change is important
 next_actions:
   code_path: Keep reducing duplicate builds and keep monitor artifacts current.
-  account_path: Upgrade or reset Vercel build quota from the Vercel account/project dashboard.
-  verification_path: After quota clears, capture a fresh production preview and update the personal pack.
-report_language: Vercel build quota is the blocker; this is not proven to be a code compile failure unless build logs say so.
+  account_path: Upgrade/reset Vercel build quota and retarget www.mind-reply.com to the active mind-reply project from the Vercel dashboard.
+  verification_path: After quota/domain clears, run MRagent Domain Incident, then capture a fresh production preview and update the personal pack.
+report_language: Vercel build quota or domain mismatch is the blocker; this is not proven to be a code compile failure unless build logs say so.
