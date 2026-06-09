@@ -1,10 +1,10 @@
 # MindReply
 
-MindReply is an Executive Nervous System and Decision Infrastructure Layer. It sits between input and action so the next move becomes obvious.
+MindReply is an Executive Nervous System and Decision Infrastructure Layer. It sits between pressure and action so the next move becomes calm, visible, and defensible.
 
 ## MRagent
 
-MRagent is the gentle Mind Read surface for MindReply. It reflects what the pressure is really about, what the user's mindset is protecting, the calmer move, and one recommended action.
+MRagent is the Mind Read surface for MindReply. It reflects what the pressure is really about, what the user's mindset is protecting, the calmer move, and one recommended action.
 
 ## Layers
 
@@ -33,6 +33,16 @@ MRagent is the gentle Mind Read surface for MindReply. It reflects what the pres
 
 Old public surfaces are redirected into the decision layer.
 
+## Front End Operating Pack
+
+`docs/front_end_operating_pack.md` explains the full front-end system: Home, MRagent, Personal Pack, privacy posture, 30-minute reporting, Figma/FigJam state, Remotion motion direction, promotion guardrails, and observability watch.
+
+Design links:
+
+- Figma preview: https://www.figma.com/design/QLximv9mLCIwQB2GPgBgeG
+- Front-end direction file: https://www.figma.com/design/PuRHREBbTixXGxPsBEI1yz
+- FigJam operating map: https://www.figma.com/board/G0lSiegpqHSoQDpmgoYKDL
+
 ## ChatGPT App Surface
 
 `/mcp` exposes the internal MRagent MCP Apps endpoint for ChatGPT Developer Mode.
@@ -50,7 +60,7 @@ Widget resource:
 
 ## Personal Pack Preview
 
-`/pack` is the personal operating surface for Angel's pack. It shows the four active automations, the configured delivery destinations, the live preview links, and truthful transaction/revenue counters.
+`/pack` is the personal operating surface for Angel's pack. It shows the four quiet lanes, configured delivery destinations, live preview links, truthful transaction/revenue counters, and current movement signals.
 
 Revenue and transaction counters are environment-driven so the page does not invent numbers:
 
@@ -62,9 +72,9 @@ NEXT_PUBLIC_PACK_REVENUE_NOTE=No connected transaction source yet.
 
 ## Personal Pack Reports
 
-`npm run report:personal-pack` generates a personal-only pulse with deploy status, MRagent links, the Figma preview, delivery status, a short "where you win" section, and one reusable gift-material line.
+`npm run report:personal-pack` generates a personal-only pulse with deploy status, MRagent links, the Figma preview, delivery status, the 25-lane operating pack, a short "where you win" section, and one reusable gift-material line.
 
-The scheduled workflow is `.github/workflows/personal-pack-report.yml`. It can be run manually with `workflow_dispatch` or by cron. GitHub cron cannot keep a perfect rolling 23-minute interval across every hour; the workflow uses `*/23 * * * *` as the closest built-in schedule.
+The scheduled workflow is `.github/workflows/personal-pack-report.yml`. It can be run manually with `workflow_dispatch` or by cron. The workflow uses `*/30 * * * *`, which runs twice an hour.
 
 Sending is disabled by default. Console preview is safe without secrets.
 
@@ -77,6 +87,7 @@ MINDREPLY_REPORT_CHANNELS=console,slack,email
 MINDREPLY_REPORT_REQUIRE_DELIVERY=true
 MINDREPLY_REPORT_PERSONAL_ONLY=true
 MINDREPLY_REPORT_PERSONAL_LABEL=Angel personal pack
+MINDREPLY_REPORT_AGENT_COUNT=25
 ```
 
 When `MINDREPLY_REPORT_REQUIRE_DELIVERY=true`, console output does not count as delivery. At least one Slack or email channel must return `sent`, or the workflow fails loudly.
