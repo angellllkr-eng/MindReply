@@ -35,8 +35,12 @@ fields:
     currentBlocker: Current deploy or platform blocker in plain language.
     opinion: Short operating opinion for the pass.
     nextAction: The next recommended move.
-  surfaces: Per-URL status, latency, and signal.
+  surfaces: Per-URL status, latency, and signal, including primary_mcp and fallback_mcp checks.
   packSources: Required personal-pack source files and whether each exists, including slack-api, vercel-build-limit, verification-runbook, preview-capture-script, preview-capture-workflow, visibility-plan, search-intents, live-copy-sync, preview-qa, preview-results, and ad-copy-tests.
+connection_urls:
+  agent: https://www.mind-reply.com/agent
+  primary_mcp: https://www.mind-reply.com/mcp
+  fallback_mcp: https://www.mind-reply.com/api/mcp
 visibility:
   plan: site/growth/visibility-plan.yml
   positioning: site/growth/positioning.yml
