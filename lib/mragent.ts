@@ -370,7 +370,7 @@ export async function fetchStoredReceipt(receiptId: string) {
       return { found: false, receiptId };
     }
 
-    const response = await fetch(receiptBlob.downloadUrl, { cache: "no-store" });
+    const response = await fetch(receiptBlob.blob.downloadUrl, { cache: "no-store" });
     if (!response.ok) return { found: false, receiptId };
 
     const stored = await response.json();
