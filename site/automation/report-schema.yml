@@ -13,6 +13,14 @@ growth_pulse:
   monitor_workflow: .github/workflows/mragent-monitor.yml
   cadence: every 15 minutes, weekly monday, and manual workflow_dispatch
   purpose: Summarize active promise, search lane, ad tests, copy alignment, preview state, and next visibility task.
+short_digest:
+  artifact_files:
+    - mragent-short-digest.json
+    - mragent-short-digest.md
+  producer: scripts/mragent-short-digest.mjs
+  workflow: .github/workflows/mragent-monitor.yml
+  cadence: every 15 minutes and manual workflow_dispatch
+  purpose: Condense production status and growth pulse into one tiny Slack/Outlook-ready report.
 cadence: every 15 minutes and manual workflow_dispatch
 purpose: Give humans and future personal-pack automation the same compact state snapshot.
 fields:
@@ -96,6 +104,7 @@ visibility:
     - production_version
     - functional_api_checks
     - growth_pulse
+    - short_digest
     - production_surfaces
     - search_assets
     - ad_message_sync
@@ -123,3 +132,4 @@ uses:
   - personal pack status checks
   - manual preview capture artifacts from MRagent Preview Capture
   - growth pulse artifact for SEO and ad message alignment in every 15-minute monitor
+  - short digest artifact for fast status updates
