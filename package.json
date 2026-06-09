@@ -10,6 +10,7 @@
     "typecheck": "next typegen && tsc --noEmit",
     "decision:verify": "tsx scripts/verify-decision-layer.ts && tsx scripts/verify-production-version-contract.ts",
     "mcp:verify": "tsx scripts/verify-mcp.ts",
+    "verify:all": "npm run decision:verify && npm run mcp:verify && npm run typecheck",
     "report:personal-pack": "tsx scripts/personal-pack-report.ts",
     "incident:domain": "node scripts/production-domain-incident.mjs",
     "growth:pulse": "node scripts/mragent-growth-pulse.mjs",
