@@ -25,6 +25,13 @@ const personalOnly = env.MINDREPLY_REPORT_PERSONAL_ONLY !== "false";
 const requireDelivery = env.MINDREPLY_REPORT_REQUIRE_DELIVERY === "true";
 const requestedChannels = parseChannels(env.MINDREPLY_REPORT_CHANNELS || "console");
 
+function parseList(value: string | undefined) {
+  return (value || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function parseChannels(value: string): Channel[] {
   const allowed = new Set<Channel>(["console", "slack", "email"]);
   const parsed = value
@@ -141,11 +148,12 @@ async function sendSlack(markdown: string): Promise<SendResult> {
   return { channel: "slack", status: "sent", detail: "Slack report sent." };
 }
 
+function emailRecipients() {
+  return [...new Set([...parseList(env.MINDREPLY_REPORT_EMAILS), ...parseList(env.MINDREPLY_REPORT_EMAIL)])];
+}
+
 function emailAllowed(email: string) {
-  const allowlist = (env.MINDREPLY_REPORT_EMAIL_ALLOWLIST || "")
-    .split(",")
-    .map((item) => item.trim().toLowerCase())
-    .filter(Boolean);
+  const allowlist = parseList(env.MINDREPLY_REPORT_EMAIL_ALLOWLIST).map((item) => item.toLowerCase());
 
   if (!personalOnly) return true;
   return allowlist.length > 0 && allowlist.includes(email.toLowerCase());
@@ -153,17 +161,20 @@ function emailAllowed(email: string) {
 
 async function sendEmail(markdown: string): Promise<SendResult> {
   const apiKey = env.RESEND_API_KEY;
-  const to = env.MINDREPLY_REPORT_EMAIL;
+  const to = emailRecipients();
   const from = env.MINDREPLY_REPORT_FROM;
 
-  if (!apiKey || !to || !from) {
-    return { channel: "email", status: "skipped", detail: "RESEND_API_KEY, MINDREPLY_REPORT_EMAIL, or MINDREPLY_REPORT_FROM is missing." };
+  if (!apiKey || !to.length || !from) {
+    return { channel: "email", status: "skipped", detail: "RESEND_API_KEY, MINDREPLY_REPORT_EMAILS, or MINDREPLY_REPORT_FROM is missing." };
   }
-  if (!emailAllowed(to)) {
-    return { channel: "email", status: "skipped", detail: "Recipient is not in MINDREPLY_REPORT_EMAIL_ALLOWLIST while personal-only mode is enabled." };
+
+  const blocked = to.filter((email) => !emailAllowed(email));
+  if (blocked.length) {
+    return { channel: "email", status: "skipped", detail: "One or more recipients are not in MINDREPLY_REPORT_EMAIL_ALLOWLIST while personal-only mode is enabled." };
   }
+
   if (!enabled) return { channel: "email", status: "skipped", detail: "MINDREPLY_REPORT_ENABLED is not true." };
-  if (dryRun) return { channel: "email", status: "dry_run", detail: "Email payload prepared but not sent." };
+  if (dryRun) return { channel: "email", status: "dry_run", detail: `Email payload prepared for ${to.length} recipient(s) but not sent.` };
 
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -180,7 +191,7 @@ async function sendEmail(markdown: string): Promise<SendResult> {
   });
 
   if (!response.ok) return { channel: "email", status: "failed", detail: `Resend returned ${response.status}.` };
-  return { channel: "email", status: "sent", detail: "Email report sent." };
+  return { channel: "email", status: "sent", detail: `Email report sent to ${to.length} recipient(s).` };
 }
 
 function deliveryMissing(results: SendResult[]) {
