@@ -45,6 +45,11 @@ reports:
     path: site/automation/reports/2026-06-09-design-rebuild-brief.yml
     commit: fe4d0c47db07f8a5ab6e948fc031b92bb9ebe126
     one_line: Product-first redesign plan is ready for the next main pass after Vercel quota clears.
+  - date: 2026-06-09
+    type: implementation_readiness_pack
+    path: site/automation/reports/2026-06-09-implementation-readiness-pack.yml
+    commit: 72b67bce2c36c50820511614da54b6b012d2aca3
+    one_line: First post-quota main pass is mapped: route freshness, product-first redesign, growth assets, capture.
 next_report_slots:
   - type: daily_short_digest
     cadence: every active work pass while quota is limited
@@ -52,11 +57,11 @@ next_report_slots:
   - type: branch_cleanup_followup
     cadence: after delete/ref tooling or user confirmation
     focus: keep only main and mind-reply after preserving useful files
-  - type: implementation_readiness_pack
+  - type: vercel_quota_recheck
     cadence: next storage pass
-    focus: exact files and acceptance checks for the first post-quota main change
+    focus: whether active Vercel mind-reply can build again
 opinion: >-
   The storage branch is now the right place for planning, growth, SEO, ad, and recovery reports.
   Main should stay quiet until Vercel can build again, because the source already contains the
   missing app routes and the remaining problem is deployment freshness.
-short_digest_line: Storage reports are indexed; design rebuild brief is ready; main remains build-rate-limited with /agent and /api/intake live but /api/version and /mcp stale.
+short_digest_line: Storage reports are indexed; implementation readiness is mapped; main remains build-rate-limited with /agent and /api/intake live but /api/version and /mcp stale.
