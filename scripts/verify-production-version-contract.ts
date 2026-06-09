@@ -27,7 +27,6 @@ const growthWorkflow = read(".github/workflows/mragent-growth-pulse.yml");
 const shortDigest = read("scripts/mragent-short-digest.mjs");
 const vercelIgnore = read("scripts/vercel-ignore-build.mjs");
 const reportSchema = read("site/automation/report-schema.yml");
-const vercelRunbook = read("site/automation/vercel-build-limit-runbook.yml");
 
 includes("package scripts", packageJson, "\"incident:domain\"");
 includes("package scripts", packageJson, "\"growth:pulse\"");
