@@ -52,6 +52,51 @@ function confidenceText(value?: number) {
   return "gentle read";
 }
 
+async function readJson(response: Response) {
+  return response.json().catch(() => ({}));
+}
+
+function adaptIntakeResponse(decision: DecisionResponse): AgentResponse {
+  return {
+    id: decision.receipt.id,
+    generationId: decision.receipt.id,
+    reply: decision.synthesis,
+    decision,
+    status: "fallback",
+    persistence: {
+      stored: false,
+      status: "legacy-intake",
+      receiptId: decision.receipt.id,
+    },
+  };
+}
+
+async function requestMindRead(text: string): Promise<Partial<AgentResponse> & { error?: string }> {
+  const agentResponse = await fetch("/api/agent", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: text, source: "manual" }),
+  });
+  const agentData = (await readJson(agentResponse)) as Partial<AgentResponse> & { error?: string };
+
+  if (agentResponse.ok && typeof agentData.reply === "string" && agentData.decision) {
+    return agentData;
+  }
+
+  const intakeResponse = await fetch("/api/intake", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ input: text, source: "manual" }),
+  });
+  const intakeData = (await readJson(intakeResponse)) as Partial<DecisionResponse> & { error?: string };
+
+  if (!intakeResponse.ok || !intakeData.receipt || !intakeData.recommendedAction) {
+    return { error: agentData.error ?? intakeData.error ?? "MRagent could not read that clearly. Bring it a little closer." };
+  }
+
+  return adaptIntakeResponse(intakeData as DecisionResponse);
+}
+
 export default function MRAgentChat({ compact = false }: MRAgentChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([starter]);
   const [input, setInput] = useState("I need to answer someone gently, but I feel pressure to decide too fast.");
@@ -78,14 +123,9 @@ export default function MRAgentChat({ compact = false }: MRAgentChatProps) {
         await sleep(index === 0 ? 420 : 560);
       }
 
-      const response = await fetch("/api/agent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, source: "manual" }),
-      });
-      const data = (await response.json()) as Partial<AgentResponse> & { error?: string };
+      const data = await requestMindRead(text);
 
-      if (!response.ok || typeof data.reply !== "string" || !data.decision) {
+      if (typeof data.reply !== "string" || !data.decision) {
         setError(data.error ?? "MRagent could not read that clearly. Bring it a little closer.");
         return;
       }
