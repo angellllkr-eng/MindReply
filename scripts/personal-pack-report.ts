@@ -25,6 +25,34 @@ const personalOnly = env.MINDREPLY_REPORT_PERSONAL_ONLY !== "false";
 const requireDelivery = env.MINDREPLY_REPORT_REQUIRE_DELIVERY === "true";
 const requestedChannels = parseChannels(env.MINDREPLY_REPORT_CHANNELS || "console");
 
+const operatingLanes = [
+  "Front door voice",
+  "MRagent session",
+  "Personal Pack",
+  "Privacy posture",
+  "ChatGPT App surface",
+  "Receipt contract",
+  "Risk gate",
+  "Delivery ribbon",
+  "Slack readiness",
+  "Email readiness",
+  "Vercel deploy status",
+  "GitHub source state",
+  "Figma preview",
+  "FigJam map",
+  "Code Connect readiness",
+  "Remotion motion brief",
+  "Observability watch",
+  "Conversion source watch",
+  "Revenue truth",
+  "Transaction source watch",
+  "Positioning phrases",
+  "Promotion queue",
+  "Launch blockers",
+  "Gift material",
+  "Next move",
+];
+
 function parseList(value: string | undefined) {
   return (value || "")
     .split(",")
@@ -51,6 +79,12 @@ function shortSha(value: string) {
 
 function emailRecipients() {
   return [...new Set([...parseList(env.MINDREPLY_REPORT_EMAILS), ...parseList(env.MINDREPLY_REPORT_EMAIL)])];
+}
+
+function laneReport() {
+  const requestedCount = Number.parseInt(env.MINDREPLY_REPORT_AGENT_COUNT || "25", 10);
+  const count = Number.isFinite(requestedCount) && requestedCount > 0 ? Math.min(requestedCount, operatingLanes.length) : operatingLanes.length;
+  return operatingLanes.slice(0, count).map((lane, index) => `- ${String(index + 1).padStart(2, "0")} ${lane}: watching, reporting, and waiting for a real source before claiming movement.`);
 }
 
 async function fetchRepoSnapshot(): Promise<RepoSnapshot> {
@@ -116,19 +150,22 @@ function reportMarkdown(snapshot: RepoSnapshot) {
     `Require delivery: ${boolWord(requireDelivery)}`,
     "",
     "## What changed",
-    "- MRagent ChatGPT app, receipt, and deployment signals are checked from the current repository context.",
+    "- MRagent front-end voice, Personal Pack, receipt, and deployment signals are checked from the current repository context.",
     "- This pulse is gated by env flags so a configured channel must opt in before anything sends.",
+    "",
+    "## 25-lane operating pack",
+    ...laneReport(),
     "",
     "## Where you win",
     "- You get a compact operating receipt instead of hunting through GitHub, Vercel, Slack, and email separately.",
-    "- The report calls out deploy blockers, feature movement, and the next useful move in one place.",
+    "- The report calls out deploy blockers, feature movement, delivery state, and the next useful move in one place.",
     "",
     "## Delivery",
     `- Email recipients: ${recipients.length ? recipients.join(", ") : "not configured"}`,
     `- Slack: ${env.MINDREPLY_SLACK_WEBHOOK_URL ? "configured" : "not configured"}`,
     "",
     "## Gift material",
-    "Use this line in MRagent copy: 'Read the pressure, move once, keep the receipt quiet.'",
+    "Use this line in MRagent copy: 'Read the pressure. Move with grace. Keep the receipt narrow.'",
     "",
     "## Links",
     `- Personal Pack: ${siteUrl}/pack`,
