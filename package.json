@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "npm run typecheck",
     "typecheck": "next typegen && tsc --noEmit",
-    "decision:verify": "tsx scripts/verify-decision-layer.ts",
+    "decision:verify": "tsx scripts/verify-decision-layer.ts && tsx scripts/verify-production-version-contract.ts",
     "mcp:verify": "tsx scripts/verify-mcp.ts",
     "report:personal-pack": "tsx scripts/personal-pack-report.ts"
   },
