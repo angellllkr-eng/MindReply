@@ -31,6 +31,16 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           node scripts/mragent-growth-pulse.mjs >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Write tiny digest
+        env:
+          MRAGENT_REPORT_JSON: mragent-monitor-status.json
+          MRAGENT_GROWTH_PULSE_JSON: mragent-growth-pulse.json
+          MRAGENT_SHORT_DIGEST_JSON: mragent-short-digest.json
+          MRAGENT_SHORT_DIGEST_MD: mragent-short-digest.md
+        run: |
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          node scripts/mragent-short-digest.mjs >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload machine-readable status
         uses: actions/upload-artifact@v4
         with:
@@ -38,4 +48,6 @@ jobs:
           path: |
             mragent-monitor-status.json
             mragent-growth-pulse.json
+            mragent-short-digest.json
+            mragent-short-digest.md
           if-no-files-found: error
