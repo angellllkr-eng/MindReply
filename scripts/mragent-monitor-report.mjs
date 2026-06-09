@@ -17,6 +17,8 @@ const packSources = [
   { label: "slack-api", path: "site/automation/slack-api.yml" },
   { label: "vercel-build-limit", path: "site/automation/vercel-build-limit-runbook.yml" },
   { label: "verification-runbook", path: "site/automation/verification-runbook.yml" },
+  { label: "preview-capture-script", path: "scripts/mragent-preview-capture.mjs" },
+  { label: "preview-capture-workflow", path: ".github/workflows/mragent-preview-capture.yml" },
   { label: "growth-positioning", path: "site/growth/positioning.yml" },
   { label: "visibility-plan", path: "site/growth/visibility-plan.yml" },
   { label: "search-intents", path: "site/growth/search-intents.yml" },
@@ -169,7 +171,7 @@ function chooseNextAction({ mcpLive, healthLive, discoveryLive, packReady, commi
   if (!mcpLive || !healthLive || !discoveryLive) return "Verify missing production surfaces after the active deployment is live.";
   if (!packReady) return "Restore missing personal-pack source files.";
   if (commitStatus.deployment?.quotaLimited && primary?.state === "success") return "Clean up the legacy quota-limited Vercel context or leave it documented as non-active.";
-  return "Connect a Slack channel target or capture a fresh /agent production preview for the next asset.";
+  return "Run MRagent Preview Capture, then attach desktop and mobile screenshots to the next status report.";
 }
 
 const generatedAt = new Date().toISOString();
