@@ -1,9 +1,12 @@
 import { existsSync, writeFileSync } from "node:fs";
 
 const siteUrl = process.env.MRAGENT_SITE_URL || "https://www.mind-reply.com";
+const samplePressure = "A client says the fee is high and wants an answer today.";
 const endpoints = [
   { label: "home", url: `${siteUrl}/` },
   { label: "agent", url: `${siteUrl}/agent` },
+  { label: "agent-api", url: `${siteUrl}/api/agent`, method: "POST", body: { message: samplePressure, source: "manual" } },
+  { label: "intake-api", url: `${siteUrl}/api/intake`, method: "POST", body: { input: samplePressure, source: "manual" } },
   { label: "mcp", url: `${siteUrl}/mcp` },
   { label: "api-mcp", url: `${siteUrl}/api/mcp` },
   { label: "health", url: `${siteUrl}/api/health` },
@@ -109,7 +112,15 @@ function parseJson(text) {
 async function checkEndpoint(endpoint) {
   const started = Date.now();
   try {
-    const response = await fetch(endpoint.url, { redirect: "follow" });
+    const init = endpoint.method === "POST"
+      ? {
+          method: "POST",
+          redirect: "follow",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(endpoint.body || {}),
+        }
+      : { redirect: "follow" };
+    const response = await fetch(endpoint.url, init);
     const contentType = response.headers.get("content-type") || "";
     const text = await response.text().catch(() => "");
     const data = /json/i.test(contentType) ? parseJson(text) : null;
@@ -133,7 +144,26 @@ async function checkEndpoint(endpoint) {
   }
 }
 
+function hasDecisionShape(data) {
+  return Boolean(data?.receipt?.id && data?.risk?.level && data?.recommendedAction?.kind && data?.synthesis);
+}
+
+function hasAgentShape(data) {
+  return Boolean(data?.receipt?.id && data?.decision?.risk?.level && data?.decision?.recommendedAction?.kind && data?.reply);
+}
+
+function apiSignal(label, data) {
+  const receiptId = data?.receipt?.id || data?.decision?.receipt?.id || "no receipt";
+  const risk = data?.risk?.level || data?.decision?.risk?.level || "unknown risk";
+  const action = data?.recommendedAction?.kind || data?.decision?.recommendedAction?.kind || "unknown action";
+  return `${label} functional: ${action}, ${risk}, ${receiptId}.`;
+}
+
 function summarize(label, status, text, contentType = "", data = null) {
+  if ((label === "agent-api" || label === "intake-api") && status === 410) return "Retired or stale API route.";
+  if ((label === "agent-api" || label === "intake-api") && status === 404) return "API route not live on production yet.";
+  if (label === "agent-api" && hasAgentShape(data)) return apiSignal("Agent API", data);
+  if (label === "intake-api" && hasDecisionShape(data)) return apiSignal("Intake API", data);
   if ((label === "mcp" || label === "api-mcp") && status === 404) return "MCP route not live on production yet.";
   if (label === "health" && status === 404) return "Health route not live on production yet.";
   if (label === "version" && status === 404) return "Version route not live on production yet.";
@@ -183,11 +213,13 @@ function shortSha(value) {
   return typeof value === "string" && value.length > 0 ? value.slice(0, 12) : "unknown";
 }
 
-function chooseNextAction({ mcpLive, healthLive, versionLive, discoveryLive, packReady, commitStatus, productionMatchesRun }) {
+function chooseNextAction({ mcpLive, healthLive, versionLive, agentApiLive, intakeApiLive, discoveryLive, packReady, commitStatus, productionMatchesRun }) {
   const primary = commitStatus.deployment?.primary;
   if (productionMatchesRun === false) return "Retarget the production domain to the active Vercel deployment, then rerun the monitor.";
   if (primary?.state === "failure") return "Fix the active Vercel deployment first, then rerun production checks.";
   if (primary?.state === "pending") return "Wait for the active Vercel deployment, then rerun production checks.";
+  if (!agentApiLive && intakeApiLive) return "Production is using the fallback decision route; fix /api/agent or confirm the fallback is intentional.";
+  if (!agentApiLive && !intakeApiLive) return "Restore a working MRagent decision API before capture or launch tasks.";
   if (!mcpLive || !healthLive || !versionLive || !discoveryLive) return "Verify missing production surfaces after the active deployment is live.";
   if (!packReady) return "Restore missing personal-pack source files.";
   if (commitStatus.deployment?.quotaLimited && primary?.state === "success") return "Clean up the legacy quota-limited Vercel context or leave it documented as non-active.";
@@ -200,6 +232,9 @@ const [results, commitStatus] = await Promise.all([Promise.all(endpoints.map(che
 const sourceResults = packSources.map((source) => ({ ...source, present: existsSync(source.path) }));
 const byLabel = new Map(results.map((result) => [result.label, result]));
 const liveCore = byLabel.get("agent")?.ok === true;
+const agentApiLive = byLabel.get("agent-api")?.ok === true && hasAgentShape(byLabel.get("agent-api")?.data);
+const intakeApiLive = byLabel.get("intake-api")?.ok === true && hasDecisionShape(byLabel.get("intake-api")?.data);
+const decisionApiLive = agentApiLive || intakeApiLive;
 const mcpLive = byLabel.get("mcp")?.ok === true || byLabel.get("api-mcp")?.ok === true;
 const healthLive = byLabel.get("health")?.ok === true;
 const versionLive = byLabel.get("version")?.ok === true;
@@ -209,14 +244,17 @@ const productionMatchesRun = run.sha === "local" || !productionSha ? null : prod
 const discoveryLive = ["sitemap", "robots", "manifest", "social-preview"].every((label) => byLabel.get(label)?.ok === true);
 const packReady = sourceResults.every((source) => source.present);
 const staleBlocker = productionMatchesRun === false ? `production is stale: ${shortSha(productionSha)} live, ${shortSha(run.sha)} expected` : null;
+const apiBlocker = !decisionApiLive ? "MRagent decision API is not functional on production" : null;
 const deployBlocker = deploymentBlocker(commitStatus);
-const blocker = staleBlocker || deployBlocker || (mcpLive && healthLive && versionLive && discoveryLive ? "none detected" : "latest GitHub main is not fully deployed to production yet");
-const nextAction = chooseNextAction({ mcpLive, healthLive, versionLive, discoveryLive, packReady, commitStatus, productionMatchesRun });
+const blocker = staleBlocker || deployBlocker || apiBlocker || (mcpLive && healthLive && versionLive && discoveryLive ? "none detected" : "latest GitHub main is not fully deployed to production yet");
+const nextAction = chooseNextAction({ mcpLive, healthLive, versionLive, agentApiLive, intakeApiLive, discoveryLive, packReady, commitStatus, productionMatchesRun });
 const opinion = staleBlocker
   ? "The active Vercel build can be green while the public domain still serves an older build; the version check now makes that visible."
-  : packReady
-    ? "The repo has a workable personal pack; active deployment health is now separated from legacy quota noise."
-    : "The personal pack is incomplete.";
+  : decisionApiLive
+    ? "MRagent has a working decision path; the report now distinguishes the preferred API from the fallback route."
+    : packReady
+      ? "The repo has a workable personal pack, but the production decision path needs attention."
+      : "The personal pack is incomplete.";
 
 const report = {
   generatedAt,
@@ -229,8 +267,22 @@ const report = {
     matchesRun: productionMatchesRun,
     data: versionData,
   },
+  functionalChecks: {
+    agentApi: {
+      ok: agentApiLive,
+      signal: byLabel.get("agent-api")?.signal || "not checked",
+    },
+    intakeApi: {
+      ok: intakeApiLive,
+      signal: byLabel.get("intake-api")?.signal || "not checked",
+    },
+    decisionApi: decisionApiLive ? "live" : "not live",
+  },
   summary: {
     coreAgent: liveCore ? "live" : "check",
+    decisionApi: decisionApiLive ? "live" : "not live",
+    preferredAgentApi: agentApiLive ? "live" : "not live",
+    fallbackIntakeApi: intakeApiLive ? "live" : "not live",
     mcpApp: mcpLive ? "live" : "not live",
     health: healthLive ? "live" : "not live",
     version: versionLive ? "live" : "not live",
@@ -240,7 +292,7 @@ const report = {
     opinion,
     nextAction,
   },
-  surfaces: results.map(({ label, url, status, ok, ms, signal, data }) => ({ label, url, status, ok, latencyMs: ms, signal, data })),
+  surfaces: results.map(({ label, url, method, status, ok, ms, signal, data }) => ({ label, url, method: method || "GET", status, ok, latencyMs: ms, signal, data })),
   packSources: sourceResults,
 };
 
@@ -256,6 +308,7 @@ console.log(`Run: ${run.branch} ${run.sha.slice(0, 12)}`);
 console.log(`Commit status: ${commitStatus.state} - ${commitStatus.signal}`);
 console.log(`Production version: ${shortSha(productionSha)}${productionMatchesRun === false ? " (stale)" : productionMatchesRun === true ? " (current)" : " (unknown)"}`);
 console.log(`Core agent: ${report.summary.coreAgent}`);
+console.log(`Decision API: ${report.summary.decisionApi} (agent ${report.summary.preferredAgentApi}, fallback ${report.summary.fallbackIntakeApi})`);
 console.log(`MCP app: ${report.summary.mcpApp}`);
 console.log(`Health: ${report.summary.health}`);
 console.log(`Version: ${report.summary.version}`);
