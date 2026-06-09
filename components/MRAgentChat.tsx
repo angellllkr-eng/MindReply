@@ -29,10 +29,10 @@ const starter: ChatMessage = {
   id: "mra-welcome",
   role: "assistant",
   content:
-    "Place the charged message here. I will read the pressure beneath it, name what your mind is protecting, and return one composed move you can actually use.",
+    "Come here. Put the charged thing down for a second. I will read the pressure beneath it, name what your mind is protecting, and hand you one composed move.",
 };
 
-const readingPhases = ["listening under the words", "finding the emotional weather", "checking the risk gate", "choosing one clean move"];
+const readingPhases = ["listening under the words", "finding the pressure pattern", "checking the risk gate", "choosing one clean move"];
 
 function makeId(prefix: string) {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -91,7 +91,7 @@ async function requestMindRead(text: string): Promise<Partial<AgentResponse> & {
   const intakeData = (await readJson(intakeResponse)) as Partial<DecisionResponse> & { error?: string };
 
   if (!intakeResponse.ok || !intakeData.receipt || !intakeData.recommendedAction) {
-    return { error: agentData.error ?? intakeData.error ?? "MRagent could not read that clearly. Bring it a little closer." };
+    return { error: agentData.error ?? intakeData.error ?? "MRagent could not read that cleanly. Bring the pressure a little closer." };
   }
 
   return adaptIntakeResponse(intakeData as DecisionResponse);
@@ -126,7 +126,7 @@ export default function MRAgentChat({ compact = false }: MRAgentChatProps) {
       const data = await requestMindRead(text);
 
       if (typeof data.reply !== "string" || !data.decision) {
-        setError(data.error ?? "MRagent could not read that clearly. Bring it a little closer.");
+        setError(data.error ?? "MRagent could not read that cleanly. Bring the pressure a little closer.");
         return;
       }
 
@@ -155,25 +155,25 @@ export default function MRAgentChat({ compact = false }: MRAgentChatProps) {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[#e2b757]">Mind Read</p>
             <h1 className="mt-6 font-serif text-4xl font-bold leading-tight md:text-6xl">
-              A composed read for high-friction moments.
+              Warm authority for charged moments.
             </h1>
             <p className="mt-5 text-base leading-8 text-[#d8deea]">
-              MRagent does not rush the reply. It studies the feeling, the protective pattern, the risk, and the cleanest next move.
+              MRagent reads beneath the words: the pressure, the protective reflex, the risk, and the clean next move. One synthesis. One action. One quiet receipt.
             </p>
           </div>
 
           <div className="mt-8 grid gap-3 text-sm text-[#d8deea]">
             <div className="rounded-xl border border-white/10 bg-white/[0.045] p-4">
-              <p className="flex items-center gap-2 font-semibold text-[#f8f5f0]"><HeartHandshake size={16} className="text-[#e2b757]" /> Warm, not weightless</p>
-              <p className="mt-2 leading-6">Tender enough to soften the moment; precise enough to keep your position intact.</p>
+              <p className="flex items-center gap-2 font-semibold text-[#f8f5f0]"><HeartHandshake size={16} className="text-[#e2b757]" /> Tender, not soft</p>
+              <p className="mt-2 leading-6">Close enough to understand the feeling; clear enough to protect your edge.</p>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/[0.045] p-4">
               <p className="flex items-center gap-2 font-semibold text-[#f8f5f0]"><LockKeyhole size={16} className="text-[#e2b757]" /> Private by shape</p>
-              <p className="mt-2 leading-6">Receipts keep hashes and results. Raw pressure is not kept in the quiet record.</p>
+              <p className="mt-2 leading-6">Receipts keep hashes and results. Raw pressure stays out of the quiet record.</p>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/[0.045] p-4">
               <p className="flex items-center gap-2 font-semibold text-[#f8f5f0]"><ShieldCheck size={16} className="text-[#e2b757]" /> Risk before movement</p>
-              <p className="mt-2 leading-6">If the moment is too charged, MRagent holds the line instead of hurrying you.</p>
+              <p className="mt-2 leading-6">If the moment has too much heat, MRagent holds the line instead of hurrying you.</p>
             </div>
           </div>
         </aside>
@@ -183,7 +183,7 @@ export default function MRAgentChat({ compact = false }: MRAgentChatProps) {
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
           <div>
             <p className="flex items-center gap-2 text-sm font-semibold text-[#f8f5f0]"><Sparkles size={15} className="text-[#e2b757]" /> MRagent session</p>
-            <p className="mt-1 text-xs text-[#8fa0b8]">slow read, warm voice, one move</p>
+            <p className="mt-1 text-xs text-[#8fa0b8]">pressure-first read, warm voice, one move</p>
           </div>
           {lastDecision ? (
             <span className="rounded-full border border-[#e2b757]/30 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#e2b757]">
@@ -207,7 +207,7 @@ export default function MRAgentChat({ compact = false }: MRAgentChatProps) {
               {message.decision ? (
                 <div className="mt-3 grid gap-3 rounded-2xl border border-white/10 bg-[#081121]/80 p-4 text-xs leading-5 text-[#d8deea] md:grid-cols-2">
                   <div>
-                    <p className="font-semibold uppercase tracking-[0.18em] text-[#e2b757]">Feeling</p>
+                    <p className="font-semibold uppercase tracking-[0.18em] text-[#e2b757]">Pressure</p>
                     <p className="mt-1">{message.decision.mindRead.reallyAbout}</p>
                   </div>
                   <div>
@@ -215,12 +215,12 @@ export default function MRAgentChat({ compact = false }: MRAgentChatProps) {
                     <p className="mt-1">{message.decision.mindRead.mindsetProtection}</p>
                   </div>
                   <div>
-                    <p className="font-semibold uppercase tracking-[0.18em] text-[#e2b757]">Move</p>
+                    <p className="font-semibold uppercase tracking-[0.18em] text-[#e2b757]">One Move</p>
                     <p className="mt-1">{message.decision.recommendedAction.label}</p>
                   </div>
                   <div>
-                    <p className="font-semibold uppercase tracking-[0.18em] text-[#e2b757]">Receipt</p>
-                    <p className="mt-1">{message.decision.receipt.id} · {message.decision.risk.level} risk</p>
+                    <p className="font-semibold uppercase tracking-[0.18em] text-[#e2b757]">Quiet Receipt</p>
+                    <p className="mt-1">{message.decision.receipt.id} - {message.decision.risk.level} risk</p>
                   </div>
                 </div>
               ) : null}
@@ -261,7 +261,7 @@ export default function MRAgentChat({ compact = false }: MRAgentChatProps) {
               }}
               rows={compact ? 2 : 3}
               className="min-h-14 flex-1 resize-none bg-transparent px-3 py-2 text-sm leading-6 text-[#f8f5f0] outline-none placeholder:text-[#70819b]"
-              placeholder="Give MRagent the text, hesitation, or charged moment."
+              placeholder="Drop the message, hesitation, or charged moment here."
             />
             <button
               type="button"
@@ -273,7 +273,7 @@ export default function MRAgentChat({ compact = false }: MRAgentChatProps) {
               <ArrowUp size={18} />
             </button>
           </div>
-          <p className="mt-2 text-xs text-[#8fa0b8]">Tip: press Ctrl+Enter to send. MRagent answers slowly on purpose.</p>
+          <p className="mt-2 text-xs text-[#8fa0b8]">Ctrl+Enter sends. MRagent slows the moment before it moves.</p>
         </div>
       </div>
     </section>
