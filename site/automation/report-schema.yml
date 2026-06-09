@@ -5,6 +5,13 @@ workflow: .github/workflows/mragent-monitor.yml
 verification_workflow: .github/workflows/mragent-verify.yml
 preview_capture_workflow: .github/workflows/mragent-preview-capture.yml
 preview_capture_script: scripts/mragent-preview-capture.mjs
+growth_pulse:
+  artifact: mragent-growth-pulse
+  file: mragent-growth-pulse.json
+  producer: scripts/mragent-growth-pulse.mjs
+  workflow: .github/workflows/mragent-growth-pulse.yml
+  cadence: weekly monday and manual workflow_dispatch
+  purpose: Summarize active promise, search lane, ad tests, copy alignment, preview state, and next visibility task.
 cadence: every 15 minutes and manual workflow_dispatch
 purpose: Give humans and future personal-pack automation the same compact state snapshot.
 fields:
@@ -69,6 +76,7 @@ visibility:
   live_copy_sync: site/growth/live-copy-sync.yml
   preview_qa: site/growth/preview-qa.yml
   preview_results: site/growth/preview-results.yml
+  growth_pulse: scripts/mragent-growth-pulse.mjs
   preview_capture:
     monitor_labels:
       - preview-capture-script
@@ -86,6 +94,7 @@ visibility:
     - legacy_quota_context
     - production_version
     - functional_api_checks
+    - growth_pulse
     - production_surfaces
     - search_assets
     - ad_message_sync
@@ -112,3 +121,4 @@ uses:
   - future Outlook digest handoff after mailbox target is named
   - personal pack status checks
   - manual preview capture artifacts from MRagent Preview Capture
+  - weekly growth pulse artifact for SEO and ad message alignment
