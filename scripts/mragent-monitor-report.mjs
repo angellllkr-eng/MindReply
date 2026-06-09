@@ -7,6 +7,7 @@ const endpoints = [
   { label: "mcp", url: `${siteUrl}/mcp` },
   { label: "api-mcp", url: `${siteUrl}/api/mcp` },
   { label: "health", url: `${siteUrl}/api/health` },
+  { label: "version", url: `${siteUrl}/api/version` },
   { label: "sitemap", url: `${siteUrl}/sitemap.xml` },
   { label: "robots", url: `${siteUrl}/robots.txt` },
   { label: "manifest", url: `${siteUrl}/manifest.webmanifest` },
@@ -97,18 +98,28 @@ async function fetchCommitStatus(run) {
   }
 }
 
+function parseJson(text) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
 async function checkEndpoint(endpoint) {
   const started = Date.now();
   try {
     const response = await fetch(endpoint.url, { redirect: "follow" });
     const contentType = response.headers.get("content-type") || "";
     const text = await response.text().catch(() => "");
+    const data = /json/i.test(contentType) ? parseJson(text) : null;
     return {
       ...endpoint,
       status: response.status,
       ok: response.ok,
       ms: Date.now() - started,
-      signal: summarize(endpoint.label, response.status, text, contentType),
+      signal: summarize(endpoint.label, response.status, text, contentType, data),
+      data,
     };
   } catch (error) {
     return {
@@ -117,13 +128,15 @@ async function checkEndpoint(endpoint) {
       ok: false,
       ms: Date.now() - started,
       signal: error instanceof Error ? error.message : "request failed",
+      data: null,
     };
   }
 }
 
-function summarize(label, status, text, contentType = "") {
+function summarize(label, status, text, contentType = "", data = null) {
   if ((label === "mcp" || label === "api-mcp") && status === 404) return "MCP route not live on production yet.";
   if (label === "health" && status === 404) return "Health route not live on production yet.";
+  if (label === "version" && status === 404) return "Version route not live on production yet.";
   if (label === "sitemap" && status === 404) return "Sitemap not live on production yet.";
   if (label === "robots" && status === 404) return "Robots file not live on production yet.";
   if (label === "manifest" && status === 404) return "Manifest not live on production yet.";
@@ -133,6 +146,7 @@ function summarize(label, status, text, contentType = "") {
   if (label === "agent" && /MRagent|Mind Read|MindReply/i.test(text)) return "MRagent page visible.";
   if ((label === "mcp" || label === "api-mcp") && /prepare_mindread|render_mindread|fetch_receipt/i.test(text)) return "MCP tools visible.";
   if (label === "health" && /mcpApp|privacyDefaults|status/i.test(text)) return "Health JSON visible.";
+  if (label === "version" && data?.deployment) return `Version visible: ${data.deployment.shortSha || "unknown sha"}.`;
   if (label === "sitemap" && /<urlset|\/agent|\/privacy/i.test(text)) return "Sitemap visible.";
   if (label === "robots" && /Sitemap|Allow/i.test(text)) return "Robots file visible.";
   if (label === "manifest" && /MindReply|MRagent/i.test(text)) return "Manifest visible.";
@@ -165,11 +179,16 @@ function deploymentBlocker(commitStatus) {
   return null;
 }
 
-function chooseNextAction({ mcpLive, healthLive, discoveryLive, packReady, commitStatus }) {
+function shortSha(value) {
+  return typeof value === "string" && value.length > 0 ? value.slice(0, 12) : "unknown";
+}
+
+function chooseNextAction({ mcpLive, healthLive, versionLive, discoveryLive, packReady, commitStatus, productionMatchesRun }) {
   const primary = commitStatus.deployment?.primary;
+  if (productionMatchesRun === false) return "Retarget the production domain to the active Vercel deployment, then rerun the monitor.";
   if (primary?.state === "failure") return "Fix the active Vercel deployment first, then rerun production checks.";
   if (primary?.state === "pending") return "Wait for the active Vercel deployment, then rerun production checks.";
-  if (!mcpLive || !healthLive || !discoveryLive) return "Verify missing production surfaces after the active deployment is live.";
+  if (!mcpLive || !healthLive || !versionLive || !discoveryLive) return "Verify missing production surfaces after the active deployment is live.";
   if (!packReady) return "Restore missing personal-pack source files.";
   if (commitStatus.deployment?.quotaLimited && primary?.state === "success") return "Clean up the legacy quota-limited Vercel context or leave it documented as non-active.";
   return "Run MRagent Preview Capture, then attach desktop and mobile screenshots to the next status report.";
@@ -183,28 +202,45 @@ const byLabel = new Map(results.map((result) => [result.label, result]));
 const liveCore = byLabel.get("agent")?.ok === true;
 const mcpLive = byLabel.get("mcp")?.ok === true || byLabel.get("api-mcp")?.ok === true;
 const healthLive = byLabel.get("health")?.ok === true;
+const versionLive = byLabel.get("version")?.ok === true;
+const versionData = byLabel.get("version")?.data;
+const productionSha = versionData?.deployment?.commitSha || null;
+const productionMatchesRun = run.sha === "local" || !productionSha ? null : productionSha === run.sha;
 const discoveryLive = ["sitemap", "robots", "manifest", "social-preview"].every((label) => byLabel.get(label)?.ok === true);
 const packReady = sourceResults.every((source) => source.present);
+const staleBlocker = productionMatchesRun === false ? `production is stale: ${shortSha(productionSha)} live, ${shortSha(run.sha)} expected` : null;
 const deployBlocker = deploymentBlocker(commitStatus);
-const blocker = deployBlocker || (mcpLive && healthLive && discoveryLive ? "none detected" : "latest GitHub main is not fully deployed to production yet");
-const nextAction = chooseNextAction({ mcpLive, healthLive, discoveryLive, packReady, commitStatus });
-const opinion = packReady ? "The repo has a workable personal pack; active deployment health is now separated from legacy quota noise." : "The personal pack is incomplete.";
+const blocker = staleBlocker || deployBlocker || (mcpLive && healthLive && versionLive && discoveryLive ? "none detected" : "latest GitHub main is not fully deployed to production yet");
+const nextAction = chooseNextAction({ mcpLive, healthLive, versionLive, discoveryLive, packReady, commitStatus, productionMatchesRun });
+const opinion = staleBlocker
+  ? "The active Vercel build can be green while the public domain still serves an older build; the version check now makes that visible."
+  : packReady
+    ? "The repo has a workable personal pack; active deployment health is now separated from legacy quota noise."
+    : "The personal pack is incomplete.";
 
 const report = {
   generatedAt,
   siteUrl,
   run,
   commitStatus,
+  productionVersion: {
+    liveSha: productionSha,
+    expectedSha: run.sha === "local" ? null : run.sha,
+    matchesRun: productionMatchesRun,
+    data: versionData,
+  },
   summary: {
     coreAgent: liveCore ? "live" : "check",
     mcpApp: mcpLive ? "live" : "not live",
+    health: healthLive ? "live" : "not live",
+    version: versionLive ? "live" : "not live",
     discoveryAssets: discoveryLive ? "live" : "not live",
     personalPack: packReady ? "ready" : "check",
     currentBlocker: blocker,
     opinion,
     nextAction,
   },
-  surfaces: results.map(({ label, url, status, ok, ms, signal }) => ({ label, url, status, ok, latencyMs: ms, signal })),
+  surfaces: results.map(({ label, url, status, ok, ms, signal, data }) => ({ label, url, status, ok, latencyMs: ms, signal, data })),
   packSources: sourceResults,
 };
 
@@ -218,8 +254,11 @@ console.log(`Time: ${generatedAt}`);
 console.log(`Site: ${siteUrl}`);
 console.log(`Run: ${run.branch} ${run.sha.slice(0, 12)}`);
 console.log(`Commit status: ${commitStatus.state} - ${commitStatus.signal}`);
+console.log(`Production version: ${shortSha(productionSha)}${productionMatchesRun === false ? " (stale)" : productionMatchesRun === true ? " (current)" : " (unknown)"}`);
 console.log(`Core agent: ${report.summary.coreAgent}`);
 console.log(`MCP app: ${report.summary.mcpApp}`);
+console.log(`Health: ${report.summary.health}`);
+console.log(`Version: ${report.summary.version}`);
 console.log(`Discovery assets: ${report.summary.discoveryAssets}`);
 console.log(`Personal pack: ${report.summary.personalPack}`);
 console.log(`Current blocker: ${blocker}`);
