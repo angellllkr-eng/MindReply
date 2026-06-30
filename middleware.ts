@@ -1,9 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
 import { isRedirectedPublicPath } from "@/lib/decision-layer";
 
 const allowedApiPaths = new Set(["/api/health", "/api/intake", "/api/agent", "/api/mcp", "/api/version"]);
+const privatePaths = [
+  "/dashboard",
+  "/deployments",
+  "/runs",
+  "/connectors",
+  "/approvals",
+  "/incidents",
+  "/logs",
+  "/settings",
+  "/api/deployments",
+  "/api/runs",
+  "/api/connectors",
+  "/api/approvals",
+  "/api/logs",
+  "/api/vercel",
+];
 
-export default function middleware(req: NextRequest) {
+function isPrivatePath(pathname: string) {
+  return privatePaths.some((path) => pathname === path || pathname.startsWith(`${path}/`));
+}
+
+export default auth((req: NextRequest & { auth?: { user?: unknown } }) => {
   const host = req.headers.get("host")?.toLowerCase();
   if (host === "mind-reply.com") {
     const url = req.nextUrl.clone();
@@ -18,7 +39,13 @@ export default function middleware(req: NextRequest) {
     return NextResponse.redirect(url, 307);
   }
 
-  if (req.nextUrl.pathname.startsWith("/api/") && !allowedApiPaths.has(req.nextUrl.pathname)) {
+  if (isPrivatePath(req.nextUrl.pathname) && !req.auth?.user) {
+    const signInUrl = new URL("/sign-in", req.nextUrl.origin);
+    signInUrl.searchParams.set("callbackUrl", `${req.nextUrl.pathname}${req.nextUrl.search}`);
+    return NextResponse.redirect(signInUrl);
+  }
+
+  if (req.nextUrl.pathname.startsWith("/api/") && !allowedApiPaths.has(req.nextUrl.pathname) && !isPrivatePath(req.nextUrl.pathname)) {
     return NextResponse.json(
       {
         status: "retired",
@@ -30,7 +57,7 @@ export default function middleware(req: NextRequest) {
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: [
