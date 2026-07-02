@@ -1,0 +1,24 @@
+name: Go Live Cleanup Validation
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - go-live-cleanup
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Report workspace
+        run: |
+          echo "repo=${GITHUB_REPOSITORY}"
+          echo "branch=${GITHUB_REF_NAME}"
+          echo "commit=${GITHUB_SHA}"
+
+      - name: Detect package manifests
+        run: |
+          find . -maxdepth 2 \( -name package.json -o -name pyproject.toml -o -name requirements.txt \) -print
